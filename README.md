@@ -1,4 +1,4 @@
-# JFCM-Design-App
+# JFCM Design App
 ##Java Fuzzy Cognitive Maps Design App
 
 ###Directories:
