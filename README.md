@@ -1,7 +1,7 @@
 # JFCM-Design-App
-Java Fuzzy Cognitive Maps Design App
+##Java Fuzzy Cognitive Maps Design App
 
-Directories:
-	Folder: "res" , the resources
-	Folder: "src" , the source code
-	File:   "JFCM Design App" , the runnable jar (Windows compiled)
+###Directories:
+	Folder: "*_res_*" , the _resources_
+	Folder: "*_src_*" , the _source code_
+	File:   "*_JFCM Design App_*" , the _runnable jar_ (Windows compiled)
