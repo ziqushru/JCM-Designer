@@ -1,2 +1,2 @@
 # JFCM-Design-App
-Discription
+Java Fuzzy Cognitive Maps Design App
