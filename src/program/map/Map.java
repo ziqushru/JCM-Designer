@@ -11,19 +11,19 @@ import program.utils.Position;
 
 public final class Map
 {
-	public static List<Unit> units = new ArrayList<Unit>();
-	public static Unit last_selected_unit = null;
-	
+	public static List<Unit>	units				= new ArrayList<Unit>();
+	public static Unit			last_selected_unit	= null;
+
 	public static void addUnit(Unit unit)
 	{
 		Map.units.add(unit);
 	}
-	
+
 	public static void removeUnit(Unit unit)
 	{
 		Map.units.remove(unit);
 	}
-	
+
 	public static void checkRemoveUnit(Position position)
 	{
 		for (Unit unit : Map.units)
@@ -39,32 +39,29 @@ public final class Map
 			}
 		}
 	}
-	
+
 	public static void clear()
 	{
 		Map.last_selected_unit = null;
 		Map.units.clear();
 	}
-	
+
 	private static boolean checkPressedNothing()
 	{
-		if (Mouse.pressed  && Mouse.button == MouseButton.PRIMARY)
+		if (Mouse.pressed && Mouse.button == MouseButton.PRIMARY)
 		{
 			for (Unit unit : Map.units)
-				if (Mouse.position.x >= unit.position.x && Mouse.position.x < unit.position.x + unit.size)
-					if (Mouse.position.y >= unit.position.y && Mouse.position.y < unit.position.y + unit.size)
-						return false;
+				if (Mouse.position.x >= unit.position.x && Mouse.position.x < unit.position.x + unit.size) if (Mouse.position.y >= unit.position.y && Mouse.position.y < unit.position.y + unit.size) return false;
 			return true;
 		}
 		return false;
 	}
-	
+
 	public static void tick()
 	{
-		if (Map.checkPressedNothing())
-			Map.last_selected_unit = null;
-		
-		if (Mouse.pressed  && Mouse.button == MouseButton.PRIMARY && Screen.unit != null)
+		if (Map.checkPressedNothing()) Map.last_selected_unit = null;
+
+		if (Mouse.pressed && Mouse.button == MouseButton.PRIMARY && Screen.unit != null)
 		{
 			Screen.unit.position.x = Mouse.position.x - Screen.unit.size / 2;
 			Screen.unit.position.y = Mouse.position.y - Screen.unit.size / 2;
@@ -73,16 +70,12 @@ public final class Map
 			Map.last_selected_unit = null;
 			return;
 		}
-		
-		if (Mouse.pressed && Mouse.button == MouseButton.SECONDARY)
-			checkRemoveUnit(Mouse.position);
-		
-		if (last_selected_unit != null)
-			last_selected_unit.drawSelected();
-		
+
+		if (last_selected_unit != null) last_selected_unit.drawSelected();
+
 		for (Unit unit : Map.units)
 			unit.tick();
-		
+
 		if (Mouse.pressed && Mouse.button == MouseButton.PRIMARY)
 		{
 			for (Unit unit : Map.units)
@@ -98,13 +91,13 @@ public final class Map
 			}
 		}
 	}
-	
+
 	public static void tickUnitNames()
 	{
 		for (Unit unit : Map.units)
 			unit.tickName();
 	}
-	
+
 	public static void drawConnections()
 	{
 		for (Unit unit : units)

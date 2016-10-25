@@ -79,6 +79,7 @@ public class Screen extends Canvas implements Runnable
 	public static void render()
 	{
 		Screen.graphics_context.drawImage(Screen.image, 0, 0);
+
 		Map.tickUnitNames();
 		Map.drawConnections();
 	}
