@@ -27,16 +27,20 @@ public class Connection
 		this.line.setStroke(Connection.color);
 		this.line.setStrokeWidth(2);
 		this.line.setStrokeLineCap(StrokeLineCap.ROUND);
-		this.arrow = new Arrow(line, 0.2f, new double[] { 0, 0, 5, 10, -5, 10 });
+		this.arrow = new Arrow(line, 0.5f, new double[] { 0, 0, 5, 10, -5, 10 });
 	}
 
-	private void drawWeight()
+	private void tickPosition()
 	{
 		this.line.setStartX(start_unit.position.x + Screen.X_OFFSET + start_unit.size / 2);
 		this.line.setStartY(start_unit.position.y + Screen.Y_OFFSET + start_unit.size / 2);
 		this.line.setEndX(end_unit.position.x + Screen.X_OFFSET + start_unit.size / 2);
 		this.line.setEndY(end_unit.position.y + Screen.Y_OFFSET + start_unit.size / 2);
+		this.arrow.update();
+	}
 
+	private void drawWeight()
+	{
 		int x_middle = (start_unit.position.x + end_unit.position.x) / 2;
 		int y_middle = (start_unit.position.y + end_unit.position.y) / 2 - 5;
 		Screen.graphics_context.fillText(weight + "", x_middle, y_middle);
@@ -50,6 +54,7 @@ public class Connection
 
 	public void render()
 	{
+		tickPosition();
 		drawWeight();
 	}
 }

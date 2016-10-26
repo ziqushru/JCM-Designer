@@ -28,20 +28,18 @@ public class Arrow extends Polygon
 		this.setSmooth(true);
 		this.line = line;
 		this.t = t;
-		init();
+		this.init();
 	}
 
 	private void init()
 	{
-		setFill(Connection.color);
-
+		this.setFill(Connection.color);
 		rz = new Rotate();
 		{
 			rz.setAxis(Rotate.Z_AXIS);
 		}
-		getTransforms().addAll(rz);
-
-		update();
+		this.getTransforms().addAll(rz);
+		this.update();
 	}
 
 	public void update()
@@ -59,23 +57,31 @@ public class Arrow extends Polygon
 
 		angle = Math.toDegrees(angle);
 
-		// arrow origin is top => apply offset
 		double offset = -90;
 		if (t > 0.5) offset = +90;
 
 		rz.setAngle(angle + offset);
-
 	}
 
 	private Point2D eval(Line c, float t)
 	{
-		Point2D p = new Point2D(Math.pow(1 - t, 3) * c.getStartX() + 3 * t * Math.pow(1 - t, 2) + 3 * (1 - t) * t * t + Math.pow(t, 3) * c.getEndX(), Math.pow(1 - t, 3) * c.getStartY() + 3 * t * Math.pow(1 - t, 2) + 3 * (1 - t) * t * t + Math.pow(t, 3) * c.getEndY());
+//		double x = Math.pow(1 - t, 2) * c.getStartX() + 2 * t * Math.pow(1 - t, 2) * c.getEndX();
+//		double y = Math.pow(1 - t, 2) * c.getStartY() + 2 * t * Math.pow(1 - t, 2) * c.getEndY();
+		double x = (1 - t) * c.getStartX() + t * c.getEndX();
+		double y = (1 - t) * c.getStartY() + t * c.getEndY();
+		
+		Point2D p = new Point2D(x, y);
 		return p;
 	}
 
 	private Point2D evalDt(Line c, float t)
 	{
-		Point2D p = new Point2D(-3 * Math.pow(1 - t, 2) * c.getStartX() + 3 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) + 3 * ((1 - t) * 2 * t - t * t) + 3 * Math.pow(t, 2) * c.getEndX(), -3 * Math.pow(1 - t, 2) * c.getStartY() + 3 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) + 3 * ((1 - t) * 2 * t - t * t) + 3 * Math.pow(t, 2) * c.getEndY());
+//		double x = -2 * Math.pow(1 - t, 2) * c.getStartX() + 2 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) * c.getEndX();
+//		double y = -2 * Math.pow(1 - t, 2) * c.getStartY() + 2 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) * c.getEndY();
+		double x = -c.getStartX() + c.getEndX();
+		double y = -c.getStartY() + c.getEndY();
+		
+		Point2D p = new Point2D(x, y);
 		return p;
 	}
 }

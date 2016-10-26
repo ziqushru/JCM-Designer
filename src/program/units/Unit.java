@@ -166,6 +166,8 @@ public class Unit extends Entity
 	{
 		this.position.x = Mouse.position.x - this.size / 2;
 		this.position.y = Mouse.position.y - this.size / 2;
+		
+		normalizePosition();
 	}
 
 	private void drawOutline(int offset, int color)
@@ -174,6 +176,8 @@ public class Unit extends Entity
 		{
 			int yy = y + this.position.y;
 			int xx = 0 + this.position.x - offset;
+			if (xx < 0) continue;
+			if (xx > Screen.WIDTH - this.size) continue;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 
@@ -181,6 +185,8 @@ public class Unit extends Entity
 		{
 			int yy = y + this.position.y;
 			int xx = this.size + this.position.x + offset - 1;
+			if (xx < 0) continue;
+			if (xx > Screen.WIDTH - this.size) continue;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 
@@ -188,6 +194,8 @@ public class Unit extends Entity
 		{
 			int yy = 0 + this.position.y - offset;
 			int xx = x + this.position.x;
+			if (yy < 0) continue;
+			if (yy > Screen.HEIGHT - this.size) continue;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 
@@ -195,6 +203,8 @@ public class Unit extends Entity
 		{
 			int yy = this.size + this.position.y + offset - 1;
 			int xx = x + this.position.x;
+			if (yy < 0) continue;
+			if (yy > Screen.HEIGHT - this.size) continue;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 	}
