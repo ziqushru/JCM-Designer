@@ -25,7 +25,7 @@ public class Unit extends Entity
 	private String				name;
 	private static final int	pressed_color		= 0xFF2222FF;
 	private static final int	selected_color		= 0xFFFF2222;
-	private List<Connection>	connections;
+	public List<Connection>		connections;
 	private Stage				settings_stage;
 	private boolean				settings_displayed	= false;
 
@@ -149,7 +149,7 @@ public class Unit extends Entity
 			Connection connection = new Connection(1, this, Map.last_selected_unit);
 			connection.drawLine();
 			this.connections.add(connection);
-			
+
 			Map.last_selected_unit = null;
 			return true;
 		}
@@ -166,7 +166,7 @@ public class Unit extends Entity
 	{
 		this.position.x = Mouse.position.x - this.size / 2;
 		this.position.y = Mouse.position.y - this.size / 2;
-		
+
 		normalizePosition();
 	}
 
@@ -176,8 +176,8 @@ public class Unit extends Entity
 		{
 			int yy = y + this.position.y;
 			int xx = 0 + this.position.x - offset;
-			if (xx < 0) continue;
-			if (xx > Screen.WIDTH - this.size) continue;
+			if (xx < 0) break;
+			if (xx > Screen.WIDTH - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 
@@ -185,8 +185,8 @@ public class Unit extends Entity
 		{
 			int yy = y + this.position.y;
 			int xx = this.size + this.position.x + offset - 1;
-			if (xx < 0) continue;
-			if (xx > Screen.WIDTH - this.size) continue;
+			if (xx < 0) break;
+			if (xx > Screen.WIDTH - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 
@@ -194,8 +194,8 @@ public class Unit extends Entity
 		{
 			int yy = 0 + this.position.y - offset;
 			int xx = x + this.position.x;
-			if (yy < 0) continue;
-			if (yy > Screen.HEIGHT - this.size) continue;
+			if (yy < 0) break;
+			if (yy > Screen.HEIGHT - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 
@@ -203,8 +203,8 @@ public class Unit extends Entity
 		{
 			int yy = this.size + this.position.y + offset - 1;
 			int xx = x + this.position.x;
-			if (yy < 0) continue;
-			if (yy > Screen.HEIGHT - this.size) continue;
+			if (yy < 0) break;
+			if (yy > Screen.HEIGHT - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
 	}

@@ -13,8 +13,8 @@ public class Connection
 	private final double		weight;
 	private final Unit			start_unit;
 	private final Unit			end_unit;
-	private final Line			line;
-	private final Arrow			arrow;
+	public final Line			line;
+	public final Arrow			arrow;
 	public static final Color	color	= Color.web("#AAAA55");
 
 	public Connection(int weight, Unit start_unit, Unit end_unit)

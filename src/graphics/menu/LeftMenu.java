@@ -24,7 +24,7 @@ public class LeftMenu extends ToolBar
 
 		this.setOrientation(Orientation.VERTICAL);
 
-		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("2.png"))));
+		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("add_button.png"))));
 
 		DropShadow shadow = new DropShadow(10, Color.RED);
 		LeftMenu.button_1.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>()
@@ -48,7 +48,7 @@ public class LeftMenu extends ToolBar
 			@Override
 			public void handle(MouseEvent event)
 			{
-				Screen.unit = new Unit(Map.units.size() + 1 + "", 0, 0, "2");
+				Screen.unit = new Unit(Map.units.size() + 1 + "", 0, 0, "factor");
 			}
 		});
 

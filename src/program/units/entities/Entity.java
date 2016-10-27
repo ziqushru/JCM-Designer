@@ -74,7 +74,7 @@ public abstract class Entity
 			{
 				int xx = x + position.x;
 				int color = pixels[x + y * size];
-				if (color != 0xFFFFAEC9)
+				if (color != 0xFFFD5A94)
 					Screen.pixels[xx + yy * Screen.WIDTH] = color;
 			}
 		}

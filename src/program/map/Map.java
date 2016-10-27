@@ -5,6 +5,7 @@ import java.util.List;
 
 import graphics.Screen;
 import javafx.scene.input.MouseButton;
+import program.Program;
 import program.inputs.Mouse;
 import program.units.Unit;
 import program.utils.Position;
@@ -42,8 +43,17 @@ public final class Map
 
 	public static void clear()
 	{
-		Map.last_selected_unit = null;
+		for (Unit unit : Map.units)
+		{
+			for (Connection connection : unit.connections)
+			{
+				Program.layout.getChildren().remove(connection.line);
+				Program.layout.getChildren().remove(connection.arrow);
+			}
+			unit.connections.clear();
+		}
 		Map.units.clear();
+		Map.last_selected_unit = null;
 	}
 
 	private static boolean checkPressedNothing()
