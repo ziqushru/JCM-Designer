@@ -4,15 +4,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.FontSmoothingType;
 import program.Program;
-import program.inputs.Keyboard;
-import program.inputs.Mouse;
 import program.map.Map;
 import program.units.Unit;
 
@@ -26,10 +26,10 @@ public class Screen extends Canvas implements Runnable
 	public static GraphicsContext	graphics_context;
 
 	private static int				color;
-	
-	public static final int 		X_OFFSET = 58;
-	public static final int 		Y_OFFSET = 24;
-	
+
+	public static final int			X_OFFSET	= 58;
+	public static final int			Y_OFFSET	= 24;
+
 	public static Unit				unit;
 
 	public Screen(int width, int height)
@@ -43,18 +43,25 @@ public class Screen extends Canvas implements Runnable
 		Screen.graphics_context = this.getGraphicsContext2D();
 		Screen.graphics_context.setFill(Color.WHITE);
 		Screen.graphics_context.setFontSmoothingType(FontSmoothingType.LCD);
-		Program.layout.setCenter(this);	        
-
-		this.setOnKeyPressed(event -> Keyboard.pressed(event));
-		this.setOnKeyReleased(event -> Keyboard.released(event));
-		this.setOnKeyTyped(event -> Keyboard.typed(event));
 		
-		this.setOnMouseMoved(event -> Mouse.moved(event));
-		this.setOnMousePressed(event -> Mouse.pressed(event));
-		this.setOnMouseReleased(event -> Mouse.released(event));
-		this.setOnMouseClicked(event -> Mouse.clicked(event));
-		this.setOnMouseDragged(event -> Mouse.dragged(event));
-		this.setOnMouseDragReleased(event -> Mouse.dragReleased());
+		this.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				if (Map.last_selected_unit != null)
+				{
+					for (Unit unit : Map.units)
+					{
+						if (event.getX() >= unit.position.x && event.getX() < unit.position.x + unit.size && event.getY() >= unit.position.y && event.getY() < unit.position.y + unit.size)
+							return;
+					}
+					Map.last_selected_unit = null;
+				}
+			}
+		});
+
+		Program.layout.setCenter(this);
 
 		this.requestFocus();
 		this.setFocusTraversable(true);
@@ -72,16 +79,13 @@ public class Screen extends Canvas implements Runnable
 	public static void tick()
 	{
 		Map.tick();
-		
+
 		Screen.image = SwingFXUtils.toFXImage(Screen.buffered_image, (WritableImage) Screen.image);
 	}
 
 	public static void render()
 	{
 		Screen.graphics_context.drawImage(Screen.image, 0, 0);
-
-		Map.tickUnitNames();
-		Map.drawConnections();
 	}
 
 	@Override

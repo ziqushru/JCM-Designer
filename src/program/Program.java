@@ -15,6 +15,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import program.inputs.Keyboard;
+import program.inputs.Mouse;
 import program.utils.Log;
 
 public class Program extends Application
@@ -110,6 +111,7 @@ public class Program extends Application
 			}
 		};
 		
+		Screen.clear();
 		Program.window.show();
 		Program.running = true;
 		animation_timer.start();
@@ -121,6 +123,7 @@ public class Program extends Application
 
 		if (!Program.paused)
 		{
+			Mouse.tick();
 			Screen.clear();
 			Screen.tick();
 		}

@@ -6,27 +6,20 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import graphics.Screen;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import program.Program;
 import program.utils.Log;
 import program.utils.Position;
 
-public abstract class Entity
+public abstract class Entity extends ImageView
 {
-	private int pixels[];
 	public int size;
 	public Position position;
-	private int color;
-
-	public Entity(int x, int y, int size, int color)
-	{
-		this.position = new Position(x, y);
-		this.size = size;
-		this.pixels = new int[size * size];
-		this.color = color;
-		clearPixels();
-	}
 	
 	public Entity(int x, int y, String path)
 	{
+		super();
 		this.position = new Position(x, y);
 		BufferedImage image = null;
 		try
@@ -35,48 +28,30 @@ public abstract class Entity
 		}
 		catch (IOException e) {	Log.addLog("Error: loading image"); Log.consoleOut(); }
 		this.size = image.getWidth();
-		this.pixels = new int[size * size];
-		image.getRGB(0, 0, size, size, pixels, 0, size);
-		this.color = -1;
+		this.setImage( new Image(this.getClass().getResourceAsStream("/" + path + ".png")));
+		this.setX(this.position.x);
+		this.setY(this.position.y);
+		this.setSmooth(true);
+		Program.layout.getChildren().add(this);
 	}
 	
-	protected void clearPixels()
+	protected void setX(int x)
 	{
-		if (color == -1) return;
-		for (int y = 0; y < size; y++)
-			for (int x = 0; x < size; x++)
-				pixels[x + y * size] = color;
+		this.position.x = x;
+		super.setX(this.position.x);
 	}
 	
-	public void setSize(int size)
+	protected void setY(int y)
 	{
-		this.size = size;
-		this.pixels = new int[size * size];
-		clearPixels();
+		this.position.y = y;
+		super.setY(this.position.y);
 	}
 	
 	protected void normalizePosition()
 	{
-		if (position.x < 0) position.x = 0;
-		if (position.y < 0) position.y = 0;
-		if (position.x > Screen.WIDTH - size) position.x = Screen.WIDTH - size;
-		if (position.y > Screen.HEIGHT - size) position.y = Screen.HEIGHT - size;	
-	}
-	
-	public abstract void tick();
-	
-	protected void tickPixels()
-	{
-		for (int y = 0; y < size; y++)
-		{
-			int yy = y + position.y;
-			for (int x = 0; x < size; x++)
-			{
-				int xx = x + position.x;
-				int color = pixels[x + y * size];
-				if (color != 0xFFFD5A94)
-					Screen.pixels[xx + yy * Screen.WIDTH] = color;
-			}
-		}
+		if (this.position.x < 0) this.position.x = 0;
+		if (this.position.y < 0) this.position.y = 0;
+		if (this.position.x > Screen.WIDTH) this.position.x = Screen.WIDTH;
+		if (this.position.y > Screen.HEIGHT) this.position.y = Screen.HEIGHT;
 	}
 }

@@ -7,175 +7,208 @@ import graphics.Screen;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.FontSmoothingType;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import program.Program;
 import program.inputs.Mouse;
-import program.map.Connection;
 import program.map.Map;
+import program.map.Relation;
 import program.units.entities.Entity;
 
 public class Unit extends Entity
 {
-	private String				name;
-	private static final int	pressed_color		= 0xFF2222FF;
-	private static final int	selected_color		= 0xFFFF2222;
-	public List<Connection>		connections;
-	private Stage				settings_stage;
-	private boolean				settings_displayed	= false;
-
-	public Unit(String name, int x, int y, int size, int color)
-	{
-		super(x, y, size, color);
-		this.name = name;
-		this.connections = new ArrayList<Connection>();
-	}
+	private Text				name_text;
+	private int					name_x_offset;
+	private int					name_y_offset;
+	private static final int	selected_color	= 0xFFFF2222;
+	public List<Relation>		relations;
 
 	public Unit(String name, int x, int y, String path)
 	{
 		super(x, y, path);
-		this.name = name;
-		this.connections = new ArrayList<Connection>();
-	}
+		this.name_text = new Text(name);
+		this.name_text.setFill(Color.WHITE);
+		this.name_text.setSmooth(true);
+		this.name_text.setFontSmoothingType(FontSmoothingType.LCD);
+		this.name_x_offset = (int) (this.size / 2 - this.name_text.getText().length() / 2 * 6.5);
+		this.name_y_offset = -5;
+		name_text.setX(x + name_x_offset);
+		name_text.setY(y + name_y_offset);
+		Program.layout.getChildren().add(name_text);
 
-	@Override
-	public void tick()
-	{
-		if (checkPressed(MouseButton.PRIMARY))
+		this.relations = new ArrayList<Relation>();
+
+		this.setOnMouseEntered(new EventHandler<MouseEvent>()
 		{
-			if (check()) return;
-			drawPressed();
-			drag();
-		}
-		else if (checkPressed(MouseButton.SECONDARY))
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Unit.this.setEffect(new DropShadow(15, Color.LIGHTBLUE));
+			}
+		});
+		this.setOnMouseExited(new EventHandler<MouseEvent>()
 		{
-			openSettings();
-		}
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Unit.this.setEffect(null);
+			}
+		});
+		this.setOnMouseDragged(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Unit.this.setX(Mouse.position.x - Unit.this.size / 2);
+				Unit.this.setY(Mouse.position.y - Unit.this.size / 2);
+				Unit.this.name_text.setX(Unit.this.position.x + name_x_offset);
+				Unit.this.name_text.setY(Unit.this.position.y + name_y_offset);
 
-		normalizePosition();
+				// normalizePosition();
+				for (Unit unit : Map.units)
+					unit.drawRelations();
+			}
+		});
+		this.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				if (event.getButton() == MouseButton.PRIMARY && Map.last_selected_unit != null && Map.last_selected_unit != Unit.this)
+				{
+					Relation relation = new Relation(1, Unit.this, Map.last_selected_unit);
+					Unit.this.relations.add(relation);
 
-		tickPixels();
+					Map.last_selected_unit = null;
+				}
+				else if (event.getButton() == MouseButton.PRIMARY && Map.last_selected_unit == null)
+					Map.last_selected_unit = Unit.this;
+				else if (event.getButton() == MouseButton.SECONDARY) openSettings();
+			}
+		});
 	}
 
 	private void openSettings()
 	{
-		if (settings_stage == null && !settings_displayed)
+		Stage settings_stage = new Stage();
+
+		VBox main_comp = new VBox();
+		main_comp.setPadding(new Insets(10));
+		main_comp.setAlignment(Pos.TOP_CENTER);
+
+		Label name_label = new Label("Name");
+		name_label.setPadding(new Insets(10));
+		main_comp.getChildren().add(name_label);
+
+		TextField name_text_field = new TextField();
+		name_text_field.setPadding(new Insets(10));
+		name_text_field.setMinWidth(100);
+		name_text_field.setPrefWidth(100);
+		name_text_field.setMaxWidth(100);
+		name_text_field.setPromptText(this.name_text.getText());
+		main_comp.getChildren().add(name_text_field);
+
+		GridPane buttons_comp = new GridPane();
+		buttons_comp.setHgap(10);
+		buttons_comp.setVgap(10);
+		buttons_comp.setAlignment(Pos.TOP_CENTER);
+
+		Button name_button = new Button("Update Value");
+		name_button.setOnAction(new EventHandler<ActionEvent>()
 		{
-			settings_stage = new Stage();
-
-			VBox main_comp = new VBox();
-
-			HBox name_comp = new HBox();
-			Label name_label = new Label("Name");
-			TextField name_text_field = new TextField();
-			name_text_field.setPromptText(this.name);
-			Button name_button = new Button("Update Value");
-			name_button.setOnAction(new EventHandler<ActionEvent>()
+			@Override
+			public void handle(ActionEvent event)
 			{
-				@Override
-				public void handle(ActionEvent event)
+				String new_name = name_text_field.getText().toString();
+				int counter = 0;
+				if (new_name != null && !new_name.isEmpty())
 				{
-					String new_name = name_text_field.getText().toString();
-					int counter = 0;
-					if (new_name != null && !new_name.isEmpty())
+					for (int i = 0; i < new_name.length(); i++)
+						if (new_name.charAt(i) == ' ') counter++;
+					if (counter != new_name.length())
 					{
-						for (int i = 0; i < new_name.length(); i++)
-							if (new_name.charAt(i) == ' ') counter++;
-						if (counter != new_name.length()) name = new_name;
+						Unit.this.name_text.setText(new_name);
+						name_x_offset = (int) (Unit.this.size / 2 - Unit.this.name_text.getText().length() / 2 * 6.5);
+						name_text.setX(Unit.this.position.x + Unit.this.name_x_offset);
+						name_text.setY(Unit.this.position.y + Unit.this.name_y_offset);
 					}
-					name_text_field.clear();
-					name_text_field.setPromptText(name);
 				}
-			});
-			name_label.setPadding(new Insets(10));
-			name_text_field.setPadding(new Insets(10));
-			name_button.setPadding(new Insets(10));
-			name_comp.getChildren().add(name_label);
-			name_comp.getChildren().add(name_text_field);
-			name_comp.getChildren().add(name_button);
+				name_text_field.clear();
+				name_text_field.setPromptText(Unit.this.name_text.getText());
+			}
+		});
+		name_button.setPadding(new Insets(10));
+		name_button.setAlignment(Pos.TOP_CENTER);
+		buttons_comp.add(name_button, 0, 1);
 
-			VBox delete_comp = new VBox();
-			Button delete_connection_button = new Button("Delete connection");
-			delete_connection_button.setOnAction(new EventHandler<ActionEvent>()
-			{
-				@Override
-				public void handle(ActionEvent event)
-				{
-					System.out.println("Remove Connection");
-				}
-			});
-			Button delete_unit_button = new Button("Delete unit");
-			delete_unit_button.setOnAction(new EventHandler<ActionEvent>()
-			{
-				@Override
-				public void handle(ActionEvent event)
-				{
-					Map.checkRemoveUnit(Mouse.position);
-					settings_stage = null;
-					settings_displayed = false;
-				}
-			});
-
-			delete_comp.getChildren().add(delete_connection_button);
-			delete_comp.getChildren().add(delete_unit_button);
-
-			main_comp.getChildren().add(name_comp);
-			main_comp.getChildren().add(delete_comp);
-
-			Scene stageScene = new Scene(main_comp, 300, 300);
-			settings_stage.setScene(stageScene);
-			settings_stage.setTitle(name + "Settings");
-			settings_stage.setResizable(false);
-			settings_stage.show();
-			settings_displayed = true;
-		}
-	}
-
-	public void drawConnections()
-	{
-		for (Connection connection : connections)
-			connection.render();
-	}
-
-	private boolean check()
-	{
-		if (Map.last_selected_unit != null) if (this.equals(Map.last_selected_unit) == false)
+		Button delete_button = new Button("Delete Unit");
+		delete_button.setOnAction(new EventHandler<ActionEvent>()
 		{
-			Connection connection = new Connection(1, this, Map.last_selected_unit);
-			connection.drawLine();
-			this.connections.add(connection);
+			@Override
+			public void handle(ActionEvent event)
+			{
+				Unit.this.remove();
+				settings_stage.close();
+				Map.last_selected_unit = null;
+			}
+		});
+		delete_button.setPadding(new Insets(10));
+		delete_button.setAlignment(Pos.TOP_CENTER);
+		buttons_comp.add(delete_button, 1, 1);
+		main_comp.getChildren().add(buttons_comp);
 
-			Map.last_selected_unit = null;
-			return true;
+		settings_stage.setScene(new Scene(main_comp, 300, 175));
+		settings_stage.setTitle("Unit Settings");
+		settings_stage.setResizable(false);
+		settings_stage.show();
+	}
+
+	public void remove()
+	{
+		for (int i = 0; i < this.relations.size(); i++)
+			relations.get(i--).remove();
+		for (Unit unit : Map.units)
+		{
+			for (int i = 0; i < unit.relations.size(); i++)
+			{
+				if (unit.relations.get(i).getEndUnit() == this)
+					unit.relations.get(i--).remove();
+			}
 		}
-		return false;
+		
+		Program.layout.getChildren().remove(name_text);
+		Program.layout.getChildren().remove(this);
+		Map.units.remove(this);
+		this.relations.clear();
 	}
 
-	private boolean checkPressed(MouseButton mouse_button)
+	public void drawRelations()
 	{
-		if (Mouse.pressed && Mouse.button == mouse_button) if (Mouse.position.x >= this.position.x && Mouse.position.x < this.position.x + this.size) if (Mouse.position.y >= this.position.y && Mouse.position.y < this.position.y + this.size) return true;
-		return false;
-	}
-
-	private void drag()
-	{
-		this.position.x = Mouse.position.x - this.size / 2;
-		this.position.y = Mouse.position.y - this.size / 2;
-
-		normalizePosition();
+		for (Relation relation : relations)
+			relation.tick();
 	}
 
 	private void drawOutline(int offset, int color)
 	{
+		int x_position = this.position.x - Screen.X_OFFSET;
+		int y_position = this.position.y - Screen.Y_OFFSET;
+
 		for (int y = 0; y < this.size; y++)
 		{
-			int yy = y + this.position.y;
-			int xx = 0 + this.position.x - offset;
+			int yy = y + y_position;
+			int xx = 0 + x_position - offset;
 			if (xx < 0) break;
 			if (xx > Screen.WIDTH - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
@@ -183,8 +216,8 @@ public class Unit extends Entity
 
 		for (int y = 0; y < this.size; y++)
 		{
-			int yy = y + this.position.y;
-			int xx = this.size + this.position.x + offset - 1;
+			int yy = y + y_position;
+			int xx = this.size + x_position + offset - 1;
 			if (xx < 0) break;
 			if (xx > Screen.WIDTH - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
@@ -192,8 +225,8 @@ public class Unit extends Entity
 
 		for (int x = 0; x < this.size; x++)
 		{
-			int yy = 0 + this.position.y - offset;
-			int xx = x + this.position.x;
+			int yy = 0 + y_position - offset;
+			int xx = x + x_position;
 			if (yy < 0) break;
 			if (yy > Screen.HEIGHT - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
@@ -201,26 +234,16 @@ public class Unit extends Entity
 
 		for (int x = 0; x < this.size; x++)
 		{
-			int yy = this.size + this.position.y + offset - 1;
-			int xx = x + this.position.x;
+			int yy = this.size + y_position + offset - 1;
+			int xx = x + x_position;
 			if (yy < 0) break;
 			if (yy > Screen.HEIGHT - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
 		}
-	}
-
-	private void drawPressed()
-	{
-		drawOutline(1, Unit.pressed_color);
 	}
 
 	public void drawSelected()
 	{
-		if (!checkPressed(MouseButton.PRIMARY)) drawOutline(1, Unit.selected_color);
-	}
-
-	public void tickName()
-	{
-		Screen.graphics_context.fillText(this.name, this.position.x + this.size / 2 - this.name.length() / 2 * 7.5, this.position.y - 5);
+		drawOutline(1, Unit.selected_color);
 	}
 }

@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,7 +25,8 @@ public class LeftMenu extends ToolBar
 
 		this.setOrientation(Orientation.VERTICAL);
 
-		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("add_button.png"))));
+		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("factor.png"))));
+		LeftMenu.button_1.setTooltip(new Tooltip("Creates a factor with a fixed name that can be renamed later (by clicking the right button over the factor and next changing the field name)"));
 
 		DropShadow shadow = new DropShadow(10, Color.RED);
 		LeftMenu.button_1.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>()
@@ -48,7 +50,9 @@ public class LeftMenu extends ToolBar
 			@Override
 			public void handle(MouseEvent event)
 			{
-				Screen.unit = new Unit(Map.units.size() + 1 + "", 0, 0, "factor");
+				Map.units.add(new Unit(Map.units.size() + 1 + "", Screen.X_OFFSET, Screen.Y_OFFSET, "factor"));
+				Screen.unit = null;
+				Map.last_selected_unit = null;
 			}
 		});
 

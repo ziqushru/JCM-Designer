@@ -1,53 +1,22 @@
 package program.inputs;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
+
 import graphics.Screen;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.geometry.Point2D;
+import program.Program;
 import program.utils.Position;
 
-public final class Mouse implements EventHandler<MouseEvent>
+public final class Mouse
 {
-	public static boolean		pressed		= false;
-	public static Position		position	= new Position();
-	public static MouseButton	button		= null;
+	public static Position position = new Position();
 
-	public static void clicked(MouseEvent event) {}
-
-	public static void pressed(MouseEvent event)
+	public static void tick()
 	{
-		Mouse.pressed = true;
-		Mouse.position.x = (int) event.getSceneX() - Screen.X_OFFSET;
-		Mouse.position.y = (int) event.getSceneY() - Screen.Y_OFFSET;
-
-		button = event.getButton();
-
-		event.consume();
+		Point point = MouseInfo.getPointerInfo().getLocation();
+		Point2D point2D = Program.screen.screenToLocal(point.x, point.y);
+		Mouse.position.x = (int) point2D.getX() + Screen.X_OFFSET;
+		Mouse.position.y = (int) point2D.getY() + Screen.Y_OFFSET;
 	}
-
-	public static void released(MouseEvent event)
-	{
-		Mouse.pressed = false;
-	}
-
-	public static void moved(MouseEvent event)
-	{
-		Mouse.position.x = (int) event.getSceneX() - Screen.X_OFFSET;
-		Mouse.position.y = (int) event.getSceneY() - Screen.Y_OFFSET;
-	}
-
-	public static void dragged(MouseEvent event)
-	{
-		Mouse.position.x = (int) event.getSceneX() - Screen.X_OFFSET;
-		Mouse.position.y = (int) event.getSceneY() - Screen.Y_OFFSET;
-	}
-
-	public static void dragReleased()
-	{
-		
-	}
-	
-	@Override
-	public void handle(MouseEvent event) {}
-
 }

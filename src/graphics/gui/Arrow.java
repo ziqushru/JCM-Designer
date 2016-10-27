@@ -4,7 +4,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
-import program.map.Connection;
+import program.Program;
+import program.map.Relation;
 
 public class Arrow extends Polygon
 {
@@ -20,6 +21,7 @@ public class Arrow extends Polygon
 		this.line = line;
 		this.t = t;
 		init();
+		Program.layout.getChildren().add(this);
 	}
 
 	public Arrow(Line line, float t, double... arg0)
@@ -29,20 +31,21 @@ public class Arrow extends Polygon
 		this.line = line;
 		this.t = t;
 		this.init();
+		Program.layout.getChildren().add(this);
 	}
 
 	private void init()
 	{
-		this.setFill(Connection.color);
+		this.setFill(Relation.color);
 		rz = new Rotate();
 		{
 			rz.setAxis(Rotate.Z_AXIS);
 		}
 		this.getTransforms().addAll(rz);
-		this.update();
+		this.tick();
 	}
 
-	public void update()
+	public void tick()
 	{
 		double size = Math.max(line.getBoundsInLocal().getWidth(), line.getBoundsInLocal().getHeight());
 		double scale = size / 4d;
