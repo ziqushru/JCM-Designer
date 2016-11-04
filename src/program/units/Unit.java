@@ -38,14 +38,12 @@ public class Unit extends Entity
 	public Unit(String name, int x, int y, String path)
 	{
 		super(x, y, path);
-		this.name_text = new Text(name);
-		this.name_text.setFill(Color.WHITE);
+		this.name_x_offset = (int) (this.size / 2 - name.length() / 2 * 6.5);
+		this.name_y_offset = -5;
+		this.name_text = new Text(x + name_x_offset, y + name_y_offset, name);
+		this.name_text.setFill(Color.BLACK);
 		this.name_text.setSmooth(true);
 		this.name_text.setFontSmoothingType(FontSmoothingType.LCD);
-		this.name_x_offset = (int) (this.size / 2 - this.name_text.getText().length() / 2 * 6.5);
-		this.name_y_offset = -5;
-		name_text.setX(x + name_x_offset);
-		name_text.setY(y + name_y_offset);
 		Program.layout.getChildren().add(name_text);
 
 		this.relations = new ArrayList<Relation>();
@@ -73,12 +71,11 @@ public class Unit extends Entity
 			{
 				Unit.this.setX(Mouse.position.x - Unit.this.size / 2);
 				Unit.this.setY(Mouse.position.y - Unit.this.size / 2);
-				Unit.this.name_text.setX(Unit.this.position.x + name_x_offset);
-				Unit.this.name_text.setY(Unit.this.position.y + name_y_offset);
+				Unit.this.name_text.setX(Unit.this.position.x + Unit.this.name_x_offset);
+				Unit.this.name_text.setY(Unit.this.position.y + Unit.this.name_y_offset);
 
-				// normalizePosition();
 				for (Unit unit : Map.units)
-					unit.drawRelations();
+					unit.tickRelations();
 			}
 		});
 		this.setOnMouseClicked(new EventHandler<MouseEvent>()
@@ -88,9 +85,13 @@ public class Unit extends Entity
 			{
 				if (event.getButton() == MouseButton.PRIMARY && Map.last_selected_unit != null && Map.last_selected_unit != Unit.this)
 				{
-					Relation relation = new Relation(1, Unit.this, Map.last_selected_unit);
-					Unit.this.relations.add(relation);
-
+					for (Relation relation : Map.last_selected_unit.relations)
+						if (relation.getStartUnit() == Map.last_selected_unit && relation.getEndUnit() == Unit.this)
+						{
+							Map.last_selected_unit = null;
+							return;
+						}
+					Map.last_selected_unit.relations.add(new Relation(1, Map.last_selected_unit, Unit.this));
 					Map.last_selected_unit = null;
 				}
 				else if (event.getButton() == MouseButton.PRIMARY && Map.last_selected_unit == null)
@@ -178,25 +179,21 @@ public class Unit extends Entity
 	public void remove()
 	{
 		for (int i = 0; i < this.relations.size(); i++)
-			relations.get(i--).remove();
+			this.relations.get(i--).remove();
+
 		for (Unit unit : Map.units)
-		{
 			for (int i = 0; i < unit.relations.size(); i++)
-			{
-				if (unit.relations.get(i).getEndUnit() == this)
-					unit.relations.get(i--).remove();
-			}
-		}
-		
-		Program.layout.getChildren().remove(name_text);
+				if (unit.relations.get(i).getEndUnit() == this) unit.relations.get(i--).remove();
+
+		Program.layout.getChildren().remove(this.name_text);
 		Program.layout.getChildren().remove(this);
 		Map.units.remove(this);
 		this.relations.clear();
 	}
 
-	public void drawRelations()
+	public void tickRelations()
 	{
-		for (Relation relation : relations)
+		for (Relation relation : this.relations)
 			relation.tick();
 	}
 
@@ -212,12 +209,8 @@ public class Unit extends Entity
 			if (xx < 0) break;
 			if (xx > Screen.WIDTH - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
-		}
 
-		for (int y = 0; y < this.size; y++)
-		{
-			int yy = y + y_position;
-			int xx = this.size + x_position + offset - 1;
+			xx = this.size + x_position + offset - 1;
 			if (xx < 0) break;
 			if (xx > Screen.WIDTH - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
@@ -230,12 +223,8 @@ public class Unit extends Entity
 			if (yy < 0) break;
 			if (yy > Screen.HEIGHT - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;
-		}
 
-		for (int x = 0; x < this.size; x++)
-		{
-			int yy = this.size + y_position + offset - 1;
-			int xx = x + x_position;
+			yy = this.size + y_position + offset - 1;
 			if (yy < 0) break;
 			if (yy > Screen.HEIGHT - this.size) break;
 			Screen.pixels[xx + yy * Screen.WIDTH] = color;

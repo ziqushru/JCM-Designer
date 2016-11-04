@@ -13,6 +13,11 @@ public class Position extends Point
 		super(x, y);
 	}
 	
+	public Position(double x, double y)
+	{
+		super((int) x, (int) y);
+	}
+
 	public void setPosition(int x, int y)
 	{
 		this.x = x;

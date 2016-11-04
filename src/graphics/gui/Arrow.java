@@ -1,7 +1,7 @@
 package graphics.gui;
 
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
 import program.Program;
@@ -9,26 +9,27 @@ import program.map.Relation;
 
 public class Arrow extends Polygon
 {
-	public double	rotate;
-	public float	t;
-	Line			line;
-	Rotate			rz;
+	public double			rotate;
+	public float			t;
+	CubicCurve				curve;
+	Rotate					rz;
+	public static final int	Y_OFFSET	= 50;
 
-	public Arrow(Line line, float t)
+	public Arrow(CubicCurve curve, float t)
 	{
 		super();
 		this.setSmooth(true);
-		this.line = line;
+		this.curve = curve;
 		this.t = t;
 		init();
 		Program.layout.getChildren().add(this);
 	}
 
-	public Arrow(Line line, float t, double... arg0)
+	public Arrow(CubicCurve curve, float t, double... polygon)
 	{
-		super(arg0);
+		super(polygon);
 		this.setSmooth(true);
-		this.line = line;
+		this.curve = curve;
 		this.t = t;
 		this.init();
 		Program.layout.getChildren().add(this);
@@ -47,11 +48,11 @@ public class Arrow extends Polygon
 
 	public void tick()
 	{
-		double size = Math.max(line.getBoundsInLocal().getWidth(), line.getBoundsInLocal().getHeight());
+		double size = Math.max(curve.getBoundsInLocal().getWidth(), curve.getBoundsInLocal().getHeight());
 		double scale = size / 4d;
 
-		Point2D ori = eval(line, t);
-		Point2D tan = evalDt(line, t).normalize().multiply(scale);
+		Point2D ori = eval(curve, t);
+		Point2D tan = evalDt(curve, t).normalize().multiply(scale);
 
 		setTranslateX(ori.getX());
 		setTranslateY(ori.getY());
@@ -60,31 +61,38 @@ public class Arrow extends Polygon
 
 		angle = Math.toDegrees(angle);
 
-		double offset = -90;
-		if (t > 0.5) offset = +90;
+		double offset = 90;
+		if (t > 0.5) offset = -90;
 
 		rz.setAngle(angle + offset);
 	}
 
-	private Point2D eval(Line c, float t)
+	private Point2D eval(CubicCurve c, float t)
 	{
-//		double x = Math.pow(1 - t, 2) * c.getStartX() + 2 * t * Math.pow(1 - t, 2) * c.getEndX();
-//		double y = Math.pow(1 - t, 2) * c.getStartY() + 2 * t * Math.pow(1 - t, 2) * c.getEndY();
-		double x = (1 - t) * c.getStartX() + t * c.getEndX();
-		double y = (1 - t) * c.getStartY() + t * c.getEndY();
+		double x = Math.pow(1 - t, 3) * c.getStartX() +
+                   3 * t * Math.pow(1 - t, 2) * c.getControlX1() +
+                   3 * (1 - t) * t * t * c.getControlX2() +
+                   Math.pow(t, 3) * c.getEndX();
 		
-		Point2D p = new Point2D(x, y);
-		return p;
+		double y = Math.pow(1 - t, 3) * c.getStartY() +
+				   3 * t * Math.pow(1 - t, 2) * c.getControlY1() +
+                   3 * (1 - t) * t * t * c.getControlY2() +
+                   Math.pow(t, 3) * c.getEndY();
+		return new Point2D(x, y);
 	}
 
-	private Point2D evalDt(Line c, float t)
+	private Point2D evalDt(CubicCurve c, float t)
 	{
-//		double x = -2 * Math.pow(1 - t, 2) * c.getStartX() + 2 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) * c.getEndX();
-//		double y = -2 * Math.pow(1 - t, 2) * c.getStartY() + 2 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) * c.getEndY();
-		double x = -c.getStartX() + c.getEndX();
-		double y = -c.getStartY() + c.getEndY();
+		double x = -3 * Math.pow(1 - t, 2) * c.getStartX() +
+                3 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) * c.getControlX1()+
+                3 * ((1 - t) * 2 * t - t * t) * c.getControlX2() +
+                3 * Math.pow(t, 2) * c.getEndX();
 		
-		Point2D p = new Point2D(x, y);
-		return p;
+		double y = -3 * Math.pow(1 - t, 2) * c.getStartY() +
+                   3 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) * c.getControlY1()+
+                   3 * ((1 - t) * 2 * t - t * t) * c.getControlY2() +
+                   3 * Math.pow(t, 2) * c.getEndY();
+		
+		return new Point2D(x, y);
 	}
 }

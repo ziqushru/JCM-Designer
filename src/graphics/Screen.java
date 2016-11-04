@@ -52,21 +52,18 @@ public class Screen extends Canvas implements Runnable
 				if (Map.last_selected_unit != null)
 				{
 					for (Unit unit : Map.units)
-					{
 						if (event.getX() >= unit.position.x && event.getX() < unit.position.x + unit.size && event.getY() >= unit.position.y && event.getY() < unit.position.y + unit.size)
 							return;
-					}
 					Map.last_selected_unit = null;
 				}
 			}
 		});
-
 		Program.layout.setCenter(this);
 
 		this.requestFocus();
 		this.setFocusTraversable(true);
 
-		Screen.color = 0xFF222222;
+		Screen.color = 0xFFAAAAAA;
 	}
 
 	public static void clear()

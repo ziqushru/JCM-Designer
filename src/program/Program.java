@@ -58,7 +58,6 @@ public class Program extends Application
 			event.consume();
 			Program.closeProgram();
 		});
-
 		Program.window.setTitle(Program.TITLE);
 		Program.window.setScene(new Scene(Program.layout, Program.WIDTH, Program.HEIGHT));
 		Program.window.setResizable(false);
