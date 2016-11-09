@@ -22,6 +22,8 @@ public class TopMenu extends MenuBar
 		super();
 
 		TopMenu.new_file.setOnAction(event -> Map.clear());
+		TopMenu.open_file.setOnAction(event -> Map.load());
+		TopMenu.save_file.setOnAction(event -> Map.save());
 		TopMenu.exit_file.setOnAction(event -> Program.closeProgram());
 		TopMenu.file_menu.getItems().add(TopMenu.new_file);
 		TopMenu.file_menu.getItems().add(TopMenu.open_file);

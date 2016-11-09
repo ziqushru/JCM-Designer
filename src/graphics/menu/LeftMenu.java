@@ -50,7 +50,9 @@ public class LeftMenu extends ToolBar
 			@Override
 			public void handle(MouseEvent event)
 			{
-				Map.units.add(new Unit(Map.units.size() + 1 + "", Screen.X_OFFSET, Screen.Y_OFFSET, "factor"));
+				Unit unit = new Unit(Map.units.size() + 1 + "", Screen.X_OFFSET, Screen.Y_OFFSET, "factor");
+				Map.cognitive_map.addConcept(unit.concept);
+				Map.units.add(unit);
 				Screen.unit = null;
 				Map.last_selected_unit = null;
 			}

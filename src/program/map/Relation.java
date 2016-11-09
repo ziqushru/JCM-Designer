@@ -1,5 +1,7 @@
 package program.map;
 
+import org.megadix.jfcm.conn.WeightedConnection;
+
 import graphics.gui.Arrow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +28,7 @@ import program.Program;
 import program.units.Unit;
 import program.utils.Position;
 
-public class Relation
+public class Relation extends WeightedConnection
 {
 	private double				weight;
 	private Text				weight_text;
@@ -38,7 +40,9 @@ public class Relation
 
 	public Relation(double new_weight, Unit start_unit, Unit end_unit)
 	{
-
+		super(start_unit.concept.getName() + " -> " + end_unit.concept.getName(), "test_desc", new_weight);
+		this.setFrom(start_unit.concept);
+		this.setTo(end_unit.concept);
 		this.start_unit = start_unit;
 		this.end_unit = end_unit;
 		Position middle_position = getMiddlePoint();
@@ -91,7 +95,8 @@ public class Relation
 						try
 						{
 							Relation.this.weight = Double.parseDouble(weight_value_text_field.getText().toString());
-							Relation.this.weight_text.setText(weight + "");
+							Relation.this.setWeight(Relation.this.weight);
+							Relation.this.weight_text.setText(Relation.this.weight + "");
 						}
 						catch (Exception exception)
 						{
@@ -138,6 +143,7 @@ public class Relation
 
 	public void remove()
 	{
+		Map.cognitive_map.removeConnection(Relation.this.getName());
 		this.start_unit.relations.remove(this);
 		Program.layout.getChildren().remove(this.curve);
 		Program.layout.getChildren().remove(this.weight_text);
@@ -200,5 +206,13 @@ public class Relation
 		else if (!start_unit.equals(other.start_unit)) return false;
 		
 		return true;
+	}
+
+	@Override
+	public Double calculateOutput()
+	{
+		//TODO: WHAT DOES THIS ? ? ? ?
+		System.out.println("WHAT IS OUTPUT ? ? ? ?");
+		return null;
 	}	
 }

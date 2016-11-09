@@ -3,6 +3,8 @@ package program.units;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.megadix.jfcm.Concept;
+
 import graphics.Screen;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -29,6 +31,7 @@ import program.units.entities.Entity;
 
 public class Unit extends Entity
 {
+	public Concept				concept;
 	private Text				name_text;
 	private int					name_x_offset;
 	private int					name_y_offset;
@@ -38,6 +41,7 @@ public class Unit extends Entity
 	public Unit(String name, int x, int y, String path)
 	{
 		super(x, y, path);
+		this.concept = new Concept(name, "test_desc", Map.signum_activator, 0.0, 0.0, false);
 		this.name_x_offset = (int) (this.size / 2 - name.length() / 2 * 6.5);
 		this.name_y_offset = -5;
 		this.name_text = new Text(x + name_x_offset, y + name_y_offset, name);
@@ -91,7 +95,10 @@ public class Unit extends Entity
 							Map.last_selected_unit = null;
 							return;
 						}
-					Map.last_selected_unit.relations.add(new Relation(1, Map.last_selected_unit, Unit.this));
+					Relation relation = new Relation(1, Map.last_selected_unit, Unit.this);
+					Map.cognitive_map.addConnection(relation);
+					Map.cognitive_map.connect(relation.getFrom().getName(), relation.getFrom().getName() + " -> " + relation.getTo().getName(), relation.getTo().getName());
+					Map.last_selected_unit.relations.add(relation);
 					Map.last_selected_unit = null;
 				}
 				else if (event.getButton() == MouseButton.PRIMARY && Map.last_selected_unit == null)
@@ -100,7 +107,7 @@ public class Unit extends Entity
 			}
 		});
 	}
-
+	
 	private void openSettings()
 	{
 		Stage settings_stage = new Stage();
@@ -140,6 +147,7 @@ public class Unit extends Entity
 						if (new_name.charAt(i) == ' ') counter++;
 					if (counter != new_name.length())
 					{
+						Unit.this.concept.setName(new_name);
 						Unit.this.name_text.setText(new_name);
 						name_x_offset = (int) (Unit.this.size / 2 - Unit.this.name_text.getText().length() / 2 * 6.5);
 						name_text.setX(Unit.this.position.x + Unit.this.name_x_offset);
@@ -179,14 +187,22 @@ public class Unit extends Entity
 	public void remove()
 	{
 		for (int i = 0; i < this.relations.size(); i++)
+		{
+			Map.cognitive_map.removeConnection(this.relations.get(i).getName());
 			this.relations.get(i--).remove();
+		}
 
 		for (Unit unit : Map.units)
 			for (int i = 0; i < unit.relations.size(); i++)
-				if (unit.relations.get(i).getEndUnit() == this) unit.relations.get(i--).remove();
+				if (unit.relations.get(i).getEndUnit() == this)
+				{
+					Map.cognitive_map.removeConnection(unit.relations.get(i).getName());
+					unit.relations.get(i--).remove();
+				}
 
 		Program.layout.getChildren().remove(this.name_text);
 		Program.layout.getChildren().remove(this);
+		Map.cognitive_map.removeConcept(this.concept.getName());
 		Map.units.remove(this);
 		this.relations.clear();
 	}
