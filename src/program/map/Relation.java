@@ -211,8 +211,10 @@ public class Relation extends WeightedConnection
 	@Override
 	public Double calculateOutput()
 	{
-		//TODO: WHAT DOES THIS ? ? ? ?
-		System.out.println("WHAT IS OUTPUT ? ? ? ?");
-		return null;
+		System.out.println("Output: " + this.getOutput());
+		if (this.getOutput() > weight)
+			return 1.0;
+		else
+			return -1.0;
 	}	
 }

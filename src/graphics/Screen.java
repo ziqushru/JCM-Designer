@@ -55,6 +55,7 @@ public class Screen extends Canvas implements Runnable
 						if (event.getX() >= unit.position.x && event.getX() < unit.position.x + unit.size && event.getY() >= unit.position.y && event.getY() < unit.position.y + unit.size)
 							return;
 					Map.last_selected_unit = null;
+					Screen.this.requestFocus();
 				}
 			}
 		});

@@ -6,13 +6,16 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import graphics.Screen;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import program.Program;
+import program.inputs.Mouse;
 import program.utils.Log;
 import program.utils.Position;
 
-public abstract class Entity extends ImageView
+public abstract class Entity extends ImageView implements EventHandler<MouseEvent>
 {
 	public int size;
 	public Position position;
@@ -32,6 +35,8 @@ public abstract class Entity extends ImageView
 		this.setX(this.position.x);
 		this.setY(this.position.y);
 		this.setSmooth(true);
+		this.setOnMouseDragged(this);
+		this.setOnMouseClicked(this);
 		Program.layout.getChildren().add(this);
 	}
 	
@@ -53,5 +58,15 @@ public abstract class Entity extends ImageView
 		if (this.position.y < 0) this.position.y = 0;
 		if (this.position.x > Screen.WIDTH) this.position.x = Screen.WIDTH;
 		if (this.position.y > Screen.HEIGHT) this.position.y = Screen.HEIGHT;
+	}
+	
+	@Override
+	public void handle(MouseEvent event)
+	{
+		if (event.getEventType() == MouseEvent.MOUSE_DRAGGED)
+		{
+			this.setX(Mouse.position.x - this.size / 2);
+			this.setY(Mouse.position.y - this.size / 2);
+		}
 	}
 }
