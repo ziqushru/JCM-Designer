@@ -18,6 +18,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import program.Program;
+import program.map.runnners.Runner;
 import program.units.Unit;
 import program.utils.Log;
 
@@ -26,6 +27,7 @@ public final class Map
 	public static CognitiveMap	cognitive_map		= new CognitiveMap();
 	public static List<Unit>	units				= new ArrayList<Unit>();
 	public static Unit			last_selected_unit	= null;
+	public static Runner		runner;
 	
 	public static void clear()
 	{
@@ -39,6 +41,8 @@ public final class Map
 	public static void tick()
 	{
 		if (last_selected_unit != null) last_selected_unit.drawSelected();
+		for (Unit unit : Map.units)
+			unit.toFront();
 	}
 
 	public static void save()
@@ -54,7 +58,7 @@ public final class Map
 				alert.show();
 				return;
 			}
-		}		
+		}
 		FileChooser file_chooser = new FileChooser();
 		file_chooser.setTitle("Save Cognitive Map");
 		file_chooser.getExtensionFilters().add(new ExtensionFilter("XML", "*.xml"));

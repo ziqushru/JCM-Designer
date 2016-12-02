@@ -206,15 +206,5 @@ public class Relation extends WeightedConnection
 		else if (!start_unit.equals(other.start_unit)) return false;
 		
 		return true;
-	}
-
-	@Override
-	public Double calculateOutput()
-	{
-		System.out.println("Output: " + this.getOutput());
-		if (this.getOutput() > weight)
-			return 1.0;
-		else
-			return -1.0;
 	}	
 }

@@ -52,6 +52,7 @@ public class Unit extends Mob
 	{
 		super(x, y, path);
 		this.concept = new Concept(name, "test_desc");
+		this.concept.setInput(0.0);
 		this.name_x_offset = (int) (this.size / 2 - name.length() / 2 * 6.5);
 		this.name_y_offset = -5;
 		this.name_text = new Text(x + name_x_offset, y + name_y_offset, name);
