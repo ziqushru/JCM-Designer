@@ -40,4 +40,10 @@ public class NonLinearRunner extends Runner
 		return  Map.units.get(y).concept.getInput() + sum;
 	}
 
+	@Override
+	protected void tickParameters()
+	{
+		
+	}
+
 }

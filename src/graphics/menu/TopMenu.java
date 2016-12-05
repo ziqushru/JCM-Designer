@@ -30,7 +30,7 @@ public class TopMenu extends MenuBar
 	private static final Menu		inference_rules			= new Menu("Inference Rules");
 	private static final MenuItem	differential_menu_item	= new MenuItem("Differential Hebbian Learning");
 	private static final MenuItem	non_linear_menu_item	= new MenuItem("Non Linear Hebbian Learning");
-	private static final MenuItem	stylios_menu_item		= new MenuItem("Active Hebbian Learning");
+	private static final MenuItem	active_menu_item		= new MenuItem("Active Hebbian Learning");
 
 	private static final Menu		trasfer_functions_menu	= new Menu("TransferFunctions");
 	private static final MenuItem	signum_t_f				= new MenuItem("Signum");
@@ -64,10 +64,10 @@ public class TopMenu extends MenuBar
 
 		TopMenu.differential_menu_item.setOnAction(event ->	Map.runner = new DifferentialRunner(0.05, 15));
 		TopMenu.non_linear_menu_item.setOnAction(event -> Map.runner = new NonLinearRunner(0.04, 0.98));
-		TopMenu.stylios_menu_item.setOnAction(event -> Map.runner = new ActiveRunner(0.04, 0.98));
+		TopMenu.active_menu_item.setOnAction(event -> Map.runner = new ActiveRunner(0.1, 0.05));
 		TopMenu.inference_rules.getItems().add(TopMenu.differential_menu_item);
 		TopMenu.inference_rules.getItems().add(TopMenu.non_linear_menu_item);
-		TopMenu.inference_rules.getItems().add(TopMenu.stylios_menu_item);
+		TopMenu.inference_rules.getItems().add(TopMenu.active_menu_item);
 		this.getMenus().add(TopMenu.inference_rules);		
 		
 		TopMenu.signum_t_f.setOnAction(event ->
