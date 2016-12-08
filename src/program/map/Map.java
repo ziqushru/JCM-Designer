@@ -42,7 +42,7 @@ public final class Map
 	{
 		if (last_selected_unit != null) last_selected_unit.drawSelected();
 		for (Unit unit : Map.units)
-			unit.toFront();
+			unit.tick();
 	}
 
 	public static void save()
@@ -88,7 +88,7 @@ public final class Map
 
 		int counter = 0;
 		for (java.util.Map.Entry<String, Concept> concept : concepts_map.entrySet())
-			Map.units.add(new Unit(concept.getValue().getName(), (Screen.WIDTH / 2 - concepts_map.size() * 32 + counter++ * 100), Screen.HEIGHT / 2 - concepts_map.size() * 32 / 2, "factor"));
+			Map.units.add(new Unit(concept.getValue().getName(), (Screen.WIDTH / 2 - concepts_map.size() * 32 + counter++ * 100), Screen.HEIGHT / 2 - concepts_map.size() * 32 / 2, "concept"));
 			
 		for (Entry<String, FcmConnection> connections : connnections_map.entrySet())
 			for (Unit start_unit : Map.units)

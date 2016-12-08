@@ -1,18 +1,13 @@
 package program.units.entities;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import graphics.Screen;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import program.Program;
 import program.inputs.Mouse;
-import program.utils.Log;
 import program.utils.Position;
 
 public abstract class Entity extends ImageView implements EventHandler<MouseEvent>
@@ -24,14 +19,9 @@ public abstract class Entity extends ImageView implements EventHandler<MouseEven
 	{
 		super();
 		this.position = new Position(x, y);
-		BufferedImage image = null;
-		try
-		{
-			image = ImageIO.read(this.getClass().getResource("/" + path + ".png"));
-		}
-		catch (IOException e) {	Log.addLog("Error: loading image"); Log.consoleOut(); }
-		this.size = image.getWidth();
-		this.setImage( new Image(this.getClass().getResourceAsStream("/" + path + ".png")));
+		Image image = new Image(this.getClass().getResourceAsStream("/" + path + ".png"));
+		this.setImage(image);
+		this.size = (int) image.getWidth();
 		this.setX(this.position.x);
 		this.setY(this.position.y);
 		this.setSmooth(true);
@@ -65,8 +55,11 @@ public abstract class Entity extends ImageView implements EventHandler<MouseEven
 	{
 		if (event.getEventType() == MouseEvent.MOUSE_DRAGGED)
 		{
-			this.setX(Mouse.position.x - this.size / 2);
-			this.setY(Mouse.position.y - this.size / 2);
+			if (event.getButton() == MouseButton.PRIMARY)
+			{
+				this.setX(Mouse.position.x - this.size / 2);
+				this.setY(Mouse.position.y - this.size / 2);
+			}
 		}
 	}
 }

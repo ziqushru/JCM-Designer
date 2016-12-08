@@ -14,6 +14,7 @@ import org.megadix.jfcm.act.SigmoidActivator;
 import org.megadix.jfcm.act.SignumActivator;
 
 import graphics.Screen;
+import graphics.gui.BezierCurve;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,14 +31,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import program.Program;
+import program.inputs.Mouse;
 import program.map.Map;
 import program.map.Relation;
 import program.units.entities.Mob;
+import program.utils.Position;
 
 public class Unit extends Mob
 {
@@ -47,6 +49,7 @@ public class Unit extends Mob
 	private int					name_y_offset;
 	private static final int	selected_color	= 0xFFFF2222;
 	public List<Relation>		relations;
+	private BezierCurve			right_dragged;
 
 	public Unit(String name, int x, int y, String path)
 	{
@@ -56,19 +59,18 @@ public class Unit extends Mob
 		this.name_x_offset = (int) (this.size / 2 - name.length() / 2 * 6.5);
 		this.name_y_offset = -5;
 		this.name_text = new Text(x + name_x_offset, y + name_y_offset, name);
-		this.name_text.setFill(Color.BLACK);
+		this.name_text.setFill(Screen.HEX2ARGB(Screen.foreground_color));
+		this.name_text.setFont(Screen.font);
 		this.name_text.setSmooth(true);
 		this.name_text.setFontSmoothingType(FontSmoothingType.LCD);
 		Program.layout.getChildren().add(name_text);
-
 		this.relations = new ArrayList<Relation>();
-
 		this.setOnMouseEntered(new EventHandler<MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent event)
 			{
-				Unit.this.setEffect(new DropShadow(15, Color.LIGHTBLUE));
+				Unit.this.setEffect(new DropShadow(15, Screen.HEX2ARGB(Screen.foreground_color)));
 			}
 		});
 		this.setOnMouseExited(new EventHandler<MouseEvent>()
@@ -202,6 +204,8 @@ public class Unit extends Mob
 
 				for (TextField text_field : text_fields)
 					text_field.clear();
+				
+				settings_stage.close();
 			}
 		});
 		main_comp.add(update_button, 0, labels.length + 1);
@@ -235,12 +239,14 @@ public class Unit extends Mob
 		}
 
 		for (Unit unit : Map.units)
-			for (int i = 0; i < unit.relations.size(); i++)
-				if (unit.relations.get(i).getEndUnit() == this)
-				{
-					Map.cognitive_map.removeConnection(unit.relations.get(i).getName());
-					unit.relations.get(i--).remove();
-				}
+		{
+			Relation relation = null;
+			if ((relation = Unit.hasRelation(unit, this)) != null)
+			{
+				Map.cognitive_map.removeConnection(relation.getName());
+				relation.remove();
+			}
+		}
 
 		Program.layout.getChildren().remove(this.name_text);
 		Program.layout.getChildren().remove(this);
@@ -257,8 +263,8 @@ public class Unit extends Mob
 
 	private void drawOutline(int offset, int color)
 	{
-		int x_position = this.position.x - Screen.X_OFFSET;
-		int y_position = this.position.y - Screen.Y_OFFSET;
+		int x_position = this.position.x - Screen.X_OFFSET - Screen.WINDOWS_WTF_CONSTANT;
+		int y_position = this.position.y - Screen.Y_OFFSET-  Screen.WINDOWS_WTF_CONSTANT;
 
 		for (int y = 0; y < this.size; y++)
 		{
@@ -300,6 +306,11 @@ public class Unit extends Mob
 		drawOutline(1, Unit.selected_color);
 	}
 	
+	public void tick()
+	{
+		this.toFront();
+	}
+	
 	public String getName()
 	{
 		return this.concept.getName();
@@ -314,41 +325,95 @@ public class Unit extends Mob
 			unit.tickRelations();
 	}
 	
+	public static Relation hasRelation(Unit start, Unit end)
+	{
+		for (Relation relation : start.relations)
+			if (relation.getStartUnit() == start && relation.getEndUnit() == end)
+				return relation;
+		return null;
+	}
+	
 	@Override
 	public void handle(MouseEvent event)
 	{
-		super.handle(event);
-		
+		super.handle(event);		
+		if (event.getEventType() == MouseEvent.MOUSE_RELEASED)
+		{
+			if (right_dragged != null)
+			{			
+				Program.layout.getChildren().remove(right_dragged);
+				right_dragged = null;
+			}
+			event.consume();
+			return;
+		}
 		if (event.getEventType() == MouseEvent.MOUSE_DRAGGED)
-		{			
-			this.setPosition();
+		{
+			if (event.getButton() == MouseButton.PRIMARY)
+			{
+				this.setPosition();
+				event.consume();
+				return;
+			}
+//			else if (event.getButton() == MouseButton.SECONDARY)
+//			{
+//				Position middle_position = Relation.getMiddlePoint(this.position, Mouse.position);
+//				if (right_dragged == null)
+//				{
+//					right_dragged = new BezierCurve(this.position.x + this.size / 2, this.position.y + this.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, Mouse.position.x + this.size / 2, Mouse.position.y + this.size / 2);
+//				}
+//				else
+//				{
+//					right_dragged.setControlX1(middle_position.x);
+//					right_dragged.setControlY1(middle_position.y);
+//					right_dragged.setControlX2(middle_position.x);
+//					right_dragged.setControlY2(middle_position.y);
+//					right_dragged.setEndX(Mouse.position.x);
+//					right_dragged.setEndY(Mouse.position.y);
+//				}
+//				event.consume();
+//				return;
+//			}
 		}
 		else if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
 		{
+			if (right_dragged != null)
+			{
+				event.consume();				
+				return;
+			}
 			if (event.getButton() == MouseButton.PRIMARY)
 			{
 				if (Map.last_selected_unit != null && Map.last_selected_unit != Unit.this)
 				{
-					for (Relation relation : Map.last_selected_unit.relations)
-						if (relation.getStartUnit() == Map.last_selected_unit && relation.getEndUnit() == Unit.this)
-						{
-							Map.last_selected_unit = null;
-							return;
-						}
+					if (Unit.hasRelation(Map.last_selected_unit, Unit.this) != null)
+					{
+						Map.last_selected_unit = null;
+						event.consume();
+						return;
+					}
 					Relation relation = new Relation(1, Map.last_selected_unit, Unit.this);
 					Map.cognitive_map.addConnection(relation);
 					Map.cognitive_map.connect(relation.getFrom().getName(), relation.getFrom().getName() + " -> " + relation.getTo().getName(), relation.getTo().getName());
 					Map.last_selected_unit.relations.add(relation);
 					Map.last_selected_unit = null;
+					event.consume();
+					return;
 				}
 				else if (Map.last_selected_unit == null)
 				{
 					Map.last_selected_unit = this;
 					this.requestFocus();
+					event.consume();
+					return;
 				}
 			}
 			else if (event.getButton() == MouseButton.SECONDARY)
+			{
 				openSettings();
+				event.consume();
+				return;
+			}
 		}
 	}
 }

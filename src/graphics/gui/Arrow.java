@@ -1,11 +1,11 @@
 package graphics.gui;
 
+import graphics.Screen;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
 import program.Program;
-import program.map.Relation;
 
 public class Arrow extends Polygon
 {
@@ -37,11 +37,9 @@ public class Arrow extends Polygon
 
 	private void init()
 	{
-		this.setFill(Relation.color);
+		this.setFill(Screen.HEX2ARGB(0x8F8E86));
 		rz = new Rotate();
-		{
-			rz.setAxis(Rotate.Z_AXIS);
-		}
+		{	rz.setAxis(Rotate.Z_AXIS);	}
 		this.getTransforms().addAll(rz);
 		this.tick();
 	}
@@ -62,7 +60,6 @@ public class Arrow extends Polygon
 		angle = Math.toDegrees(angle);
 
 		double offset = 90;
-		if (t > 0.5) offset = -90;
 
 		rz.setAngle(angle + offset);
 	}

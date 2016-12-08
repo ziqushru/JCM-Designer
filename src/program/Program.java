@@ -45,10 +45,12 @@ public class Program extends Application
 	{
 		Program.running = false;
 		Program.paused = false;
+		
 
 		Program.log = new Log();
 		Program.window = window;
 		Program.layout = new BorderPane();
+		Program.layout.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
 		Program.screen = new Screen(Program.WIDTH, Program.HEIGHT);
 		new TopMenu();
 		new LeftMenu();

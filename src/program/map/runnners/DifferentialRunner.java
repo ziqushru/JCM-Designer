@@ -18,16 +18,18 @@ public class DifferentialRunner extends Runner
 	@Override
 	protected void calculateWeights(double[] weights, int scansize, double[] ak)
 	{
+//		for (int y = 0; y < scansize; y++)
+//		{
+//			double cy = ak[y] - Map.units.get(y).concept.getInput();
+//			for (int x = 0; x < scansize; x++)
+//			{
+//				double cx = ak[x] - Map.units.get(x).concept.getInput();
+//				weights[x + y * scansize] = cy * cx - weights[x + y * scansize];
+//			}
+//		}
 		for (int y = 0; y < scansize; y++)
-		{
-			double cy = ak[y] - Map.units.get(y).concept.getInput();
 			for (int x = 0; x < scansize; x++)
-			{
-				double cx = ak[x] - Map.units.get(x).concept.getInput();
-				if (cx == 0) continue;
-				weights[x + y * scansize] += n * (cy * cx - weights[x + y * scansize]);
-			}
-		}
+				weights[x + y * scansize] += Map.units.get(x).concept.getInput() * Map.units.get(y).concept.getInput();
 	}
 
 	@Override

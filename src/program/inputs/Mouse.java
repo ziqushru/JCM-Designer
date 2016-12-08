@@ -16,7 +16,7 @@ public final class Mouse
 	{
 		Point point = MouseInfo.getPointerInfo().getLocation();
 		Point2D point2D = Program.screen.screenToLocal(point.x, point.y);
-		Mouse.position.x = (int) point2D.getX() + Screen.X_OFFSET;
-		Mouse.position.y = (int) point2D.getY() + Screen.Y_OFFSET;
+		Mouse.position.x = (int) point2D.getX() + Screen.X_OFFSET + Screen.WINDOWS_WTF_CONSTANT;
+		Mouse.position.y = (int) point2D.getY() + Screen.Y_OFFSET + Screen.WINDOWS_WTF_CONSTANT;
 	}
 }

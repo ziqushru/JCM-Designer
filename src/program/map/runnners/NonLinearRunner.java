@@ -25,8 +25,7 @@ public class NonLinearRunner extends Runner
 			for (int x = 0; x < scansize; x++)
 			{
 				if (weights[x + y * scansize] != 0)
-					weights[x + y * scansize] += 	this.g *
-													weights[x + y * scansize] +
+					weights[x + y * scansize] += 	this.g * weights[x + y * scansize] +
 													this.n * Map.units.get(y).concept.getInput() *
 														(Map.units.get(y).concept.getInput() +
 														weights[x + y * scansize] *
@@ -43,7 +42,8 @@ public class NonLinearRunner extends Runner
 	@Override
 	protected void tickParameters()
 	{
-		
+		n = 0.002 * Math.exp(-0.2 * iteration);
+		g = 0.008 * Math.exp(-iteration);
 	}
 
 }
