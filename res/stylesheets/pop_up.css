@@ -1,0 +1,46 @@
+#pane
+{
+    -fx-background-color: #403C3C;
+    -fx-padding: 10px;
+    -fx-margin: 10px;    
+    -fx-allignment: CENTER;
+}
+
+.label
+{
+    -fx-text-fill: #EFEEE6;
+    -fx-font-size: 12pt;
+}
+
+#text_field
+{
+	-fx-font-size: 12pt;
+	-fx-padding: 10px;
+    -fx-margin: 10px;
+    -fx-background-insets: 8 0 8 0;
+    -fx-max-width: 100px;
+}
+
+.radio-button
+{
+	-fx-text-fill: #EFEEE6;
+	-fx-font-size: 10pt;
+    -fx-padding: 10px;
+    -fx-margin: 10px;
+    -fx-background-insets: 8 0 8 0;
+}
+
+.button
+{
+	-fx-background-radius: 10px 10px 10px 10px;
+    -fx-background-color: #403C3C;
+    -fx-padding: 10px;
+    -fx-margin: 10px;
+	-fx-text-fill: #EFEEE6;
+	-fx-font: bold italic 12pt "Arial";
+}
+
+.button:hover
+{
+	-fx-effect: dropshadow(three-pass-box, #EFEEE6, 10, 0.5, 0, 0);    
+}

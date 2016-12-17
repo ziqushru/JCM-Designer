@@ -4,42 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.megadix.jfcm.Concept;
-import org.megadix.jfcm.act.CauchyActivator;
-import org.megadix.jfcm.act.GaussianActivator;
-import org.megadix.jfcm.act.HyperbolicTangentActivator;
-import org.megadix.jfcm.act.IntervalActivator;
-import org.megadix.jfcm.act.LinearActivator;
-import org.megadix.jfcm.act.NaryActivator;
-import org.megadix.jfcm.act.SigmoidActivator;
-import org.megadix.jfcm.act.SignumActivator;
 
 import graphics.Screen;
 import graphics.gui.BezierCurve;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import program.Program;
-import program.inputs.Mouse;
 import program.map.Map;
 import program.map.Relation;
 import program.units.entities.Mob;
-import program.utils.Position;
 
 public class Unit extends Mob
 {
@@ -65,36 +52,8 @@ public class Unit extends Mob
 		this.name_text.setFontSmoothingType(FontSmoothingType.LCD);
 		Program.layout.getChildren().add(name_text);
 		this.relations = new ArrayList<Relation>();
-		this.setOnMouseEntered(new EventHandler<MouseEvent>()
-		{
-			@Override
-			public void handle(MouseEvent event)
-			{
-				Unit.this.setEffect(new DropShadow(15, Screen.HEX2ARGB(Screen.foreground_color)));
-			}
-		});
-		this.setOnMouseExited(new EventHandler<MouseEvent>()
-		{
-			@Override
-			public void handle(MouseEvent event)
-			{
-				Unit.this.setEffect(null);
-			}
-		});
-		
-		this.setOnKeyPressed(event ->
-		{
-			if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.UP)
-				this.moveUp();
-			if (event.getCode() == KeyCode.A || event.getCode() == KeyCode.LEFT)
-				this.moveLeft();
-			if (event.getCode() == KeyCode.R || event.getCode() == KeyCode.DOWN)
-				this.moveDown();
-			if (event.getCode() == KeyCode.S || event.getCode() == KeyCode.RIGHT)
-				this.moveRight();
-			this.setPosition();
-			event.consume();
-		});
+		this.setOnMouseEntered(event ->	Unit.this.setEffect(new DropShadow(15, Screen.HEX2ARGB(Screen.foreground_color))));
+		this.setOnMouseExited(event -> Unit.this.setEffect(null));
 	}
 	
 	private void openSettings()
@@ -102,129 +61,84 @@ public class Unit extends Mob
 		Stage settings_stage = new Stage();
 
 		GridPane main_comp = new GridPane();
-		main_comp.setPadding(new Insets(10));
-		main_comp.setHgap(10);
-		main_comp.setVgap(10);
-		main_comp.setAlignment(Pos.TOP_CENTER);
-		
-		Label[] labels = new Label[3];
-		TextField[] text_fields = new TextField[3];
-		
+		main_comp.setId("pane");
+		ColumnConstraints column = new ColumnConstraints();
+	    column.setPercentWidth(50);
+	    column.setHalignment(HPos.CENTER);
+	    main_comp.getColumnConstraints().addAll(column, column);
+	    RowConstraints row = new RowConstraints();
+	    row.setPercentHeight(33.33);
+	    row.setValignment(VPos.CENTER);
+	    main_comp.getRowConstraints().addAll(row, row, row);	    
+	    
+	    Scene scene = new Scene(main_comp, 250, 175);
+	    scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
+
+		Label[] labels = new Label[2];
+		TextField[] text_fields = new TextField[2];
 		for (int i = 0; i < labels.length; i++)
 		{
 			labels[i] = new Label();
-			labels[i].setPadding(new Insets(10));
 			main_comp.add(labels[i], 0, i);
-
 			text_fields[i] = new TextField();
-			text_fields[i].setPadding(new Insets(10));
-			text_fields[i].setMinWidth(100);
-			text_fields[i].setPrefWidth(100);
-			text_fields[i].setMaxWidth(100);
-			main_comp.add(text_fields[i], 1, i);			
+			text_fields[i].setId("text_field");
+			text_fields[i].setAlignment(Pos.CENTER);
+			text_fields[i].setFocusTraversable(false);
+			main_comp.add(text_fields[i], 1, i);
 		}
 		labels[0].setText("Name");
 		labels[1].setText("Input");
-		labels[2].setText("Output");
 		text_fields[0].setPromptText(this.getName());
 		text_fields[1].setPromptText(this.concept.getInput() + "");
-		text_fields[2].setPromptText(this.concept.getOutput() + "");
-		
-		Label activator_label = new Label();
-		activator_label.setText("Activator");
-		activator_label.setPadding(new Insets(10));
-		main_comp.add(activator_label, 0, labels.length);
-		
-		ObservableList<String> activator_options = FXCollections.observableArrayList("Signum", "Linear", "Sigmoid", "Hyperbolic Tangent", "Gaussian", "Cauchy", "Internal", "Nary");
-		ComboBox<String> activator_combo_box = new ComboBox<String>(activator_options);
-		activator_combo_box.setPadding(new Insets(10));
-		activator_combo_box.setMinWidth(107);
-		activator_combo_box.setPrefWidth(107);
-		activator_combo_box.setMaxWidth(107);
-		activator_combo_box.setOnAction(e -> 
+				
+		Button update_button = new Button("Update");
+		update_button.setOnAction(event ->
 		{
-			String option = activator_combo_box.getSelectionModel().getSelectedItem();
+			String new_name = text_fields[0].getText().toString();
+			if (new_name != null && !new_name.isEmpty())
+			{
+				int counter = 0;
+				for (int i = 0; i < new_name.length(); i++)
+					if (new_name.charAt(i) == ' ') counter++;
+				if (counter != new_name.length())
+				{
+					Unit.this.concept.setName(new_name);
+					Unit.this.name_text.setText(new_name);
+					name_x_offset = (int) (Unit.this.size / 2 - Unit.this.name_text.getText().length() / 2 * 6.5);
+					name_text.setX(Unit.this.position.x + Unit.this.name_x_offset);
+					name_text.setY(Unit.this.position.y + Unit.this.name_y_offset);
+				}
+			}
+			text_fields[0].setPromptText(Unit.this.getName());
 			
-			if(option.equals("Signum"))						this.concept.setConceptActivator(new SignumActivator());
-			else if(option.equals("Linear"))				this.concept.setConceptActivator(new LinearActivator());
-			else if(option.equals("Sigmoid"))				this.concept.setConceptActivator(new SigmoidActivator());
-			else if(option.equals("Hyperbolic Tangent"))	this.concept.setConceptActivator(new HyperbolicTangentActivator());
-			else if(option.equals("Gaussian"))				this.concept.setConceptActivator(new GaussianActivator());
-			else if(option.equals("Cauchy"))				this.concept.setConceptActivator(new CauchyActivator());
-			else if(option.equals("Interval"))				this.concept.setConceptActivator(new IntervalActivator());
-			else if(option.equals("Nary"))					this.concept.setConceptActivator(new NaryActivator());
+			String new_input = text_fields[1].getText().toString();
+			if (new_input != null && !new_input.isEmpty())
+			{
+				try
+				{
+					Unit.this.concept.setInput(Double.parseDouble(new_input));
+				}
+				catch (Exception exception) { text_fields[1].clear(); return; }
+				text_fields[1].setPromptText(Unit.this.concept.getInput() + "");
+			}
+			
+			for (TextField text_field : text_fields)
+				text_field.clear();
+			
+			settings_stage.close();
 		});
-		main_comp.add(activator_combo_box, 1, labels.length);
+		main_comp.add(update_button, 0, labels.length);
+
+		Button delete_button = new Button("Delete");
+		delete_button.setOnAction(event ->
+		{
+			Unit.this.remove();
+			settings_stage.close();
+			Map.last_selected_unit = null;
+		});
+		main_comp.add(delete_button, 1, labels.length);
 		
-		Button update_button = new Button("Update Values");
-		update_button.setPadding(new Insets(10));
-		update_button.setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent event)
-			{
-				String new_name = text_fields[0].getText().toString();
-				if (new_name != null && !new_name.isEmpty())
-				{
-					int counter = 0;
-					for (int i = 0; i < new_name.length(); i++)
-						if (new_name.charAt(i) == ' ') counter++;
-					if (counter != new_name.length())
-					{
-						Unit.this.concept.setName(new_name);
-						Unit.this.name_text.setText(new_name);
-						name_x_offset = (int) (Unit.this.size / 2 - Unit.this.name_text.getText().length() / 2 * 6.5);
-						name_text.setX(Unit.this.position.x + Unit.this.name_x_offset);
-						name_text.setY(Unit.this.position.y + Unit.this.name_y_offset);
-					}
-				}
-				text_fields[0].setPromptText(Unit.this.getName());
-				
-				String new_input = text_fields[1].getText().toString();
-				if (new_input != null && !new_input.isEmpty())
-				{
-					try
-					{
-						Unit.this.concept.setInput(Double.parseDouble(new_input));
-					}
-					catch (Exception exception) { text_fields[1].clear(); return; }
-					text_fields[1].setPromptText(Unit.this.concept.getInput() + "");
-				}
-				
-				String new_output = text_fields[2].getText().toString();
-				if (new_output != null && !new_output.isEmpty())
-				{
-					try
-					{
-						Unit.this.concept.setOutput(Double.parseDouble(new_output));
-					}
-					catch (Exception exception) { text_fields[2].clear(); return; }
-					text_fields[2].setPromptText(Unit.this.concept.getOutput() + "");
-				}
-
-				for (TextField text_field : text_fields)
-					text_field.clear();
-				
-				settings_stage.close();
-			}
-		});
-		main_comp.add(update_button, 0, labels.length + 1);
-
-		Button delete_button = new Button("Delete Unit");
-		delete_button.setPadding(new Insets(10));
-		delete_button.setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent event)
-			{
-				Unit.this.remove();
-				settings_stage.close();
-				Map.last_selected_unit = null;
-			}
-		});
-		main_comp.add(delete_button, 1, labels.length + 1);
-
-		settings_stage.setScene(new Scene(main_comp, 300, 250));
+		settings_stage.setScene(scene);
 		settings_stage.setTitle("Unit Settings");
 		settings_stage.setResizable(false);
 		settings_stage.show();

@@ -16,16 +16,15 @@ import program.utils.Position;
 
 public class Relation extends WeightedConnection
 {
-	public double				weight;
 	public Text					weight_text;
 	private final Unit			start_unit;
 	private final Unit			end_unit;
 	public final BezierCurve	curve;
 	public final List<Arrow>	arrows;
 
-	public Relation(double new_weight, Unit start_unit, Unit end_unit)
+	public Relation(double weight, Unit start_unit, Unit end_unit)
 	{
-		super(start_unit.concept.getName() + " -> " + end_unit.concept.getName(), "test_desc", new_weight);
+		super(start_unit.concept.getName() + " -> " + end_unit.concept.getName(), "test_desc", weight);
 		this.setFrom(start_unit.concept);
 		this.setTo(end_unit.concept);
 		this.start_unit = start_unit;
@@ -35,7 +34,6 @@ public class Relation extends WeightedConnection
 		this.arrows = new ArrayList<Arrow>();
 		this.arrows.add(new Arrow(this.curve, 0.2f, new double[] { 0, 0, 5, 10, -5, 10 }));
 		this.arrows.add(new Arrow(this.curve, 0.8f, new double[] { 0, 0, 5, 10, -5, 10 }));
-		this.weight = new_weight;
 		this.weight_text = new Text(middle_position.x, middle_position.y, weight + "");
 		this.weight_text.setFill(Screen.HEX2ARGB(Screen.foreground_color));
 		this.weight_text.setSmooth(true);
@@ -102,7 +100,6 @@ public class Relation extends WeightedConnection
 		
 		return new Position(cx, cy);
 	}
-
 	
 	@Override
 	public boolean equals(Object obj)

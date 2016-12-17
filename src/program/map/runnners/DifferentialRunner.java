@@ -18,18 +18,16 @@ public class DifferentialRunner extends Runner
 	@Override
 	protected void calculateWeights(double[] weights, int scansize, double[] ak)
 	{
-//		for (int y = 0; y < scansize; y++)
-//		{
-//			double cy = ak[y] - Map.units.get(y).concept.getInput();
-//			for (int x = 0; x < scansize; x++)
-//			{
-//				double cx = ak[x] - Map.units.get(x).concept.getInput();
-//				weights[x + y * scansize] = cy * cx - weights[x + y * scansize];
-//			}
-//		}
 		for (int y = 0; y < scansize; y++)
+		{
+			double cy = ak[y] - Map.units.get(y).concept.getInput();
+			if (cy == 0) continue;
 			for (int x = 0; x < scansize; x++)
-				weights[x + y * scansize] += Map.units.get(x).concept.getInput() * Map.units.get(y).concept.getInput();
+			{
+				double cx = ak[x] - Map.units.get(x).concept.getInput();
+				weights[x + y * scansize] += n * (cy * cx - weights[x + y * scansize]);
+			}
+		}			
 	}
 
 	@Override
@@ -41,6 +39,6 @@ public class DifferentialRunner extends Runner
 	@Override
 	protected void tickParameters()
 	{
-		n = 0.002 * Math.exp(-0.2 * iteration);
+		n = 0.1 * (1 - iteration / (1.1 * 15));
 	}
 }

@@ -1,19 +1,17 @@
 package graphics.gui;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
@@ -43,85 +41,95 @@ public class BezierCurve extends CubicCurve
 		this.setStrokeWidth(2);
 		this.setStrokeLineCap(StrokeLineCap.ROUND);
 		this.setFill(null);
-		this.setOnMouseClicked(new EventHandler<Event>()
+		this.setOnMouseClicked(event ->
 		{
-			@Override
-			public void handle(Event event)
+			Stage settings_stage = new Stage();
+			
+			VBox main_comp = new VBox();
+			main_comp.setId("pane");
+			main_comp.setAlignment(Pos.CENTER);
+			
+			Scene scene = new Scene(main_comp, 320, 175);
+		    scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
+
+		    GridPane numeric_weight_comp = new GridPane();
+		    numeric_weight_comp.setId("pane");
+		    ColumnConstraints column = new ColumnConstraints();
+		    column.setPercentWidth(50);
+		    column.setHalignment(HPos.CENTER);
+		    numeric_weight_comp.getColumnConstraints().addAll(column, column);
+		    RowConstraints row = new RowConstraints();
+		    row.setPercentHeight(100);
+		    row.setValignment(VPos.CENTER);
+		    numeric_weight_comp.getRowConstraints().addAll(row);
+		    
+			Label weight_value_label = new Label("Weight");
+			numeric_weight_comp.add(weight_value_label, 0, 0);
+			
+			TextField weight_value_text_field = new TextField();
+			weight_value_text_field.setId("text_field");
+			weight_value_text_field.setAlignment(Pos.CENTER);
+			weight_value_text_field.setPromptText(relation.getWeight() + "");
+			weight_value_text_field.setFocusTraversable(false);
+			numeric_weight_comp.add(weight_value_text_field, 1, 0);
+			main_comp.getChildren().add(numeric_weight_comp);
+		  
+			GridPane fuzzy_weight_comp = new GridPane();
+			fuzzy_weight_comp.setId("pane");
+			column = new ColumnConstraints();
+		    column.setPercentWidth(33.33);
+		    column.setHalignment(HPos.CENTER);
+		    fuzzy_weight_comp.getColumnConstraints().addAll(column, column, column);
+		    fuzzy_weight_comp.getRowConstraints().addAll(row);
+		    
+		    RadioButton[] weights = new RadioButton[3];
+		    weights[0] = new RadioButton("Low");
+		    weights[1] = new RadioButton("Medium");
+		    weights[2] = new RadioButton("Hight");
+		    weights[0].setOnAction(event_ -> { relation.setWeight(0.25); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    weights[1].setOnAction(event_ -> { relation.setWeight(0.5); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    weights[2].setOnAction(event_ -> { relation.setWeight(0.75); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    ToggleGroup weights_group = new ToggleGroup();
+			for (int i = 0; i < weights.length; i++)
 			{
-				Stage settings_stage = new Stage();
-				VBox main_comp = new VBox();
-				main_comp.setPadding(new Insets(10));
-				main_comp.setAlignment(Pos.TOP_CENTER);
-
-				Label weight_value_label = new Label("Weight");
-				weight_value_label.setPadding(new Insets(10));
-				main_comp.getChildren().add(weight_value_label);
-
-				GridPane weight_value_comp = new GridPane();
-				weight_value_comp.setHgap(10);
-				weight_value_comp.setVgap(10);
-				weight_value_comp.setAlignment(Pos.TOP_CENTER);
-				TextField weight_value_text_field = new TextField();
-				weight_value_text_field.setPadding(new Insets(10));
-				weight_value_text_field.setMinWidth(100);
-				weight_value_text_field.setPrefWidth(100);
-				weight_value_text_field.setMaxWidth(100);
-				weight_value_text_field.setTooltip(new Tooltip(relation.weight + ""));
-				weight_value_comp.add(weight_value_text_field, 0, 0);
-
-				ObservableList<String> weight_fuzzy_options = FXCollections.observableArrayList("Low", "Medium", "High");
-				ComboBox<String> weight_fuzzy_combo_box = new ComboBox<String>(weight_fuzzy_options);
-				weight_fuzzy_combo_box.setPadding(new Insets(10));
-				weight_fuzzy_combo_box.setMinWidth(107);
-				weight_fuzzy_combo_box.setPrefWidth(107);
-				weight_fuzzy_combo_box.setMaxWidth(107);
-				weight_value_comp.add(weight_fuzzy_combo_box, 1, 0);
-
-				Button weight_button = new Button("Update Value");
-				weight_button.setOnAction(new EventHandler<ActionEvent>()
-				{
-					@Override
-					public void handle(ActionEvent event)
-					{
-						try
-						{
-							relation.weight = Double.parseDouble(weight_value_text_field.getText().toString());
-							relation.setWeight(relation.weight);
-							relation.weight_text.setText(relation.weight + "");
-							settings_stage.close();
-						}
-						catch (Exception exception)	{ return; }
-						weight_value_text_field.clear();
-						weight_value_text_field.setPromptText(relation.weight + "");
-					}
-				});
-				weight_button.setPadding(new Insets(10));
-				weight_button.setAlignment(Pos.TOP_CENTER);
-				weight_value_comp.add(weight_button, 0, 1);
-
-				Button delete_relation_button = new Button("Delete Relation");
-				delete_relation_button.setOnAction(new EventHandler<ActionEvent>()
-				{
-					@Override
-					public void handle(ActionEvent event)
-					{
-						relation.remove();
-						settings_stage.close();
-					}
-				});
-				delete_relation_button.setPadding(new Insets(10));
-				delete_relation_button.setAlignment(Pos.TOP_CENTER);
-				weight_value_comp.add(delete_relation_button, 1, 1);
-				main_comp.getChildren().add(weight_value_comp);
-
-				settings_stage.setScene(new Scene(main_comp, 300, 175));
-				settings_stage.setTitle("Relation Settings");
-				settings_stage.setResizable(false);
-				settings_stage.show();
+				weights[i].setToggleGroup(weights_group);
+				fuzzy_weight_comp.add(weights[i], i, 0);
 			}
+			main_comp.getChildren().add(fuzzy_weight_comp);
+		    
+			GridPane buttons_weight_comp = new GridPane();
+			buttons_weight_comp.setId("pane");
+		    column = new ColumnConstraints();
+		    column.setPercentWidth(50);
+		    column.setHalignment(HPos.CENTER);
+		    buttons_weight_comp.getColumnConstraints().addAll(column, column);
+		    buttons_weight_comp.getRowConstraints().addAll(row);
+			
+			Button weight_button = new Button("Update");
+			weight_button.setOnAction(event_ ->
+			{
+				try
+				{
+					relation.setWeight(Double.parseDouble(weight_value_text_field.getText().toString()));
+					relation.weight_text.setText(relation.getWeight() + "");
+					settings_stage.close();
+				}
+				catch (Exception exception)	{ return; }
+				weight_value_text_field.clear();
+				weight_value_text_field.setPromptText(relation.getWeight() + "");
+			});
+			buttons_weight_comp.add(weight_button, 0, 0);
+
+			Button delete_relation_button = new Button("Delete");
+			delete_relation_button.setOnAction(event_ -> { relation.remove(); settings_stage.close(); });
+			buttons_weight_comp.add(delete_relation_button, 1, 0);
+			main_comp.getChildren().add(buttons_weight_comp);
+
+			settings_stage.setScene(scene);
+			settings_stage.setTitle("Relation Settings");
+			settings_stage.setResizable(false);
+			settings_stage.show();
 		});
 		Program.layout.getChildren().add(this);
-	}
-	
-	
+	}	
 }
