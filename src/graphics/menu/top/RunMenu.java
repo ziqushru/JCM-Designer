@@ -10,6 +10,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -18,9 +19,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import program.Program;
 import program.map.Map;
-import program.map.runnners.ActiveRunner;
-import program.map.runnners.DifferentialRunner;
-import program.map.runnners.NonLinearRunner;
+import program.map.inference_rules.Kosko;
+import program.map.inference_rules.ModifiedKosko;
+import program.map.inference_rules.RescaledKosko;
+import program.map.learning_algorithms.Active;
+import program.map.learning_algorithms.DataDriven;
+import program.map.learning_algorithms.Differential;
+import program.map.learning_algorithms.NonLinear;
+import program.map.runnners.Parameters;
+import program.map.runnners.Runner;
 import program.utils.transferfunctions.BivalentTransferFunction;
 import program.utils.transferfunctions.ContinuousTransferFunction;
 import program.utils.transferfunctions.SigmoidTransferFunction;
@@ -29,6 +36,8 @@ import program.utils.transferfunctions.TrivalentTransferFunction;
 public class RunMenu extends Menu
 {
 	private static final MenuItem run_configurations = new MenuItem("Run Configurations");
+	public static boolean is_open = false;
+	public static Stage settings_stage;
 
 	public RunMenu(MenuBar top_menu, String text)
 	{
@@ -40,13 +49,14 @@ public class RunMenu extends Menu
 
 	private static void openRunConfigurations()
 	{
-		Stage settings_stage = new Stage();
+		RunMenu.is_open = true;
+		RunMenu.settings_stage = new Stage();
 
 		VBox main_comp = new VBox();
 		main_comp.setId("pane");
 		main_comp.setAlignment(Pos.CENTER);
 		
-		Scene scene = new Scene(main_comp, 420, 280);
+		Scene scene = new Scene(main_comp, 480, 420);
 		scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
 
 		GridPane grid_pane = new GridPane();
@@ -55,54 +65,116 @@ public class RunMenu extends Menu
 	    column.setHalignment(HPos.CENTER);
 	    grid_pane.getColumnConstraints().addAll(column, column);
 	    RowConstraints row = new RowConstraints();
-	    row.setPercentHeight(20);
 	    row.setValignment(VPos.CENTER);
-	    grid_pane.getRowConstraints().addAll(row, row, row, row, row);
+	    grid_pane.getRowConstraints().addAll(row, row, row, row, row, row, row, row, row, row);
 		
+	    final int inference_rules_length = 3;
 		Label inference_rules_label = new Label("Inference Rules");
 		grid_pane.add(inference_rules_label, 0, 0);
-
-		RadioButton[] inference_rules = new RadioButton[3];
-		inference_rules[0] = new RadioButton("Differential (Kosko's)");
-		inference_rules[1] = new RadioButton("Active (Stylios's or Update)");
-		inference_rules[2] = new RadioButton("Non Linear");
-		inference_rules[0].setOnAction(event -> Map.runner = new DifferentialRunner(0.04));
-		inference_rules[1].setOnAction(event -> Map.runner = new ActiveRunner(0.1, 0.05));
-		inference_rules[2].setOnAction(event -> Map.runner = new NonLinearRunner(0.04, 0.98));
+		RadioButton[] inference_rules = new RadioButton[inference_rules_length];
+		inference_rules[0] = new RadioButton("Kosko's");
+		inference_rules[1] = new RadioButton("Modified Kosko's");
+		inference_rules[2] = new RadioButton("Rescaled Kosko's");
+		inference_rules[0].setOnAction(event -> Runner.inference_rule = new Kosko());
+		inference_rules[1].setOnAction(event -> Runner.inference_rule = new ModifiedKosko());
+		inference_rules[2].setOnAction(event -> Runner.inference_rule = new RescaledKosko());
 		ToggleGroup inference_rules_group = new ToggleGroup();
-		for (int i = 0; i < inference_rules.length; i++)
+		for (int i = 0; i < inference_rules_length; i++)
 		{
 			inference_rules[i].setToggleGroup(inference_rules_group);
-			grid_pane.add(inference_rules[i], 0, i + 1);
+			grid_pane.add(inference_rules[i], 0, 1 + i);
 		}
 
+		final int hebbian_learning_algorithms_length = 4;
+		Label hebbian_learning_label = new Label("Hebbian Learning Algorithms");
+		grid_pane.add(hebbian_learning_label, 1, 0);
+		RadioButton[] hebbian_learning_algorithms = new RadioButton[hebbian_learning_algorithms_length];
+		hebbian_learning_algorithms[0] = new RadioButton("Differential");
+		hebbian_learning_algorithms[1] = new RadioButton("Non Linear");
+		hebbian_learning_algorithms[2] = new RadioButton("Active");
+		hebbian_learning_algorithms[3] = new RadioButton("Data Driven");
+		hebbian_learning_algorithms[0].setOnAction(event -> Runner.hebbian_learning = new Differential());
+		hebbian_learning_algorithms[1].setOnAction(event -> Runner.hebbian_learning = new NonLinear());
+		hebbian_learning_algorithms[2].setOnAction(event -> Runner.hebbian_learning = new Active());
+		hebbian_learning_algorithms[3].setOnAction(event -> Runner.hebbian_learning = new DataDriven());
+		ToggleGroup hebbian_learning_group = new ToggleGroup();
+		for (int i = 0; i < hebbian_learning_algorithms_length; i++)
+		{
+			hebbian_learning_algorithms[i].setToggleGroup(hebbian_learning_group);
+			grid_pane.add(hebbian_learning_algorithms[i], 1, 1 + i);
+		}
+		
+		final int max_length = Math.max(inference_rules_length, hebbian_learning_algorithms_length);
+		grid_pane.add(new Label(), 0, 1 + max_length);
+		grid_pane.add(new Label(), 0, 1 + max_length);
+		
+		final int transfer_functions_length = 4;
 		Label transfer_functions_label = new Label("Transfer Functions");
-		grid_pane.add(transfer_functions_label, 1, 0);
-
-		RadioButton[] transfer_functions = new RadioButton[4];
+		grid_pane.add(transfer_functions_label, 0, 1 + max_length + 1);
+		RadioButton[] transfer_functions = new RadioButton[transfer_functions_length];
 		transfer_functions[0] = new RadioButton("Bivalent");
 		transfer_functions[1] = new RadioButton("Trivalent");
 		transfer_functions[2] = new RadioButton("Sigmoid");
 		transfer_functions[3] = new RadioButton("Continuous");
-		transfer_functions[0].setOnAction(event -> Map.runner.setTrasferFunction(new BivalentTransferFunction()));
-		transfer_functions[1].setOnAction(event -> Map.runner.setTrasferFunction(new TrivalentTransferFunction()));
-		transfer_functions[2].setOnAction(event -> Map.runner.setTrasferFunction(new SigmoidTransferFunction()));
-		transfer_functions[3].setOnAction(event -> Map.runner.setTrasferFunction(new ContinuousTransferFunction()));
+		transfer_functions[0].setOnAction(event -> Runner.transfer_function = new BivalentTransferFunction());
+		transfer_functions[1].setOnAction(event -> Runner.transfer_function = new TrivalentTransferFunction());
+		transfer_functions[2].setOnAction(event -> Runner.transfer_function = new SigmoidTransferFunction());
+		transfer_functions[3].setOnAction(event -> Runner.transfer_function = new ContinuousTransferFunction());
 		ToggleGroup transfer_functions_group = new ToggleGroup();
-		for (int i = 0; i < transfer_functions.length; i++)
+		for (int i = 0; i < transfer_functions_length; i++)
 		{
 			transfer_functions[i].setToggleGroup(transfer_functions_group);
-			grid_pane.add(transfer_functions[i], 1, i + 1);
+			grid_pane.add(transfer_functions[i], 0, 1 + max_length + 1 + 1 + i);
 		}
-		main_comp.getChildren().add(grid_pane);
 		
+		int parameters_length = 3;
+		Label parameters_label = new Label("Parameters");
+		grid_pane.add(parameters_label, 1, 1 + max_length + 1);
+		Label[] parameters_labels = new Label[parameters_length];
+		parameters_labels[0] = new Label("η");
+		parameters_labels[1] = new Label("γ");
+		parameters_labels[2] = new Label("N");
+		TextField[] parameters_text_fields = new TextField[parameters_length];
+		GridPane[] parameters_grid_pane = new GridPane[parameters_length];
+		for (int i = 0; i < parameters_length; i++)
+		{
+			parameters_grid_pane[i] = new GridPane();
+			parameters_grid_pane[i].getColumnConstraints().addAll(column, column);	
+			parameters_grid_pane[i].add(parameters_labels[i], 0, 0);
+			parameters_text_fields[i] = new TextField();
+	    	parameters_text_fields[i].setMaxWidth(64);
+	    	parameters_text_fields[i].setAlignment(Pos.CENTER);
+	    	parameters_text_fields[i].setFocusTraversable(false);
+	    	parameters_grid_pane[i].add(parameters_text_fields[i], 1, 0);
+	    	grid_pane.add(parameters_grid_pane[i], 1, 1 + max_length + 1 + 1 + i);
+		}
+	
 		Button run_button = new Button("Run");
-		run_button.setOnAction(event -> Map.runner.start());
-		main_comp.getChildren().add(run_button);
+		run_button.setOnAction(event ->
+		{
+			String n = parameters_text_fields[0].getText().toString();
+			String g = parameters_text_fields[1].getText().toString();
+			String N = parameters_text_fields[2].getText().toString();
+			if (n != null && !n.isEmpty())
+				Parameters.n = Double.parseDouble(n);
+			if (g != null && !g.isEmpty())
+				Parameters.g = Double.parseDouble(g);
+			if (N != null && !N.isEmpty())
+				Parameters.N = Double.parseDouble(N);
+			
+			Map.runner.start();
+			
+			is_open = false;
+			RunMenu.settings_stage.close();
+		});
 
-		settings_stage.setScene(scene);
-		settings_stage.setTitle("Unit Settings");
-		settings_stage.setResizable(false);
-		settings_stage.show();
+		grid_pane.add(run_button, 1, 1 + max_length + 1 + 1 + parameters_length);
+		
+		main_comp.getChildren().add(grid_pane);
+
+		RunMenu.settings_stage.setScene(scene);
+		RunMenu.settings_stage.setTitle("Run Configurations");
+		RunMenu.settings_stage.setResizable(false);
+		RunMenu.settings_stage.show();
 	}
 }

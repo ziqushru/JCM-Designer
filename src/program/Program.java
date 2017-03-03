@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import graphics.Screen;
 import graphics.menu.LeftMenu;
 import graphics.menu.TopMenu;
+import graphics.menu.top.RunMenu;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import program.inputs.Keyboard;
 import program.inputs.Mouse;
+import program.map.runnners.Runner;
 import program.utils.Log;
 
 public class Program extends Application
@@ -142,6 +144,13 @@ public class Program extends Application
 		if (result.get() == ButtonType.OK)
 		{
 			Program.running = false;
+			if (RunMenu.is_open) RunMenu.settings_stage.close();
+			if (Runner.runner_thread != null)
+				try
+				{
+					Runner.runner_thread.join();
+				}
+				catch (InterruptedException e) { e.printStackTrace(); }
 			Program.window.close();
 		}
 	}

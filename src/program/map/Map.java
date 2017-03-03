@@ -27,7 +27,7 @@ public final class Map
 	public static CognitiveMap	cognitive_map		= new CognitiveMap();
 	public static List<Unit>	units				= new ArrayList<Unit>();
 	public static Unit			last_selected_unit	= null;
-	public static Runner		runner;
+	public static Runner		runner				= new Runner();
 	
 	public static void clear()
 	{
