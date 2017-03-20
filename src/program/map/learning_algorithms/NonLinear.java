@@ -9,8 +9,9 @@ public class NonLinear implements HebbianLearning
 	{
 		for (int y = 0; y < A.length; y++)
 			for (int x= 0; x < A.length; x++)
-				weights[x + y * A.length] = Parameters.g * weights[x + y * A.length] + 
-											Parameters.n * A[x] * (A[y] - signum(weights[x + y * A.length]) * A[x] * weights[x + y * A.length]);
+				if (weights[x + y * A.length] != 0)
+					weights[x + y * A.length] = Parameters.g * weights[x + y * A.length] + 
+												Parameters.n * A[x] * (A[y] - signum(weights[x + y * A.length]) * A[x] * weights[x + y * A.length]);
 	}
 	
 	private double signum(double number)

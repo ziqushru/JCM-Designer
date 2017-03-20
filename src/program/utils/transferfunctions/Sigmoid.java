@@ -1,6 +1,6 @@
 package program.utils.transferfunctions;
 
-public class SigmoidTransferFunction extends TransferFunction
+public class Sigmoid extends TransferFunction
 {	
 	@Override
 	public double calculate(double A)

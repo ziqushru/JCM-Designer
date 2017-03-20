@@ -20,6 +20,7 @@ public class Relation extends WeightedConnection
 	private final Unit			start_unit;
 	private final Unit			end_unit;
 	public final BezierCurve	curve;
+	public final BezierCurve	interaction_curve;
 	public final List<Arrow>	arrows;
 
 	public Relation(double weight, Unit start_unit, Unit end_unit)
@@ -30,7 +31,8 @@ public class Relation extends WeightedConnection
 		this.start_unit = start_unit;
 		this.end_unit = end_unit;
 		Position middle_position = Relation.getMiddlePoint(start_unit.position, start_unit.size, end_unit.position, end_unit.size);
-		this.curve = new BezierCurve(this, start_unit.position.x + start_unit.size / 2, start_unit.position.y + start_unit.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, end_unit.position.x + start_unit.size / 2, end_unit.position.y + start_unit.size / 2);
+		this.curve = new BezierCurve(this, start_unit.position.x + start_unit.size / 2, start_unit.position.y + start_unit.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, end_unit.position.x + start_unit.size / 2, end_unit.position.y + start_unit.size / 2, false);
+		this.interaction_curve = new BezierCurve(this, start_unit.position.x + start_unit.size / 2, start_unit.position.y + start_unit.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, end_unit.position.x + start_unit.size / 2, end_unit.position.y + start_unit.size / 2, true);
 		this.arrows = new ArrayList<Arrow>();
 		this.arrows.add(new Arrow(this.curve, 0.2f, new double[] { 0, 0, 5, 10, -5, 10 }));
 		this.arrows.add(new Arrow(this.curve, 0.8f, new double[] { 0, 0, 5, 10, -5, 10 }));
@@ -46,6 +48,7 @@ public class Relation extends WeightedConnection
 		Map.cognitive_map.removeConnection(Relation.this.getName());
 		this.start_unit.relations.remove(this);
 		Program.layout.getChildren().remove(this.curve);
+		Program.layout.getChildren().remove(this.interaction_curve);
 		Program.layout.getChildren().remove(this.weight_text);
 		for (Arrow arrow : this.arrows)
 			Program.layout.getChildren().remove(arrow);
@@ -54,14 +57,22 @@ public class Relation extends WeightedConnection
 	public void tick()
 	{
 		this.curve.setStartX(start_unit.position.x + start_unit.size / 2);
+		this.interaction_curve.setStartX(start_unit.position.x + start_unit.size / 2);
 		this.curve.setStartY(start_unit.position.y + start_unit.size / 2);
+		this.interaction_curve.setStartY(start_unit.position.y + start_unit.size / 2);
 		Position middle_position = Relation.getMiddlePoint(start_unit.position, start_unit.size, end_unit.position, end_unit.size);
 		this.curve.setControlX1(middle_position.x);
+		this.interaction_curve.setControlX1(middle_position.x);
 		this.curve.setControlY1(middle_position.y);
+		this.interaction_curve.setControlY1(middle_position.y);
 		this.curve.setControlX2(middle_position.x);
+		this.interaction_curve.setControlX2(middle_position.x);
 		this.curve.setControlY2(middle_position.y);
+		this.interaction_curve.setControlY2(middle_position.y);
 		this.curve.setEndX(end_unit.position.x + start_unit.size / 2);
+		this.interaction_curve.setEndX(end_unit.position.x + start_unit.size / 2);
 		this.curve.setEndY(end_unit.position.y + start_unit.size / 2);
+		this.interaction_curve.setEndY(end_unit.position.y + start_unit.size / 2);
 		this.weight_text.setX(middle_position.x - 4);
 		if (start_unit.position.x > end_unit.position.x)
 			this.weight_text.setY(middle_position.y + 4);

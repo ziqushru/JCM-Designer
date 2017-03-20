@@ -20,7 +20,8 @@ public class Differential implements HebbianLearning
 			for (int x= 0; x < A.length; x++)
 			{
 				double DAX = A[x] - Runner.A_before[x];
-				weights[x + y * A.length] = weights[x + y * A.length] + Parameters.m * (DAY * DAX - weights[x + y * A.length]);
+				if (weights[x + y * A.length] != 0)
+					weights[x + y * A.length] = weights[x + y * A.length] + Parameters.m * (DAY * DAX - weights[x + y * A.length]);
 			}
 		}
 	}

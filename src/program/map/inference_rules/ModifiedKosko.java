@@ -10,10 +10,10 @@ public class ModifiedKosko implements InferenceRule
 		for (int y = 0; y < A.length; y++)
 		{
 			sum = 0;
-			for (int x= 0; x < A.length; x++)
+			for (int x = 0; x < A.length; x++)
 			{
 				if (x == y) continue;
-				sum += A[x] * weights[y + x * A.length];
+				sum += weights[y + x * A.length] * A[x];
 			}
 			A[y] = Runner.transfer_function.calculate(A[y] + sum);
 		}

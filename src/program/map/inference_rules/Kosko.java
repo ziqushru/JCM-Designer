@@ -13,7 +13,7 @@ public class Kosko implements InferenceRule
 			for (int x = 0; x < A.length; x++)
 			{
 				if (x == y) continue;
-				sum += A[x] * weights[y + x * A.length];
+				sum += weights[y + x * A.length] * A[x];
 			}
 			A[y] = Runner.transfer_function.calculate(sum);
 		}

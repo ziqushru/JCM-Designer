@@ -1,6 +1,6 @@
 package program.utils.transferfunctions;
 
-public class ContinuousTransferFunction extends TransferFunction
+public class Continuous extends TransferFunction
 {	
 	@Override
 	public double calculate(double A)

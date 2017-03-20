@@ -6,7 +6,6 @@ import java.util.List;
 import org.megadix.jfcm.Concept;
 
 import graphics.Screen;
-import graphics.gui.BezierCurve;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -15,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -36,7 +36,7 @@ public class Unit extends Mob
 	private int					name_y_offset;
 	private static final int	selected_color	= 0xFFFF2222;
 	public List<Relation>		relations;
-	private BezierCurve			right_dragged;
+	public boolean				mouse_dragged;
 
 	public Unit(String name, int x, int y, String path)
 	{
@@ -54,6 +54,7 @@ public class Unit extends Mob
 		this.relations = new ArrayList<Relation>();
 		this.setOnMouseEntered(event ->	Unit.this.setEffect(new DropShadow(15, Screen.HEX2ARGB(Screen.foreground_color))));
 		this.setOnMouseExited(event -> Unit.this.setEffect(null));
+		this.mouse_dragged = false;
 	}
 	
 	private void openSettings()
@@ -84,6 +85,10 @@ public class Unit extends Mob
 			text_fields[i].setId("text_field");
 			text_fields[i].setAlignment(Pos.CENTER);
 			text_fields[i].setFocusTraversable(false);
+			text_fields[i].setOnKeyPressed(event ->
+			{
+				if (event.getCode() == KeyCode.ENTER) updateValues(settings_stage, text_fields);
+			});
 			main_comp.add(text_fields[i], 1, i);
 		}
 		labels[0].setText("Name");
@@ -92,41 +97,7 @@ public class Unit extends Mob
 		text_fields[1].setPromptText(this.concept.getInput() + "");
 				
 		Button update_button = new Button("Update");
-		update_button.setOnAction(event ->
-		{
-			String new_name = text_fields[0].getText().toString();
-			if (new_name != null && !new_name.isEmpty())
-			{
-				int counter = 0;
-				for (int i = 0; i < new_name.length(); i++)
-					if (new_name.charAt(i) == ' ') counter++;
-				if (counter != new_name.length())
-				{
-					Unit.this.concept.setName(new_name);
-					Unit.this.name_text.setText(new_name);
-					name_x_offset = (int) (Unit.this.size / 2 - Unit.this.name_text.getText().length() / 2 * 6.5);
-					name_text.setX(Unit.this.position.x + Unit.this.name_x_offset);
-					name_text.setY(Unit.this.position.y + Unit.this.name_y_offset);
-				}
-			}
-			text_fields[0].setPromptText(Unit.this.getName());
-			
-			String new_input = text_fields[1].getText().toString();
-			if (new_input != null && !new_input.isEmpty())
-			{
-				try
-				{
-					Unit.this.concept.setInput(Double.parseDouble(new_input));
-				}
-				catch (Exception exception) { text_fields[1].clear(); return; }
-				text_fields[1].setPromptText(Unit.this.concept.getInput() + "");
-			}
-			
-			for (TextField text_field : text_fields)
-				text_field.clear();
-			
-			settings_stage.close();
-		});
+		update_button.setOnAction(event -> updateValues(settings_stage, text_fields));
 		main_comp.add(update_button, 0, labels.length);
 
 		Button delete_button = new Button("Delete");
@@ -142,6 +113,39 @@ public class Unit extends Mob
 		settings_stage.setTitle("Unit Settings");
 		settings_stage.setResizable(false);
 		settings_stage.show();
+	}
+	
+	private void updateValues(Stage settings_stage, TextField[] text_fields)
+	{
+		String new_name = text_fields[0].getText().toString();
+		if (new_name != null && !new_name.isEmpty())
+		{
+			int counter = 0;
+			for (int i = 0; i < new_name.length(); i++)
+				if (new_name.charAt(i) == ' ') counter++;
+			if (counter != new_name.length())
+			{
+				Unit.this.concept.setName(new_name);
+				Unit.this.name_text.setText(new_name);
+				name_x_offset = (int) (Unit.this.size / 2 - Unit.this.name_text.getText().length() / 2 * 6.5);
+				name_text.setX(Unit.this.position.x + Unit.this.name_x_offset);
+				name_text.setY(Unit.this.position.y + Unit.this.name_y_offset);
+			}
+		}
+		text_fields[0].setPromptText(Unit.this.getName());
+		
+		String new_input = text_fields[1].getText().toString();
+		if (new_input != null && !new_input.isEmpty())
+		{
+			try
+			{
+				Unit.this.concept.setInput(Double.parseDouble(new_input));
+			}
+			catch (Exception exception) { text_fields[1].clear(); return; }
+			text_fields[1].setPromptText(Unit.this.concept.getInput() + "");
+		}
+					
+		settings_stage.close();
 	}
 
 	public void remove()
@@ -250,54 +254,27 @@ public class Unit extends Mob
 	@Override
 	public void handle(MouseEvent event)
 	{
-		super.handle(event);		
-		if (event.getEventType() == MouseEvent.MOUSE_RELEASED)
-		{
-			if (right_dragged != null)
-			{			
-				Program.layout.getChildren().remove(right_dragged);
-				right_dragged = null;
-			}
-			event.consume();
-			return;
-		}
+		super.handle(event);
 		if (event.getEventType() == MouseEvent.MOUSE_DRAGGED)
 		{
 			if (event.getButton() == MouseButton.PRIMARY)
 			{
+				mouse_dragged = true;
 				this.setPosition();
 				event.consume();
 				return;
 			}
-//			else if (event.getButton() == MouseButton.SECONDARY)
-//			{
-//				Position middle_position = Relation.getMiddlePoint(this.position, Mouse.position);
-//				if (right_dragged == null)
-//				{
-//					right_dragged = new BezierCurve(this.position.x + this.size / 2, this.position.y + this.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, Mouse.position.x + this.size / 2, Mouse.position.y + this.size / 2);
-//				}
-//				else
-//				{
-//					right_dragged.setControlX1(middle_position.x);
-//					right_dragged.setControlY1(middle_position.y);
-//					right_dragged.setControlX2(middle_position.x);
-//					right_dragged.setControlY2(middle_position.y);
-//					right_dragged.setEndX(Mouse.position.x);
-//					right_dragged.setEndY(Mouse.position.y);
-//				}
-//				event.consume();
-//				return;
-//			}
 		}
 		else if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
 		{
-			if (right_dragged != null)
-			{
-				event.consume();				
-				return;
-			}
 			if (event.getButton() == MouseButton.PRIMARY)
 			{
+				if (mouse_dragged)
+				{
+					mouse_dragged = false;
+					event.consume();
+					return;
+				}
 				if (Map.last_selected_unit != null && Map.last_selected_unit != Unit.this)
 				{
 					if (Unit.hasRelation(Map.last_selected_unit, Unit.this) != null)
@@ -314,7 +291,7 @@ public class Unit extends Mob
 					event.consume();
 					return;
 				}
-				else if (Map.last_selected_unit == null)
+				else if (Map.last_selected_unit == null && !mouse_dragged)
 				{
 					Map.last_selected_unit = this;
 					this.requestFocus();

@@ -9,6 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -22,27 +24,49 @@ import program.map.Relation;
 
 public class BezierCurve extends CubicCurve
 {
-	public BezierCurve(double start_position_x, double start_position_y, double control_X1, double control_Y1, double control_X2, double control_Y2, double end_position_x, double end_position_y)
+	public BezierCurve(double start_position_x, double start_position_y, double control_X1, double control_Y1, double control_X2, double control_Y2, double end_position_x, double end_position_y, boolean interactive)
 	{
 		super(start_position_x, start_position_y, control_X1, control_Y1, control_X2, control_Y2, end_position_x, end_position_y);
 		this.setSmooth(true);
-		this.setStroke(Color.BLACK);
-		this.setStrokeWidth(2);
+		if (interactive)
+		{
+			this.setStroke(null);
+			this.setStrokeWidth(5);
+		}
+		else
+		{
+			this.setStroke(Color.BLACK);
+			this.setStrokeWidth(2);
+		}
 		this.setStrokeLineCap(StrokeLineCap.ROUND);
 		this.setFill(null);
 		Program.layout.getChildren().add(this);
 	}
 	
-	public BezierCurve(Relation relation, double start_position_x, double start_position_y, double control_X1, double control_Y1, double control_X2, double control_Y2, double end_position_x, double end_position_y)
+	public BezierCurve(Relation relation, double start_position_x, double start_position_y, double control_X1, double control_Y1, double control_X2, double control_Y2, double end_position_x, double end_position_y, boolean interactive)
 	{
 		super(start_position_x, start_position_y, control_X1, control_Y1, control_X2, control_Y2, end_position_x, end_position_y);
 		this.setSmooth(true);
-		this.setStroke(Color.BLACK);
-		this.setStrokeWidth(2);
+		if (interactive)
+		{
+			this.setStroke(Color.BLACK);
+			this.setOpacity(0.1);
+			this.setStrokeWidth(15);
+		}
+		else
+		{
+			this.setStroke(Color.BLACK);
+			this.setStrokeWidth(2);
+		}
 		this.setStrokeLineCap(StrokeLineCap.ROUND);
 		this.setFill(null);
-		this.setOnMouseClicked(event ->
+		this.setOnMousePressed(event ->
 		{
+			if (event.getButton() == MouseButton.PRIMARY)
+			{
+				event.consume();
+				return;
+			}
 			Stage settings_stage = new Stage();
 			
 			VBox main_comp = new VBox();
@@ -71,6 +95,10 @@ public class BezierCurve extends CubicCurve
 			weight_value_text_field.setAlignment(Pos.CENTER);
 			weight_value_text_field.setPromptText(relation.getWeight() + "");
 			weight_value_text_field.setFocusTraversable(false);
+			weight_value_text_field.setOnKeyPressed(key_event ->
+			{
+				if (key_event.getCode() == KeyCode.ENTER) updateValues(relation, settings_stage, weight_value_text_field);
+			});
 			numeric_weight_comp.add(weight_value_text_field, 1, 0);
 			main_comp.getChildren().add(numeric_weight_comp);
 		  
@@ -105,20 +133,9 @@ public class BezierCurve extends CubicCurve
 		    buttons_weight_comp.getColumnConstraints().addAll(column, column);
 		    buttons_weight_comp.getRowConstraints().addAll(row);
 			
-			Button weight_button = new Button("Update");
-			weight_button.setOnAction(event_ ->
-			{
-				try
-				{
-					relation.setWeight(Double.parseDouble(weight_value_text_field.getText().toString()));
-					relation.weight_text.setText(relation.getWeight() + "");
-					settings_stage.close();
-				}
-				catch (Exception exception)	{ return; }
-				weight_value_text_field.clear();
-				weight_value_text_field.setPromptText(relation.getWeight() + "");
-			});
-			buttons_weight_comp.add(weight_button, 0, 0);
+			Button update_button = new Button("Update");
+			update_button.setOnAction(event_ -> updateValues(relation, settings_stage, weight_value_text_field));
+			buttons_weight_comp.add(update_button, 0, 0);
 
 			Button delete_relation_button = new Button("Delete");
 			delete_relation_button.setOnAction(event_ -> { relation.remove(); settings_stage.close(); });
@@ -131,5 +148,18 @@ public class BezierCurve extends CubicCurve
 			settings_stage.show();
 		});
 		Program.layout.getChildren().add(this);
-	}	
+	}
+	
+	private void updateValues(Relation relation, Stage settings_stage, TextField weight_value_text_field)
+	{
+		try
+		{
+			relation.setWeight(Double.parseDouble(weight_value_text_field.getText().toString()));
+			relation.weight_text.setText(relation.getWeight() + "");
+			settings_stage.close();
+		}
+		catch (Exception exception)	{ return; }
+		weight_value_text_field.clear();
+		weight_value_text_field.setPromptText(relation.getWeight() + "");
+	}
 }

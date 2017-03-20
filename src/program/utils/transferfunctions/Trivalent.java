@@ -1,6 +1,6 @@
 package program.utils.transferfunctions;
 
-public class TrivalentTransferFunction extends TransferFunction
+public class Trivalent extends TransferFunction
 {	
 	@Override
 	public double calculate(double A)

@@ -12,6 +12,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -28,10 +30,11 @@ import program.map.learning_algorithms.Differential;
 import program.map.learning_algorithms.NonLinear;
 import program.map.runnners.Parameters;
 import program.map.runnners.Runner;
-import program.utils.transferfunctions.BivalentTransferFunction;
-import program.utils.transferfunctions.ContinuousTransferFunction;
-import program.utils.transferfunctions.SigmoidTransferFunction;
-import program.utils.transferfunctions.TrivalentTransferFunction;
+import program.utils.transferfunctions.Bivalent;
+import program.utils.transferfunctions.Continuous;
+import program.utils.transferfunctions.NoTransferFunction;
+import program.utils.transferfunctions.Sigmoid;
+import program.utils.transferfunctions.Trivalent;
 
 public class RunMenu extends Menu
 {
@@ -56,7 +59,7 @@ public class RunMenu extends Menu
 		main_comp.setId("pane");
 		main_comp.setAlignment(Pos.CENTER);
 		
-		Scene scene = new Scene(main_comp, 480, 420);
+		Scene scene = new Scene(main_comp, 480, 470);
 		scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
 
 		GridPane grid_pane = new GridPane();
@@ -116,10 +119,10 @@ public class RunMenu extends Menu
 		transfer_functions[1] = new RadioButton("Trivalent");
 		transfer_functions[2] = new RadioButton("Sigmoid");
 		transfer_functions[3] = new RadioButton("Continuous");
-		transfer_functions[0].setOnAction(event -> Runner.transfer_function = new BivalentTransferFunction());
-		transfer_functions[1].setOnAction(event -> Runner.transfer_function = new TrivalentTransferFunction());
-		transfer_functions[2].setOnAction(event -> Runner.transfer_function = new SigmoidTransferFunction());
-		transfer_functions[3].setOnAction(event -> Runner.transfer_function = new ContinuousTransferFunction());
+		transfer_functions[0].setOnAction(event -> Runner.transfer_function = new Bivalent());
+		transfer_functions[1].setOnAction(event -> Runner.transfer_function = new Trivalent());
+		transfer_functions[2].setOnAction(event -> Runner.transfer_function = new Sigmoid());
+		transfer_functions[3].setOnAction(event -> Runner.transfer_function = new Continuous());
 		ToggleGroup transfer_functions_group = new ToggleGroup();
 		for (int i = 0; i < transfer_functions_length; i++)
 		{
@@ -127,13 +130,14 @@ public class RunMenu extends Menu
 			grid_pane.add(transfer_functions[i], 0, 1 + max_length + 1 + 1 + i);
 		}
 		
-		int parameters_length = 3;
+		int parameters_length = 4;
 		Label parameters_label = new Label("Parameters");
 		grid_pane.add(parameters_label, 1, 1 + max_length + 1);
 		Label[] parameters_labels = new Label[parameters_length];
 		parameters_labels[0] = new Label("η");
 		parameters_labels[1] = new Label("γ");
 		parameters_labels[2] = new Label("N");
+		parameters_labels[3] = new Label("e");
 		TextField[] parameters_text_fields = new TextField[parameters_length];
 		GridPane[] parameters_grid_pane = new GridPane[parameters_length];
 		for (int i = 0; i < parameters_length; i++)
@@ -149,32 +153,46 @@ public class RunMenu extends Menu
 	    	grid_pane.add(parameters_grid_pane[i], 1, 1 + max_length + 1 + 1 + i);
 		}
 	
+		main_comp.getChildren().add(grid_pane);
+	
 		Button run_button = new Button("Run");
 		run_button.setOnAction(event ->
 		{
-			String n = parameters_text_fields[0].getText().toString();
-			String g = parameters_text_fields[1].getText().toString();
-			String N = parameters_text_fields[2].getText().toString();
-			if (n != null && !n.isEmpty())
-				Parameters.n = Double.parseDouble(n);
-			if (g != null && !g.isEmpty())
-				Parameters.g = Double.parseDouble(g);
-			if (N != null && !N.isEmpty())
-				Parameters.N = Double.parseDouble(N);
-			
-			Map.runner.start();
-			
-			is_open = false;
-			RunMenu.settings_stage.close();
+			RunMenu.run(parameters_text_fields);
 		});
 
-		grid_pane.add(run_button, 1, 1 + max_length + 1 + 1 + parameters_length);
-		
-		main_comp.getChildren().add(grid_pane);
+		main_comp.getChildren().add(run_button);
 
+		RunMenu.settings_stage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if (event.getCharacter().equals(KeyCode.ENTER)) RunMenu.run(parameters_text_fields);
+		});
+			
 		RunMenu.settings_stage.setScene(scene);
 		RunMenu.settings_stage.setTitle("Run Configurations");
 		RunMenu.settings_stage.setResizable(false);
 		RunMenu.settings_stage.show();
+	}
+	
+	private static void run(TextField[] parameters_text_fields)
+	{
+		String n = parameters_text_fields[0].getText().toString();
+		String g = parameters_text_fields[1].getText().toString();
+		String N = parameters_text_fields[2].getText().toString();
+		String e = parameters_text_fields[2].getText().toString();
+		if (n != null && !n.isEmpty())
+			Parameters.n = Double.parseDouble(n);
+		if (g != null && !g.isEmpty())
+			Parameters.g = Double.parseDouble(g);
+		if (N != null && !N.isEmpty())
+			Parameters.N = Double.parseDouble(N);
+		if (e != null && !e.isEmpty())
+			Parameters.e = Double.parseDouble(e);
+		if (Runner.transfer_function == null)
+			Runner.transfer_function = new NoTransferFunction();
+		Map.runner.start();
+		
+		is_open = false;
+		RunMenu.settings_stage.close();
 	}
 }

@@ -9,12 +9,11 @@ import org.megadix.jfcm.CognitiveMap;
 import org.megadix.jfcm.Concept;
 import org.megadix.jfcm.ConceptActivator;
 import org.megadix.jfcm.FcmConnection;
+import org.megadix.jfcm.act.SigmoidActivator;
 import org.megadix.jfcm.conn.WeightedConnection;
 import org.megadix.jfcm.utils.FcmIO;
 
 import graphics.Screen;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import program.Program;
@@ -48,21 +47,13 @@ public final class Map
 	public static void save()
 	{
 		for (Unit unit : Map.units)
-		{
 			if (unit.concept.getConceptActivator() == null)
-			{
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Save Error");
-				alert.setHeaderText("Save couldn't execute");
-				alert.setContentText("You have to specify the Activators of the Concepts first");
-				alert.show();
-				return;
-			}
-		}
+				unit.concept.setConceptActivator(new SigmoidActivator());
 		FileChooser file_chooser = new FileChooser();
 		file_chooser.setTitle("Save Cognitive Map");
 		file_chooser.getExtensionFilters().add(new ExtensionFilter("XML", "*.xml"));
 		File map_file = file_chooser.showSaveDialog(Program.window);
+		if (map_file == null) return;
 		try
 		{
 			FcmIO.saveAsXml(Map.cognitive_map, map_file.getPath());
@@ -72,11 +63,12 @@ public final class Map
 
 	public static void load()
 	{
-		Map.clear();
 		FileChooser file_chooser = new FileChooser();
 		file_chooser.setTitle("Open Cognitive Map");
 		file_chooser.getExtensionFilters().add(new ExtensionFilter("XML", "*.xml"));
 		File map_file = file_chooser.showOpenDialog(Program.window);
+		if (map_file == null) return;
+		Map.clear();
 		try
 		{
 			Map.cognitive_map = FcmIO.loadXml(map_file.getPath()).get(0);
