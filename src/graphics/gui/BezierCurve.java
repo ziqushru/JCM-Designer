@@ -21,9 +21,10 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import program.Program;
 import program.map.Relation;
+import program.map.runnners.Parameters;
 
 public class BezierCurve extends CubicCurve
-{
+{	
 	public BezierCurve(double start_position_x, double start_position_y, double control_X1, double control_Y1, double control_X2, double control_Y2, double end_position_x, double end_position_y, boolean interactive)
 	{
 		super(start_position_x, start_position_y, control_X1, control_Y1, control_X2, control_Y2, end_position_x, end_position_y);
@@ -73,7 +74,7 @@ public class BezierCurve extends CubicCurve
 			main_comp.setId("pane");
 			main_comp.setAlignment(Pos.CENTER);
 			
-			Scene scene = new Scene(main_comp, 320, 175);
+			Scene scene = new Scene(main_comp, 275 + 60 * Parameters.fuzzy_string_values.length, 175);
 		    scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
 
 		    GridPane numeric_weight_comp = new GridPane();
@@ -105,18 +106,43 @@ public class BezierCurve extends CubicCurve
 			GridPane fuzzy_weight_comp = new GridPane();
 			fuzzy_weight_comp.setId("pane");
 			column = new ColumnConstraints();
-		    column.setPercentWidth(33.33);
+		    column.setPercentWidth(100 / Parameters.fuzzy_string_values.length);
 		    column.setHalignment(HPos.CENTER);
-		    fuzzy_weight_comp.getColumnConstraints().addAll(column, column, column);
 		    fuzzy_weight_comp.getRowConstraints().addAll(row);
 		    
-		    RadioButton[] weights = new RadioButton[3];
-		    weights[0] = new RadioButton("Low");
-		    weights[1] = new RadioButton("Medium");
-		    weights[2] = new RadioButton("Hight");
-		    weights[0].setOnAction(event_ -> { relation.setWeight(0.25); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    weights[1].setOnAction(event_ -> { relation.setWeight(0.5); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    weights[2].setOnAction(event_ -> { relation.setWeight(0.75); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    RadioButton[] weights = new RadioButton[Parameters.fuzzy_string_values.length];
+		    for (int i= 0; i < Parameters.fuzzy_string_values.length; i++)
+		    {
+		    	fuzzy_weight_comp.getColumnConstraints().add(column);
+		    	weights[i] = new RadioButton(Parameters.fuzzy_string_values[i]);
+		    }
+		    if (Parameters.fuzzy_string_values.length == 2)
+		    {
+		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    }
+		    else if (Parameters.fuzzy_string_values.length == 3)
+		    {
+		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    }
+		    else if (Parameters.fuzzy_string_values.length == 4)
+		    {
+		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[3].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[3]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    }
+		    else if (Parameters.fuzzy_string_values.length == 5)
+		    {
+		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[3].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[3]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    	weights[4].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[4]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+		    }
+		    
 		    ToggleGroup weights_group = new ToggleGroup();
 			for (int i = 0; i < weights.length; i++)
 			{

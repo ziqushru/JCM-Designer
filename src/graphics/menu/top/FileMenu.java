@@ -8,11 +8,11 @@ import program.map.Map;
 
 public class FileMenu extends Menu
 {
-	private static final MenuItem	new_file				= new MenuItem("New");
-	private static final MenuItem	open_file				= new MenuItem("Open");
-	private static final MenuItem	save_file				= new MenuItem("Save");
-	private static final MenuItem	exit_file				= new MenuItem("Exit");
-	
+	private static final MenuItem	new_file	= new MenuItem("New");
+	private static final MenuItem	open_file	= new MenuItem("Open");
+	private static final MenuItem	save_file	= new MenuItem("Save");
+	private static final MenuItem	exit_file	= new MenuItem("Exit");
+
 	public FileMenu(MenuBar top_menu, String text)
 	{
 		super(text);
@@ -25,5 +25,5 @@ public class FileMenu extends Menu
 		this.getItems().add(FileMenu.save_file);
 		this.getItems().add(FileMenu.exit_file);
 		top_menu.getMenus().add(this);
-	}	
+	}
 }
