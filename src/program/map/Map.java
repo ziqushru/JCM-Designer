@@ -17,6 +17,7 @@ import graphics.Screen;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import program.Program;
+import program.map.runnners.Parameters;
 import program.map.runnners.Runner;
 import program.units.Unit;
 import program.utils.Log;
@@ -80,7 +81,16 @@ public final class Map
 
 		int counter = 0;
 		for (java.util.Map.Entry<String, Concept> concept : concepts_map.entrySet())
-			Map.units.add(new Unit(concept.getValue().getName(), (Screen.WIDTH / 2 - concepts_map.size() * 32 + counter++ * 100), Screen.HEIGHT / 2 - concepts_map.size() * 32 / 2, "concept"));
+		{
+			Map.units.add(new Unit(concept.getValue().getName(), concept.getValue().getInput(), (Screen.WIDTH / 2 - concepts_map.size() * 32 + counter++ * 100), Screen.HEIGHT / 2 - concepts_map.size() * 32 / 2, "concept"));
+		}
+
+		Parameters.A_estimated = new double[2][counter];
+		for (int i = 0; i < counter; i++)
+		{
+			Parameters.A_estimated[0][i] = Parameters.A_not_estimated;
+			Parameters.A_estimated[1][i] = Parameters.A_not_estimated;
+		}
 			
 		for (Entry<String, FcmConnection> connections : connnections_map.entrySet())
 			for (Unit start_unit : Map.units)

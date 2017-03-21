@@ -57,6 +57,12 @@ public class Unit extends Mob
 		this.mouse_dragged = false;
 	}
 	
+	public Unit(String name, Double input_value, int x, int y, String path)
+	{
+		this(name, x, y, path);
+		if (input_value != null) this.concept.setInput(input_value.doubleValue());
+	}
+	
 	private void openSettings()
 	{
 		Stage settings_stage = new Stage();

@@ -4,8 +4,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jfree.ui.RefineryUtilities;
-
 import graphics.gui.GraphScreen;
 import program.map.Map;
 import program.map.Relation;
@@ -69,7 +67,7 @@ public class Runner implements Runnable
 			A_overall.add(A.clone());
 		} while (!isTerminated(A));
 
-		GraphScreen screen = new GraphScreen("Outputs", "Outputs", A_overall);
+		new GraphScreen("Outputs", "Outputs", A_overall);
 	}
 
 	private static synchronized void update(double[] A, double[] weights)
@@ -90,12 +88,26 @@ public class Runner implements Runnable
 			return true;
 		else
 			return false;
-		for (int x = 0; x < Runner.A_before.length; x++)
+		
+		int parameters_counter = 0;
+		int valid_parameters_counter = 0;
+		for (int x = 0; x < A.length; x++)
+			if (Parameters.A_estimated[0][x] != Parameters.A_not_estimated && Parameters.A_estimated[1][x] != Parameters.A_not_estimated)
+			{
+				parameters_counter++;
+				if (A[x] <= Parameters.A_estimated[0][x] && A[x] >= Parameters.A_estimated[1][x])
+					valid_parameters_counter++;
+			}
+		if (parameters_counter > 0 && valid_parameters_counter == parameters_counter) return true;
+		
+		for (int x = 0; x < A.length; x++)
+		{
 			if (Math.abs(Runner.A_before[x] - A[x]) > Parameters.e)
 			{
 				Runner.stability_counter = 0;
 				break;
 			}
+		}
 		if (++Runner.stability_counter == Runner.stability_length) return true;
 		return false;
 	}
@@ -117,6 +129,7 @@ public class Runner implements Runnable
 		return W;
 	}
 
+	@SuppressWarnings("unused")
 	private static synchronized void displayArray(double[] array, int scansize)
 	{
 		for (int y = 0; y < scansize; y++)
@@ -128,6 +141,7 @@ public class Runner implements Runnable
 		Log.consoleOut();
 	}
 
+	@SuppressWarnings("unused")
 	private static synchronized void displayArray(double[] array)
 	{
 		for (int x = 0; x < array.length; x++)

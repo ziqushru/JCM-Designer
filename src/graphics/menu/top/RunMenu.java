@@ -179,7 +179,7 @@ public class RunMenu extends Menu
 		String n = parameters_text_fields[0].getText().toString();
 		String g = parameters_text_fields[1].getText().toString();
 		String N = parameters_text_fields[2].getText().toString();
-		String e = parameters_text_fields[2].getText().toString();
+		String e = parameters_text_fields[3].getText().toString();
 		if (n != null && !n.isEmpty())
 			Parameters.n = Double.parseDouble(n);
 		if (g != null && !g.isEmpty())

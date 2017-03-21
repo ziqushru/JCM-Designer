@@ -36,9 +36,7 @@ public class GraphScreen
 		this.iterations = A_overall.size();
 		
 		JFrame frame = new JFrame(application_title);
-		frame.setMaximumSize(new Dimension(1280, 1024));
-		frame.setMinimumSize(new Dimension(720, 540));
-		frame.setPreferredSize(new Dimension(1024, 720));
+		frame.setSize(new Dimension(1024, 500 + 20 * iterations));
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
