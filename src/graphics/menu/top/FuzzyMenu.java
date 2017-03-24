@@ -41,7 +41,7 @@ public class FuzzyMenu implements Configurations
 		for (int i = 0; i < FuzzyMenu.fillers.length; i++)
 			FuzzyMenu.fillers[i] = new Label();
 
-		ObservableList<String> options = FXCollections.observableArrayList("2", "3", "4", "5");
+		ObservableList<String> options = FXCollections.observableArrayList("Without Fuzzy Values", "2", "3", "4", "5");
 		final ComboBox<String> combo_box = new ComboBox<String>(options);
 		combo_box.setPromptText("Fuzzy Value");
 
@@ -60,80 +60,91 @@ public class FuzzyMenu implements Configurations
 				main_comp.getChildren().remove(FuzzyMenu.fillers[i]);
 			main_comp.getChildren().remove(FuzzyMenu.update_button);
 
-			FuzzyMenu.fuzzy_values_length = Integer.parseInt(t1);
-			Parameters.fuzzy_string_values = new String[FuzzyMenu.fuzzy_values_length];
-			Parameters.fuzzy_double_values = new double[FuzzyMenu.fuzzy_values_length];
-			
-
-			FuzzyMenu.grid_pane = new GridPane();
-			ColumnConstraints column = new ColumnConstraints();
-			column.setPercentWidth(100 / fuzzy_values_length);
-			column.setHalignment(HPos.CENTER);
-			for (int i = 0; i < FuzzyMenu.fuzzy_values_length; i++)
-				grid_pane.getColumnConstraints().add(column);
-			RowConstraints row = new RowConstraints();
-			row.setValignment(VPos.CENTER);
-			grid_pane.getRowConstraints().addAll(row, row);
-
-			FuzzyMenu.fuzzy_values_labels = new Label[FuzzyMenu.fuzzy_values_length];
-			if (FuzzyMenu.fuzzy_values_length == 2)
+			if (t1.equals("Without Fuzzy Values"))
 			{
-				FuzzyMenu.fuzzy_values_labels[0] = new Label("Low");
-				FuzzyMenu.fuzzy_values_labels[1] = new Label("High");
-				Parameters.fuzzy_string_values[0] = "Low";
-				Parameters.fuzzy_string_values[1] = "High";	
+				FuzzyMenu.fuzzy_values_length = 0;
+				Parameters.fuzzy_string_values = new String[0];
+				Parameters.fuzzy_double_values = new double[0];
+				FuzzyMenu.fuzzy_values_text_fields = new TextField[0];
 			}
-			else if (FuzzyMenu.fuzzy_values_length == 3)
+			else
 			{
-				FuzzyMenu.fuzzy_values_labels[0] = new Label("Low");
-				FuzzyMenu.fuzzy_values_labels[1] = new Label("Mid");
-				FuzzyMenu.fuzzy_values_labels[2] = new Label("High");
-				Parameters.fuzzy_string_values[0] = "Low";
-				Parameters.fuzzy_string_values[1] = "Mid";
-				Parameters.fuzzy_string_values[2] = "High";
-			}
-			else if (FuzzyMenu.fuzzy_values_length == 4)
-			{
-				FuzzyMenu.fuzzy_values_labels[0] = new Label("Very Low");
-				FuzzyMenu.fuzzy_values_labels[1] = new Label("Low");
-				FuzzyMenu.fuzzy_values_labels[2] = new Label("High");
-				FuzzyMenu.fuzzy_values_labels[3] = new Label("Very High");
-				Parameters.fuzzy_string_values[0] = "Very Low";
-				Parameters.fuzzy_string_values[1] = "Low";
-				Parameters.fuzzy_string_values[2] = "High";
-				Parameters.fuzzy_string_values[3] = "Very High";
-			}
-			else if (FuzzyMenu.fuzzy_values_length == 5)
-			{
-				FuzzyMenu.fuzzy_values_labels[0] = new Label("Very Low");
-				FuzzyMenu.fuzzy_values_labels[1] = new Label("Low");
-				FuzzyMenu.fuzzy_values_labels[2] = new Label("Mid");
-				FuzzyMenu.fuzzy_values_labels[3] = new Label("High");
-				FuzzyMenu.fuzzy_values_labels[4] = new Label("Very High");
-				Parameters.fuzzy_string_values[0] = "Very Low";
-				Parameters.fuzzy_string_values[1] = "Low";
-				Parameters.fuzzy_string_values[2] = "Mid";
-				Parameters.fuzzy_string_values[3] = "High";
-				Parameters.fuzzy_string_values[4] = "Very High";
-			
-			}
-			FuzzyMenu.fuzzy_values_text_fields = new TextField[FuzzyMenu.fuzzy_values_length];
-			for (int i = 0; i < FuzzyMenu.fuzzy_values_length; i++)
-			{
-				FuzzyMenu.grid_pane.add(FuzzyMenu.fuzzy_values_labels[i], i, 0);
-				FuzzyMenu.fuzzy_values_text_fields[i] = new TextField();
-				FuzzyMenu.fuzzy_values_text_fields[i].setMaxWidth(64);
-				FuzzyMenu.fuzzy_values_text_fields[i].setAlignment(Pos.CENTER);
-				FuzzyMenu.fuzzy_values_text_fields[i].setFocusTraversable(false);
-				FuzzyMenu.fuzzy_values_text_fields[i].setOnKeyPressed(event ->
+				FuzzyMenu.fuzzy_values_length = Integer.parseInt(t1);
+				Parameters.fuzzy_string_values = new String[FuzzyMenu.fuzzy_values_length];
+				Parameters.fuzzy_double_values = new double[FuzzyMenu.fuzzy_values_length];
+				
+	
+				FuzzyMenu.grid_pane = new GridPane();
+				ColumnConstraints column = new ColumnConstraints();
+				column.setPercentWidth(100 / fuzzy_values_length);
+				column.setHalignment(HPos.CENTER);
+				for (int i = 0; i < FuzzyMenu.fuzzy_values_length; i++)
+					grid_pane.getColumnConstraints().add(column);
+				RowConstraints row = new RowConstraints();
+				row.setValignment(VPos.CENTER);
+				grid_pane.getRowConstraints().addAll(row, row);
+	
+				FuzzyMenu.fuzzy_values_labels = new Label[FuzzyMenu.fuzzy_values_length];
+	
+				if (FuzzyMenu.fuzzy_values_length == 2)
 				{
-					if (event.getCode() == KeyCode.ENTER) this.buttonOnAction();
-				});
-				FuzzyMenu.grid_pane.add(FuzzyMenu.fuzzy_values_text_fields[i], i, 1);
+					FuzzyMenu.fuzzy_values_labels[0] = new Label("Low");
+					FuzzyMenu.fuzzy_values_labels[1] = new Label("High");
+					Parameters.fuzzy_string_values[0] = "Low";
+					Parameters.fuzzy_string_values[1] = "High";	
+				}
+				else if (FuzzyMenu.fuzzy_values_length == 3)
+				{
+					FuzzyMenu.fuzzy_values_labels[0] = new Label("Low");
+					FuzzyMenu.fuzzy_values_labels[1] = new Label("Mid");
+					FuzzyMenu.fuzzy_values_labels[2] = new Label("High");
+					Parameters.fuzzy_string_values[0] = "Low";
+					Parameters.fuzzy_string_values[1] = "Mid";
+					Parameters.fuzzy_string_values[2] = "High";
+				}
+				else if (FuzzyMenu.fuzzy_values_length == 4)
+				{
+					FuzzyMenu.fuzzy_values_labels[0] = new Label("Very Low");
+					FuzzyMenu.fuzzy_values_labels[1] = new Label("Low");
+					FuzzyMenu.fuzzy_values_labels[2] = new Label("High");
+					FuzzyMenu.fuzzy_values_labels[3] = new Label("Very High");
+					Parameters.fuzzy_string_values[0] = "Very Low";
+					Parameters.fuzzy_string_values[1] = "Low";
+					Parameters.fuzzy_string_values[2] = "High";
+					Parameters.fuzzy_string_values[3] = "Very High";
+				}
+				else if (FuzzyMenu.fuzzy_values_length == 5)
+				{
+					FuzzyMenu.fuzzy_values_labels[0] = new Label("Very Low");
+					FuzzyMenu.fuzzy_values_labels[1] = new Label("Low");
+					FuzzyMenu.fuzzy_values_labels[2] = new Label("Mid");
+					FuzzyMenu.fuzzy_values_labels[3] = new Label("High");
+					FuzzyMenu.fuzzy_values_labels[4] = new Label("Very High");
+					Parameters.fuzzy_string_values[0] = "Very Low";
+					Parameters.fuzzy_string_values[1] = "Low";
+					Parameters.fuzzy_string_values[2] = "Mid";
+					Parameters.fuzzy_string_values[3] = "High";
+					Parameters.fuzzy_string_values[4] = "Very High";
+				
+				}
+				FuzzyMenu.fuzzy_values_text_fields = new TextField[FuzzyMenu.fuzzy_values_length];
+				for (int i = 0; i < FuzzyMenu.fuzzy_values_length; i++)
+				{
+					FuzzyMenu.grid_pane.add(FuzzyMenu.fuzzy_values_labels[i], i, 0);
+					FuzzyMenu.fuzzy_values_text_fields[i] = new TextField();
+					FuzzyMenu.fuzzy_values_text_fields[i].setMaxWidth(64);
+					FuzzyMenu.fuzzy_values_text_fields[i].setAlignment(Pos.CENTER);
+					FuzzyMenu.fuzzy_values_text_fields[i].setFocusTraversable(false);
+					FuzzyMenu.fuzzy_values_text_fields[i].setOnKeyPressed(event ->
+					{
+						if (event.getCode() == KeyCode.ENTER) this.buttonOnAction();
+					});
+					FuzzyMenu.grid_pane.add(FuzzyMenu.fuzzy_values_text_fields[i], i, 1);
+				}
+				main_comp.getChildren().add(FuzzyMenu.fillers[0]);
+				main_comp.getChildren().add(FuzzyMenu.grid_pane);
+				main_comp.getChildren().add(FuzzyMenu.fillers[1]);
 			}
-			main_comp.getChildren().add(FuzzyMenu.fillers[0]);
-			main_comp.getChildren().add(FuzzyMenu.grid_pane);
-			main_comp.getChildren().add(FuzzyMenu.fillers[1]);
 			main_comp.getChildren().add(FuzzyMenu.fillers[2]);
 			main_comp.getChildren().add(FuzzyMenu.update_button);
 			settings_stage.setWidth(280 + 30 * fuzzy_values_length);

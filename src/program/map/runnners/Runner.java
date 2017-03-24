@@ -1,6 +1,5 @@
 package program.map.runnners;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import program.map.Map;
 import program.map.Relation;
 import program.map.inference_rules.InferenceRule;
 import program.map.learning_algorithms.HebbianLearning;
+import program.map.learning_algorithms.NonLinear;
 import program.utils.Log;
 import program.utils.transferfunctions.TransferFunction;
 
@@ -19,6 +19,7 @@ public class Runner implements Runnable
 	private static final int		stability_length	= 4;
 	private static int				stability_counter;
 	public static double[]			A_before;
+	private static double			rounder;
 
 	public static TransferFunction	transfer_function;
 	public static HebbianLearning	hebbian_learning;
@@ -39,6 +40,7 @@ public class Runner implements Runnable
 
 	public void start()
 	{
+		if (Runner.hebbian_learning instanceof NonLinear && Parameters.g == 0) Parameters.g = 1;
 		Runner.runner_thread = new Thread(this, "JFCM Runner");
 		Runner.runner_thread.start();
 	}
@@ -55,6 +57,9 @@ public class Runner implements Runnable
 		double[] weights = Runner.W(A.length);
 		Runner.iteration = 1;
 		Runner.stability_counter = 0;
+		if (Runner.hebbian_learning == null) 	rounder = 10000;
+		else									rounder = 1000;
+		
 		do
 		{
 			for (int y = 0; y < A.length; y++)
@@ -72,14 +77,12 @@ public class Runner implements Runnable
 
 	private static synchronized void update(double[] A, double[] weights)
 	{
-		DecimalFormat decimal_format = new DecimalFormat("#.####");
 		for (int i = 0; i < A.length; i++)
-			A[i] = Double.parseDouble(decimal_format.format(A[i]));
+			A[i] = (double) ((int) (A[i] * rounder)) / rounder;
 		for (int i = 0; i < weights.length; i++)
-			weights[i] = Double.parseDouble(decimal_format.format(weights[i]));
-		
-		Runner.iteration++;
+			weights[i] = (double) ((int) (weights[i] * rounder)) / rounder;
 		if (Runner.hebbian_learning != null) Runner.hebbian_learning.update_parameters();
+		Runner.iteration++;
 	}
 
 	private static synchronized boolean isTerminated(double[] A)
@@ -98,14 +101,15 @@ public class Runner implements Runnable
 				if (A[x] <= Parameters.A_estimated[0][x] && A[x] >= Parameters.A_estimated[1][x])
 					valid_parameters_counter++;
 			}
-		if (parameters_counter > 0 && valid_parameters_counter == parameters_counter) return true;
+		if (parameters_counter > 0)
+			if (valid_parameters_counter == parameters_counter) return true;
 		
 		for (int x = 0; x < A.length; x++)
 		{
-			if (Math.abs(Runner.A_before[x] - A[x]) > Parameters.e)
+			if (Math.abs(Runner.A_before[x] - A[x]) >= Parameters.e)
 			{
 				Runner.stability_counter = 0;
-				break;
+				return false;
 			}
 		}
 		if (++Runner.stability_counter == Runner.stability_length) return true;

@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import program.Program;
 import program.map.Map;
+import program.map.runnners.Parameters;
 import program.units.Unit;
 
 public class LeftMenu extends ToolBar
@@ -37,6 +38,12 @@ public class LeftMenu extends ToolBar
 				Map.units.add(unit);
 				Screen.unit = null;
 				Map.last_selected_unit = null;
+				Parameters.A_estimated = new double[2][Map.units.size()];
+				for (int i = 0; i < Map.units.size(); i++)
+				{
+					Parameters.A_estimated[0][i] = Parameters.A_not_estimated;
+					Parameters.A_estimated[1][i] = Parameters.A_not_estimated;
+				}
 			}
 		});
 		this.getItems().add(LeftMenu.button_1);

@@ -103,53 +103,56 @@ public class BezierCurve extends CubicCurve
 			numeric_weight_comp.add(weight_value_text_field, 1, 0);
 			main_comp.getChildren().add(numeric_weight_comp);
 		  
-			GridPane fuzzy_weight_comp = new GridPane();
-			fuzzy_weight_comp.setId("pane");
-			column = new ColumnConstraints();
-		    column.setPercentWidth(100 / Parameters.fuzzy_string_values.length);
-		    column.setHalignment(HPos.CENTER);
-		    fuzzy_weight_comp.getRowConstraints().addAll(row);
-		    
-		    RadioButton[] weights = new RadioButton[Parameters.fuzzy_string_values.length];
-		    for (int i= 0; i < Parameters.fuzzy_string_values.length; i++)
-		    {
-		    	fuzzy_weight_comp.getColumnConstraints().add(column);
-		    	weights[i] = new RadioButton(Parameters.fuzzy_string_values[i]);
-		    }
-		    if (Parameters.fuzzy_string_values.length == 2)
-		    {
-		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    }
-		    else if (Parameters.fuzzy_string_values.length == 3)
-		    {
-		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    }
-		    else if (Parameters.fuzzy_string_values.length == 4)
-		    {
-		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[3].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[3]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    }
-		    else if (Parameters.fuzzy_string_values.length == 5)
-		    {
-		    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[3].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[3]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    	weights[4].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[4]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
-		    }
-		    
-		    ToggleGroup weights_group = new ToggleGroup();
-			for (int i = 0; i < weights.length; i++)
+			if (Parameters.fuzzy_string_values.length != 0)
 			{
-				weights[i].setToggleGroup(weights_group);
-				fuzzy_weight_comp.add(weights[i], i, 0);
+				GridPane fuzzy_weight_comp = new GridPane();
+				fuzzy_weight_comp.setId("pane");
+				column = new ColumnConstraints();
+			    column.setPercentWidth(100 / Parameters.fuzzy_string_values.length);
+			    column.setHalignment(HPos.CENTER);
+			    fuzzy_weight_comp.getRowConstraints().addAll(row);
+			    
+			    RadioButton[] weights = new RadioButton[Parameters.fuzzy_string_values.length];
+			    for (int i= 0; i < Parameters.fuzzy_string_values.length; i++)
+			    {
+			    	fuzzy_weight_comp.getColumnConstraints().add(column);
+			    	weights[i] = new RadioButton(Parameters.fuzzy_string_values[i]);
+			    }
+			    if (Parameters.fuzzy_string_values.length == 2)
+			    {
+			    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    }
+			    else if (Parameters.fuzzy_string_values.length == 3)
+			    {
+			    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    }
+			    else if (Parameters.fuzzy_string_values.length == 4)
+			    {
+			    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[3].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[3]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    }
+			    else if (Parameters.fuzzy_string_values.length == 5)
+			    {
+			    	weights[0].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[0]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[1].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[1]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[2].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[2]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[3].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[3]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    	weights[4].setOnAction(event_ -> { relation.setWeight(Parameters.fuzzy_double_values[4]); weight_value_text_field.setPromptText(relation.getWeight() + ""); relation.weight_text.setText(relation.getWeight() + ""); });
+			    }
+			    
+			    ToggleGroup weights_group = new ToggleGroup();
+				for (int i = 0; i < weights.length; i++)
+				{
+					weights[i].setToggleGroup(weights_group);
+					fuzzy_weight_comp.add(weights[i], i, 0);
+				}
+				main_comp.getChildren().add(fuzzy_weight_comp);
 			}
-			main_comp.getChildren().add(fuzzy_weight_comp);
 		    
 			GridPane buttons_weight_comp = new GridPane();
 			buttons_weight_comp.setId("pane");

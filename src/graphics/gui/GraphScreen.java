@@ -85,7 +85,7 @@ public class GraphScreen
 
 		for (int i = 0; i < concepts_length; i++)
 			units[i] = new XYSeries(Map.units.get(i).getName());
-
+		
 		for (int y = 0; y < A_overall.size(); y++)
 			for (int x = 0; x < A_overall.get(y).length; x++)
 				units[x].add(y, A_overall.get(y)[x]);
