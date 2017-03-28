@@ -6,7 +6,9 @@ import java.awt.Point;
 public class Position extends Point
 {
 	public Position()
-	{}
+	{
+		super();
+	}
 	
 	public Position(int x, int y)
 	{

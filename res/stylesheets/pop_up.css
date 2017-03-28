@@ -1,46 +1,47 @@
 #pane
 {
-    -fx-background-color: #403C3C;
+    -fx-background-color: #FFFFFF;
     -fx-padding: 10px;
-    -fx-margin: 10px;    
-    -fx-allignment: CENTER;
+    -fx-margin: 10px;
 }
 
 .label
 {
-    -fx-text-fill: #EFEEE6;
-    -fx-font-size: 12pt;
-}
-
-#text_field
-{
-	-fx-font-size: 12pt;
-	-fx-padding: 10px;
+	-fx-font: 18px Alcubierre;
+	-fx-padding: 20px;
     -fx-margin: 10px;
-    -fx-background-insets: 8 0 8 0;
-    -fx-max-width: 100px;
 }
 
 .radio-button
 {
-	-fx-text-fill: #EFEEE6;
-	-fx-font-size: 10pt;
+	-fx-font: 14px Alcubierre;
     -fx-padding: 10px;
     -fx-margin: 10px;
-    -fx-background-insets: 8 0 8 0;
+    -fx-background-insets: 10 0 10 0;
 }
 
 .button
 {
+	-fx-font: 16px Alcubierre;
 	-fx-background-radius: 10px 10px 10px 10px;
-    -fx-background-color: #403C3C;
+    -fx-background-color: #FFFFFF;
     -fx-padding: 10px;
     -fx-margin: 10px;
-	-fx-text-fill: #EFEEE6;
-	-fx-font: bold italic 12pt "Arial";
 }
 
 .button:hover
 {
-	-fx-effect: dropshadow(three-pass-box, #EFEEE6, 10, 0.5, 0, 0);    
+	-fx-effect: dropshadow(three-pass-box, #403C3C, 10, 0.5, 0, 0);    
+}
+
+.text-field
+{
+	-fx-font: 16px Alcubierre;
+	-fx-border-radius: 10px 10px 10px 10px;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+	-fx-padding: 10px;
+    -fx-margin: 10px;
+    -fx-background-insets: 8 0 8 0;
+    -fx-max-width: 100px;
 }

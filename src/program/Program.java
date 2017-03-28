@@ -1,23 +1,31 @@
 package program;
 
+import java.awt.event.WindowEvent;
 import java.util.Optional;
-import java.util.function.Consumer;
 
-import graphics.Screen;
+import javax.swing.JFrame;
+
+import graphics.gui.GraphScreen;
 import graphics.menu.LeftMenu;
 import graphics.menu.TopMenu;
-import graphics.menu.top.RunMenu;
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.HostServices;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import program.inputs.Keyboard;
-import program.inputs.Mouse;
+import program.map.Map;
 import program.map.runnners.Runner;
+import program.units.Unit;
 import program.utils.Log;
 
 public class Program extends Application
@@ -29,114 +37,50 @@ public class Program extends Application
 	public static Log					log;
 
 	public static Stage					window;
-	public static BorderPane			layout;
-	public static Screen				screen;
+	public static BorderPane			main_border_pane;
+	public static final String			logo_path								= "logo";
+	public static final Font			font									= new Font("/fonts/Alcubierre.otf", 18);
+	public static HostServices 			host_services;
 
-	public static boolean				running;
-	public static boolean				paused;
-
-	private static Consumer<Float>		updater;
-	private static Consumer<Integer>	fps_reporter;
-
-	private static long					previous_time							= 0;
-	private static float				seconds_elapsed_since_last_fps_update	= 0f;
-	private static int					frames_since_last_fps_update			= 0;
+	public static boolean				running									= false;
+	public static boolean				paused									= false;
 	
 	@Override
 	public void start(Stage window) throws Exception
 	{
-		Program.running = false;
-		Program.paused = false;
-		
-
 		Program.log = new Log();
-		Program.window = window;
-		Program.layout = new BorderPane();
-		Program.layout.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
-		Program.screen = new Screen(Program.WIDTH, Program.HEIGHT);
+		Program.main_border_pane = new BorderPane();
+		Program.main_border_pane.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
+		Program.main_border_pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, null)));
+		Program.host_services = this.getHostServices();
 		new TopMenu();
 		new LeftMenu();
-
+		Program.window = window;
+		Program.window.setScene(new Scene(Program.main_border_pane, Program.WIDTH, Program.HEIGHT));
+		Program.window.getIcons().add(new Image(Program.logo_path + ".png"));
+		Program.window.setTitle(Program.TITLE);
+		Program.main_border_pane.setOnMouseClicked(event ->
+		{
+			if (Map.last_selected_unit != null)
+				for (int i = 0; i < Unit.selected_lines.length; i++)
+					Program.main_border_pane.getChildren().remove(Unit.selected_lines[i]);
+			Map.last_selected_unit = null;
+		});
 		Program.window.setOnCloseRequest(event ->
 		{
 			event.consume();
 			Program.closeProgram();
 		});
-		Program.window.setTitle(Program.TITLE);
-		Program.window.setScene(new Scene(Program.layout, Program.WIDTH, Program.HEIGHT));
-		Program.window.setResizable(false);
-		
-		Program.updater = new Consumer<Float>()
-		{
-			@Override
-			public void accept(Float t)
-			{
-				Program.tick();
-			}
-		};
-
-		Program.fps_reporter = new Consumer<Integer>()
-		{
-			@Override
-			public void accept(Integer fps)
-			{
-				Program.window.setTitle(Program.TITLE + " | fps: " + fps);
-			}
-		};
-
-		AnimationTimer animation_timer = new AnimationTimer()
-		{
-			@Override
-			public void handle(long current_time)
-			{
-				if (Program.previous_time == 0)
-				{
-					Program.previous_time = current_time;
-					return;
-				}
-
-				float seconds_elapsed = (current_time - Program.previous_time) / 1e9f;
-				float seconds_elapsed_capped = Math.min(seconds_elapsed, 60);
-				Program.previous_time = current_time;
-
-				Program.updater.accept(seconds_elapsed_capped);
-				screen.run();
-
-				Program.seconds_elapsed_since_last_fps_update += seconds_elapsed;
-				Program.frames_since_last_fps_update++;
-				if (Program.seconds_elapsed_since_last_fps_update >= 0.5f)
-				{
-					int fps = Math.round(Program.frames_since_last_fps_update / Program.seconds_elapsed_since_last_fps_update);
-					Program.fps_reporter.accept(fps);
-					Program.seconds_elapsed_since_last_fps_update = 0;
-					Program.frames_since_last_fps_update = 0;
-				}
-			}
-		};
-		
-		Screen.clear();
 		Program.window.show();
 		Program.running = true;
-		animation_timer.start();
-	}
-
-	public static void tick()
-	{
-		if (Keyboard.keys[0] == true) System.exit(0);
-
-		if (!Program.paused)
-		{
-			Mouse.tick();
-			Screen.clear();
-			Screen.tick();
-		}
 	}
 
 	public static void closeProgram()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.initOwner(Program.window);
 		alert.setTitle("Exit Confirmation");
-		alert.setHeaderText("Your program is about to exit, be sure you have saved your progress");
+		alert.setHeaderText("Your program is about to exit, be sure to save your map");
 		alert.setContentText("Are you sure you want to exit ?");
 
 		Optional<ButtonType> result = alert.showAndWait();
@@ -144,7 +88,6 @@ public class Program extends Application
 		if (result.get() == ButtonType.OK)
 		{
 			Program.running = false;
-			if (RunMenu.is_open) RunMenu.settings_stage.close();
 			if (Runner.runner_thread != null)
 				try
 				{
@@ -152,6 +95,9 @@ public class Program extends Application
 				}
 				catch (InterruptedException e) { e.printStackTrace(); }
 			Program.window.close();
+			for (JFrame frame : GraphScreen.frames)
+				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+			Platform.exit();
 		}
 	}
 

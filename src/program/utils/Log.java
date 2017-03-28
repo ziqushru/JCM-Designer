@@ -3,8 +3,6 @@ package program.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import program.inputs.Mouse;
-
 public final class Log
 {
 	private static List<String> logs = new ArrayList<String>();
@@ -40,11 +38,5 @@ public final class Log
 			System.out.print(string + "\t");
 		System.out.println();
 		Log.logs.clear();
-	}
-
-	public static void consoleOutMousePosition()
-	{
-		Log.addLog("Unit(x: " + Mouse.position.x + " , y: " + Mouse.position.y + ")");
-		Log.consoleOut();
 	}
 }

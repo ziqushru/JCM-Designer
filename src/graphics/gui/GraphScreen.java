@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -28,17 +29,13 @@ public class GraphScreen
 	private final int				concepts_length;
 	private final int				iterations;
 	private final List<double[]>	A_overall;
+	public static List<JFrame>		frames = new ArrayList<JFrame>();
 	
 	public GraphScreen(String application_title, String chart_title, List<double[]> A_overall)
 	{
 		this.A_overall = A_overall;
 		this.concepts_length = Map.units.size();
 		this.iterations = A_overall.size();
-		
-		JFrame frame = new JFrame(application_title);
-		frame.setSize(new Dimension(1024, 500 + 20 * iterations));
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel main_panel = new JPanel(new BorderLayout());
 		JFreeChart chart = ChartFactory.createXYLineChart(chart_title, "Iterations", "Concept Values", createDataset(), PlotOrientation.VERTICAL, true, true, false);
@@ -73,9 +70,14 @@ public class GraphScreen
 				data_panel.add(new JLabel(A_overall.get(y)[x] + ""));
 		}
 		main_panel.add(data_panel, BorderLayout.SOUTH);
+
+		JFrame frame = new JFrame(application_title);
+		frame.setSize(new Dimension(1024, 500 + 20 * iterations));
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setContentPane(main_panel);
-		
 		frame.setVisible(true);
+		frames.add(frame);
 	}
 
 	private XYDataset createDataset()

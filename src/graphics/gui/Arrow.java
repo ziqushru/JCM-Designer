@@ -1,7 +1,7 @@
 package graphics.gui;
 
-import graphics.Screen;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
@@ -9,11 +9,10 @@ import program.Program;
 
 public class Arrow extends Polygon
 {
-	public double			rotate;
-	public float			t;
-	CubicCurve				curve;
-	Rotate					rz;
-	public static final int	Y_OFFSET	= 50;
+	private float			t;
+	private CubicCurve		curve;
+	public Rotate			rz;
+	public static final int	OFFSET	= 50;
 
 	public Arrow(CubicCurve curve, float t)
 	{
@@ -22,7 +21,8 @@ public class Arrow extends Polygon
 		this.curve = curve;
 		this.t = t;
 		init();
-		Program.layout.getChildren().add(this);
+		Program.main_border_pane.getChildren().add(this);
+		this.toBack();
 	}
 
 	public Arrow(CubicCurve curve, float t, double... polygon)
@@ -32,12 +32,13 @@ public class Arrow extends Polygon
 		this.curve = curve;
 		this.t = t;
 		this.init();
-		Program.layout.getChildren().add(this);
+		Program.main_border_pane.getChildren().add(this);
+		this.toBack();
 	}
 
 	private void init()
 	{
-		this.setFill(Screen.HEX2ARGB(0x8F8E86));
+		this.setFill(Color.BLACK);
 		rz = new Rotate();
 		{	rz.setAxis(Rotate.Z_AXIS);	}
 		this.getTransforms().addAll(rz);
@@ -58,10 +59,9 @@ public class Arrow extends Polygon
 		double angle = Math.atan2(tan.getY(), tan.getX());
 
 		angle = Math.toDegrees(angle);
+		angle += 90;
 
-		double offset = 90;
-
-		rz.setAngle(angle + offset);
+		rz.setAngle(angle);
 	}
 
 	private Point2D eval(CubicCurve c, float t)
@@ -89,7 +89,6 @@ public class Arrow extends Polygon
                    3 * (Math.pow(1 - t, 2) - 2 * t * (1 - t)) * c.getControlY1()+
                    3 * ((1 - t) * 2 * t - t * t) * c.getControlY2() +
                    3 * Math.pow(t, 2) * c.getEndY();
-		
 		return new Point2D(x, y);
 	}
 }

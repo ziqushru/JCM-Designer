@@ -1,17 +1,26 @@
 .button
 {
-    -fx-border-color: #403C3C;
-    -fx-border-width: 1;
-    -fx-border-style: solid;
-    -fx-border-radius: 10px 10px 10px 10px;
-    -fx-background-radius: 0;
-    -fx-background-color: transparent;
+    -fx-background-radius: 10px;
+	-fx-background-color: linear-gradient(#A09C8C, #FFFFFF , #A09C8C);
+	-fx-effect: dropshadow(three-pass-box, #403C3C, 5, 0.5, -1, 1);
 }
 
 .button:hover
 {
-    -fx-border-color: #EFEEE6;
-    -fx-border-width: 1;
-    -fx-border-style: solid;
-    -fx-border-radius: 10px 10px 10px 10px;
+	-fx-background-color: linear-gradient(#FFFFFF, #A09C8C , #FFFFFF);
+	-fx-effect: dropshadow(three-pass-box, #403C3C, 2, 0.5, -1, 1);
+}
+
+.menu-bar
+{
+	-fx-background-color: #FFFFFF;
+	-fx-border-color:  #403C3C;
+	-fx-border-width: 2px;
+	-fx-border-radius: 10px;
+}
+
+.menu-bar .label
+{
+    -fx-font-size: 16 pt;
+    -fx-font-family: Alcubierre;
 }

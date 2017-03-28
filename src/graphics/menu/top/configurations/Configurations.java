@@ -1,4 +1,4 @@
-package graphics.menu.top;
+package graphics.menu.top.configurations;
 
 public interface Configurations
 {

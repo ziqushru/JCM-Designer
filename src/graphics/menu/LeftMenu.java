@@ -1,6 +1,5 @@
 package graphics.menu;
 
-import graphics.Screen;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
@@ -23,20 +22,34 @@ public class LeftMenu extends ToolBar
 	{
 		super();
 		this.setBackground(Background.EMPTY);
-		this.setStyle("-fx-background-color: #403C3C");
 		this.setOrientation(Orientation.VERTICAL);
-		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("concept.png"))));
+		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream(Unit.concept_path + ".png"))));
 		LeftMenu.button_1.setTooltip(new Tooltip("Creates a concept. Right click the new concept to open Settings"));
-		
+		LeftMenu.button_1.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				LeftMenu.button_1.setTranslateY(1);
+			}
+		});
+		LeftMenu.button_1.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				LeftMenu.button_1.setTranslateY(-1);
+			}
+		});
 		LeftMenu.button_1.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent event)
 			{
-				Unit unit = new Unit(Map.units.size() + 1 + "", Screen.WIDTH / 2, Screen.HEIGHT - 100, "concept");
+				Unit unit = new Unit("Concept " + (Map.units.size() + 1), Program.WIDTH / 2, Program.HEIGHT - 100, Unit.concept_path);
 				Map.cognitive_map.addConcept(unit.concept);
 				Map.units.add(unit);
-				Screen.unit = null;
+				if (Map.last_selected_unit != null) Map.last_selected_unit.setEffect(null);
 				Map.last_selected_unit = null;
 				Parameters.A_estimated = new double[2][Map.units.size()];
 				for (int i = 0; i < Map.units.size(); i++)
@@ -47,6 +60,6 @@ public class LeftMenu extends ToolBar
 			}
 		});
 		this.getItems().add(LeftMenu.button_1);
-		Program.layout.setLeft(this);
+		Program.main_border_pane.setLeft(this);
 	}
 }

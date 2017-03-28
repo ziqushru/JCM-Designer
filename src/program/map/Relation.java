@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.megadix.jfcm.conn.WeightedConnection;
 
-import graphics.Screen;
 import graphics.gui.Arrow;
 import graphics.gui.BezierCurve;
 import javafx.scene.text.FontSmoothingType;
@@ -36,22 +35,25 @@ public class Relation extends WeightedConnection
 		this.arrows = new ArrayList<Arrow>();
 		this.arrows.add(new Arrow(this.curve, 0.2f, new double[] { 0, 0, 5, 10, -5, 10 }));
 		this.arrows.add(new Arrow(this.curve, 0.8f, new double[] { 0, 0, 5, 10, -5, 10 }));
-		this.weight_text = new Text(middle_position.x, middle_position.y, weight + "");
-		this.weight_text.setFill(Screen.HEX2ARGB(Screen.foreground_color));
+		this.weight_text = new Text(weight + "");
+		double cos = Relation.getCos(start_unit.position.x, end_unit.position.x, start_unit.position.y, end_unit.position.y);
+		double sin = Relation.getSin(start_unit.position.x, end_unit.position.x, start_unit.position.y, end_unit.position.y);
+		this.weight_text.setX(middle_position.x + cos * 15);
+		this.weight_text.setY(middle_position.y + sin * 15);
 		this.weight_text.setSmooth(true);
 		this.weight_text.setFontSmoothingType(FontSmoothingType.LCD);
-		Program.layout.getChildren().add(weight_text);
+		Program.main_border_pane.getChildren().add(weight_text);
 	}
 
 	public void remove()
 	{
 		Map.cognitive_map.removeConnection(Relation.this.getName());
 		this.start_unit.relations.remove(this);
-		Program.layout.getChildren().remove(this.curve);
-		Program.layout.getChildren().remove(this.interaction_curve);
-		Program.layout.getChildren().remove(this.weight_text);
+		Program.main_border_pane.getChildren().remove(this.curve);
+		Program.main_border_pane.getChildren().remove(this.interaction_curve);
+		Program.main_border_pane.getChildren().remove(this.weight_text);
 		for (Arrow arrow : this.arrows)
-			Program.layout.getChildren().remove(arrow);
+			Program.main_border_pane.getChildren().remove(arrow);
 	}
 
 	public void tick()
@@ -73,11 +75,10 @@ public class Relation extends WeightedConnection
 		this.interaction_curve.setEndX(end_unit.position.x + start_unit.size / 2);
 		this.curve.setEndY(end_unit.position.y + start_unit.size / 2);
 		this.interaction_curve.setEndY(end_unit.position.y + start_unit.size / 2);
-		this.weight_text.setX(middle_position.x - 4);
-		if (start_unit.position.x > end_unit.position.x)
-			this.weight_text.setY(middle_position.y + 4);
-		else
-			this.weight_text.setY(middle_position.y + 3);
+		double cos = Relation.getCos(start_unit.position.x, end_unit.position.x, start_unit.position.y, end_unit.position.y);
+		double sin = Relation.getSin(start_unit.position.x, end_unit.position.x, start_unit.position.y, end_unit.position.y);
+		this.weight_text.setX(middle_position.x + cos * 15);
+		this.weight_text.setY(middle_position.y + sin * 15);
 		for (Arrow arrow : this.arrows)
 			arrow.tick();
 	}
@@ -91,24 +92,42 @@ public class Relation extends WeightedConnection
 		return Relation.getMiddlePoint(start_position, 0, end_position, 0);
 	}
 
+	private static double getSin(int x_start, int x_end, int y_start, int y_end)
+	{
+		double theta = Math.atan2(y_end - y_start, x_end - x_start);
+	    theta += Math.PI/2.0;
+	    double angle = Math.toDegrees(theta);
+	    if (angle < 0) {
+	        angle += 360;
+	    }
+		return Math.sin(theta);
+	}
+	
+	private static double getCos(int x_start, int x_end, int y_start, int y_end)
+	{		
+		double theta = Math.atan2(y_end - y_start, x_end - x_start);
+	    theta += Math.PI/2.0;
+	    double angle = Math.toDegrees(theta);
+	    if (angle < 0) {
+	        angle += 360;
+	    }
+		return Math.cos(theta);
+	}
+	
 	public static Position getMiddlePoint(Position start_position, int start_size, Position end_position, int end_size)
 	{
 		int x_start = start_position.x + start_size / 2;
 		int y_start = start_position.y + start_size / 2;
 		int x_end = end_position.x + end_size / 2;
 		int y_end = end_position.y + end_size / 2;
-		
 		double cx = (x_start + x_end) / 2;
 		double cy = (y_start + y_end) / 2;
-
 		int horizontal = x_end - x_start;
 		int vertical = y_start - y_end;
-		double sin_angle = Math.sin(vertical / Math.sqrt(vertical * vertical + horizontal * horizontal));
-		double cos_angle = Math.sin(horizontal / Math.sqrt(vertical * vertical + horizontal * horizontal));
-		
-		cx -= Arrow.Y_OFFSET * sin_angle;
-		cy -= Arrow.Y_OFFSET * cos_angle;
-		
+		double vertical_sin_angle = Math.sin(vertical / Math.sqrt(vertical * vertical + horizontal * horizontal));
+		double horizontal_sin_angle = Math.sin(horizontal / Math.sqrt(vertical * vertical + horizontal * horizontal));
+		cx -= Arrow.OFFSET * vertical_sin_angle;
+		cy -= Arrow.OFFSET * horizontal_sin_angle;
 		return new Position(cx, cy);
 	}
 	
@@ -121,11 +140,8 @@ public class Relation extends WeightedConnection
 		Relation other = (Relation) obj;
 		if (!end_unit.equals(other.end_unit)) return false;
 		if (start_unit == null)
-		{
 			if (other.start_unit != null) return false;
-		}
 		else if (!start_unit.equals(other.start_unit)) return false;
-		
 		return true;
 	}	
 }

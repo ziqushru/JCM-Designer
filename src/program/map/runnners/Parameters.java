@@ -4,6 +4,8 @@ public class Parameters
 {
 	public static double		n;
 	public static double		g;
+	public static double		l1;
+	public static double		l2;
 	public static double		m;
 	public static double		N;
 	public static double		e;

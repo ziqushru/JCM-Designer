@@ -8,7 +8,6 @@ import program.map.Map;
 import program.map.Relation;
 import program.map.inference_rules.InferenceRule;
 import program.map.learning_algorithms.HebbianLearning;
-import program.map.learning_algorithms.NonLinear;
 import program.utils.Log;
 import program.utils.transferfunctions.TransferFunction;
 
@@ -40,7 +39,6 @@ public class Runner implements Runnable
 
 	public void start()
 	{
-		if (Runner.hebbian_learning instanceof NonLinear && Parameters.g == 0) Parameters.g = 1;
 		Runner.runner_thread = new Thread(this, "JFCM Runner");
 		Runner.runner_thread.start();
 	}
@@ -95,11 +93,15 @@ public class Runner implements Runnable
 		int parameters_counter = 0;
 		int valid_parameters_counter = 0;
 		for (int x = 0; x < A.length; x++)
-			if (Parameters.A_estimated[0][x] != Parameters.A_not_estimated && Parameters.A_estimated[1][x] != Parameters.A_not_estimated)
+			if (Parameters.A_estimated[0][x] != Parameters.A_not_estimated)
 			{
 				parameters_counter++;
-				if (A[x] <= Parameters.A_estimated[0][x] && A[x] >= Parameters.A_estimated[1][x])
-					valid_parameters_counter++;
+				if (A[x] <= Parameters.A_estimated[0][x]) valid_parameters_counter++;
+			}
+			else if (Parameters.A_estimated[1][x] != Parameters.A_not_estimated)
+			{
+				parameters_counter++;
+				if (A[x] >= Parameters.A_estimated[1][x]) valid_parameters_counter++;
 			}
 		if (parameters_counter > 0)
 			if (valid_parameters_counter == parameters_counter) return true;
