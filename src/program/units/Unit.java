@@ -8,9 +8,13 @@ import org.megadix.jfcm.Concept;
 import graphics.gui.CustomGridPane;
 import graphics.gui.CustomTextField;
 import graphics.menu.top.configurations.Configurations;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -30,17 +34,18 @@ import program.units.entities.Entity;
 
 public class Unit extends Entity implements Configurations
 {
-	public Concept				concept;
-	private Text				name_text;
-	private int					name_x_offset;
-	private int					name_y_offset;
-	public List<Relation>		relations;
-	public boolean				mouse_dragged;
-	private Stage				configurations_stage;
-	private CustomTextField[]	text_fields;
-	public static final String	concept_path			= "concept";
-	private static final Effect	shadow_effect			= new DropShadow(10, Color.BLACK);
-	public static Line[] 		selected_lines			= new Line[4];
+	public Concept					concept;
+	private Text					name_text;
+	private int						name_x_offset;
+	private int						name_y_offset;
+	public List<Relation>			relations;
+	public boolean					mouse_dragged;
+	private Stage					configurations_stage;
+	private CustomTextField[]		text_fields;
+	public static final String		concepts_path			= "/concepts/";
+	private String					color					= "blue";
+	private static final Effect		shadow_effect			= new DropShadow(10, Color.BLACK);
+	public static Line[] 			selected_lines			= new Line[4];
 
 	public Unit(String name, int x, int y, String path)
 	{
@@ -75,7 +80,7 @@ public class Unit extends Entity implements Configurations
 		
 		main_comp.getChildren().add(new Label("Concept Configurations"));
 		
-		CustomGridPane grid_pane = new CustomGridPane(2, 3);
+		CustomGridPane grid_pane = new CustomGridPane(2, 4);
 
 		grid_pane.add(new Label("Name"), 0, 0);
 		grid_pane.add(new Label("Input"), 0, 1);
@@ -85,9 +90,16 @@ public class Unit extends Entity implements Configurations
 		grid_pane.add(this.text_fields[0], 1, 0);
 		grid_pane.add(this.text_fields[1], 1, 1);
 		
+		grid_pane.add(new Label("Color"), 0, 2);
+		ObservableList<String> options = FXCollections.observableArrayList("blue", "green", "red", "orange", "yellow");
+		final ComboBox<String> combo_box = new ComboBox<String>(options);
+		combo_box.setPromptText(color);
+		combo_box.valueProperty().addListener((ChangeListener<String>) (ov, t, choice) -> this.color = choice);
+		grid_pane.add(combo_box, 1, 2);
+		
 		Button update_button = new Button("Update");
 		update_button.setOnAction(event -> buttonOnAction());
-		grid_pane.add(update_button, 0, this.text_fields.length);
+		grid_pane.add(update_button, 0, this.text_fields.length + 1);
 
 		Button delete_button = new Button("Delete");
 		delete_button.setOnAction(event ->
@@ -96,11 +108,11 @@ public class Unit extends Entity implements Configurations
 			Map.last_selected_unit = null;
 			this.configurations_stage.close();
 		});
-		grid_pane.add(delete_button, 1, this.text_fields.length);
+		grid_pane.add(delete_button, 1, this.text_fields.length + 1);
 		
 		main_comp.getChildren().add(grid_pane);
 		
-		Scene scene = new Scene(main_comp, 260, 265);
+		Scene scene = new Scene(main_comp, 260, 330);
 		scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
 		this.configurations_stage = new Stage();
 		this.configurations_stage.getIcons().add(new Image(Program.logo_path + ".png"));
@@ -125,6 +137,7 @@ public class Unit extends Entity implements Configurations
 		String new_input = this.text_fields[1].getText().toString();
 		if (new_input != null && !new_input.isEmpty())
 			this.concept.setInput(Double.parseDouble(new_input));
+		this.setImage(new Image(this.getClass().getResourceAsStream(Unit.concepts_path + color + "_concept.png")));
 		this.configurations_stage.close();
 	}
 	

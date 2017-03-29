@@ -56,6 +56,8 @@ public class FuzzyMenu implements Configurations
 			{
 				this.configurations_stage.setHeight(204);
 				this.fuzzy_values_length = 0;
+				Parameters.fuzzy_string_values = new String[this.fuzzy_values_length];
+				Parameters.fuzzy_double_values = new double[this.fuzzy_values_length];
 			}
 			else
 			{
@@ -116,7 +118,7 @@ public class FuzzyMenu implements Configurations
 				main_comp.getChildren().add(this.grid_pane);
 			}
 			main_comp.getChildren().add(this.update_button);
-			this.configurations_stage.setWidth(296 + 60 * fuzzy_values_length);
+			this.configurations_stage.setWidth(296 + 65 * fuzzy_values_length);
 		});
 		main_comp.getChildren().add(combo_box);
 		
@@ -138,7 +140,7 @@ public class FuzzyMenu implements Configurations
 	@Override
 	public void buttonOnAction()
 	{
-		String[] fuzzy_values = new String[this.fuzzy_values_text_fields.length];
+		String[] fuzzy_values = new String[this.fuzzy_values_length];
 		for (int i = 0; i < fuzzy_values.length; i++)
 			fuzzy_values[i] = this.fuzzy_values_text_fields[i].getText().toString();
 		for (int i = 0; i < fuzzy_values.length; i++)

@@ -15,4 +15,6 @@ res | resources
 src | source code
 JFCM Design App | runnable jar (Windows compiled)
 
+Concepts and Logo designed by Jim Sotirakis
+
 Supervisor [Dr. Elpiniki Papageorgiou](http://epapageorgiou.com)

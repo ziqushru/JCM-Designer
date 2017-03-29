@@ -23,7 +23,7 @@ public class LeftMenu extends ToolBar
 		super();
 		this.setBackground(Background.EMPTY);
 		this.setOrientation(Orientation.VERTICAL);
-		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream(Unit.concept_path + ".png"))));
+		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(Unit.concepts_path + "blue_concept.png"))));
 		LeftMenu.button_1.setTooltip(new Tooltip("Creates a concept. Right click the new concept to open Settings"));
 		LeftMenu.button_1.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>()
 		{
@@ -46,7 +46,7 @@ public class LeftMenu extends ToolBar
 			@Override
 			public void handle(MouseEvent event)
 			{
-				Unit unit = new Unit("Concept " + (Map.units.size() + 1), Program.WIDTH / 2, Program.HEIGHT - 100, Unit.concept_path);
+				Unit unit = new Unit("Concept " + (Map.units.size() + 1), Program.WIDTH / 2, Program.HEIGHT - 100, Unit.concepts_path + "blue_concept.png");
 				Map.cognitive_map.addConcept(unit.concept);
 				Map.units.add(unit);
 				if (Map.last_selected_unit != null) Map.last_selected_unit.setEffect(null);

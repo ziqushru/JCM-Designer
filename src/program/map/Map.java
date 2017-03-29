@@ -73,7 +73,7 @@ public final class Map
 
 		int counter = 0;
 		for (java.util.Map.Entry<String, Concept> concept : concepts_map.entrySet())
-			Map.units.add(new Unit(concept.getValue().getName(), concept.getValue().getInput(), (Program.WIDTH / 2 - concepts_map.size() * 32 + counter++ * 100), Program.HEIGHT / 2 - concepts_map.size() * 32 / 2, Unit.concept_path));
+			Map.units.add(new Unit(concept.getValue().getName(), concept.getValue().getInput(), (Program.WIDTH / 2 - concepts_map.size() * 32 + counter++ * 100), Program.HEIGHT / 2 - concepts_map.size() * 32 / 2, Unit.concepts_path + "blue_concept.png"));
 	
 		Parameters.A_estimated = new double[2][counter];
 		for (int i = 0; i < counter; i++)

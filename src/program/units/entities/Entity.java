@@ -21,7 +21,7 @@ public abstract class Entity extends ImageView implements EventHandler<MouseEven
 	{
 		super();
 		this.position = new Position(x, y);
-		Image image = new Image(this.getClass().getResourceAsStream("/" + path + ".png"));
+		Image image = new Image(this.getClass().getResourceAsStream(path));
 		this.setImage(image);
 		this.size = (int) image.getWidth();
 		this.setX(x);
