@@ -9,6 +9,7 @@ It uses four Hebbian-based learning algorithms :
 - Data Driven
 
 Directories:
+
 _Name_ | _Description_
 ------ | -------------
 res | resources
