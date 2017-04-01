@@ -31,7 +31,7 @@
 
 .button:hover
 {
-	-fx-effect: dropshadow(three-pass-box, #403C3C, 10, 0.5, 0, 0);    
+	-fx-effect: dropshadow(three-pass-box, #403C3C, 10, 0.5, 0, 0);
 }
 
 .text-field
@@ -44,4 +44,17 @@
     -fx-margin: 10px;
     -fx-background-insets: 8 0 8 0;
     -fx-max-width: 100px;
+}
+
+.hyperlink
+{
+	-fx-text-fill: #000000;
+	-fx-font: 16px Alcubierre;
+	-fx-border-width: 0px;
+}
+
+.hyperlink:hover
+{
+    -fx-underline: false;
+	-fx-effect: dropshadow(three-pass-box, #2A78F7, 5, 0.5, 0, 0);
 }

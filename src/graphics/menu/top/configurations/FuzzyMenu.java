@@ -1,27 +1,22 @@
 package graphics.menu.top.configurations;
 
 import graphics.gui.CustomGridPane;
+import graphics.gui.CustomStage;
 import graphics.gui.CustomTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import program.Program;
 import program.map.runnners.Parameters;
 
-public class FuzzyMenu implements Configurations
+public class FuzzyMenu extends ConfigurationsUI implements Configurations
 {
-	private Stage				configurations_stage;
 	private Label[]				fuzzy_values_labels;
-	private CustomTextField[]	fuzzy_values_text_fields;
 	private Button				update_button;
 	private int					fuzzy_values_length	= 0;
 	private GridPane			grid_pane;
@@ -29,13 +24,13 @@ public class FuzzyMenu implements Configurations
 	@Override
 	public void openConfigurations()
 	{
-		VBox main_comp = new VBox();
+		final VBox main_comp = new VBox();
 		main_comp.setId("pane");
 		main_comp.setAlignment(Pos.TOP_CENTER);
 		
 		main_comp.getChildren().add(new Label("Fuzzy Values"));
 		
-		ObservableList<String> options = FXCollections.observableArrayList("Without Fuzzy Values", "2", "3", "4", "5");
+		final ObservableList<String> options = FXCollections.observableArrayList("Without Fuzzy Values", "2", "3", "4", "5");
 		final ComboBox<String> combo_box = new ComboBox<String>(options);
 		combo_box.setPromptText("Select Fuzzy Value");
 
@@ -46,7 +41,7 @@ public class FuzzyMenu implements Configurations
 				for (int i = 0; i < this.fuzzy_values_length; i++)
 				{
 					main_comp.getChildren().remove(this.fuzzy_values_labels[i]);
-					main_comp.getChildren().remove(this.fuzzy_values_text_fields[i]);
+					main_comp.getChildren().remove(this.text_fields[0][i]);
 				}
 				main_comp.getChildren().remove(this.grid_pane);
 			}
@@ -108,12 +103,12 @@ public class FuzzyMenu implements Configurations
 						Parameters.fuzzy_string_values[4] = "Very High";
 						break;
 				}
-				this.fuzzy_values_text_fields = new CustomTextField[this.fuzzy_values_length];
+				this.text_fields = new CustomTextField[1][this.fuzzy_values_length];
 				for (int i = 0; i < this.fuzzy_values_length; i++)
 				{
 					this.grid_pane.add(this.fuzzy_values_labels[i], i, 0);
-					this.fuzzy_values_text_fields[i] = new CustomTextField(this);
-					this.grid_pane.add(this.fuzzy_values_text_fields[i], i, 1);
+					this.text_fields[0][i] = new CustomTextField(this);
+					this.grid_pane.add(this.text_fields[0][i], i, 1);
 				}
 				main_comp.getChildren().add(this.grid_pane);
 			}
@@ -124,25 +119,17 @@ public class FuzzyMenu implements Configurations
 		
 		this.update_button = new Button("Update Values");
 		this.update_button.setOnAction(event -> this.buttonOnAction());
-
 		main_comp.getChildren().add(update_button);
 
-		Scene scene = new Scene(main_comp, 280, 170);
-		scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
-		this.configurations_stage = new Stage();
-		this.configurations_stage.getIcons().add(new Image(Program.logo_path + ".png"));
-		this.configurations_stage.setScene(scene);
-		this.configurations_stage.setTitle("Fuzzy Configurations");
-		this.configurations_stage.setResizable(false);
-		this.configurations_stage.show();
+		this.configurations_stage = new CustomStage("Fuzzy Configurations", 280, 170, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override
 	public void buttonOnAction()
 	{
-		String[] fuzzy_values = new String[this.fuzzy_values_length];
+		final String[] fuzzy_values = new String[this.fuzzy_values_length];
 		for (int i = 0; i < fuzzy_values.length; i++)
-			fuzzy_values[i] = this.fuzzy_values_text_fields[i].getText().toString();
+			fuzzy_values[i] = this.text_fields[0][i].getText().toString();
 		for (int i = 0; i < fuzzy_values.length; i++)
 			if (fuzzy_values[i] != null && !fuzzy_values[i].isEmpty())
 				Parameters.fuzzy_double_values[i] = Double.parseDouble(fuzzy_values[i]);

@@ -1,24 +1,23 @@
 package program.map.learning_algorithms;
 
 import program.map.runnners.Parameters;
-import program.map.runnners.Runner;
 
-public class Active implements HebbianLearning
-{
+public class Active extends HebbianLearning
+{	
 	@Override
-	public void calculateWeights(double[] A, double[] weights)
+	public void calculateWeights(double[] A, double[] A_before, double[] weights, Parameters parameters)
 	{
 		for (int y = 0; y < A.length; y++)
 			for (int x= 0; x < A.length; x++)
 				if (x != y)
-					weights[x + y * A.length] = (1 - Parameters.g) * weights[x + y * A.length] +
-												Parameters.n * A[y] * (A[x] - weights[x + y * A.length] * A[y]);
+					weights[x + y * A.length] = (1 - parameters.getG()) * weights[x + y * A.length] +
+												parameters.getH() * A[y] * (A[x] - weights[x + y * A.length] * A[y]);
 	}
 
 	@Override
-	public void update_parameters()
+	public void update_parameters(int iteration, Parameters parameters)
 	{
-		Parameters.n = 0.002 * Math.exp(-Parameters.l1 * Runner.iteration);
-		Parameters.g = 0.008 * Math.exp(-Parameters.l2 * Runner.iteration);
+		parameters.setH(parameters.getB1() * Math.exp(-parameters.getL1() * iteration));
+		parameters.setG(parameters.getB2() * Math.exp(-parameters.getL2() * iteration));
 	}
 }

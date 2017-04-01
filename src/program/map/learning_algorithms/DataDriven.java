@@ -1,9 +1,11 @@
 package program.map.learning_algorithms;
 
-public class DataDriven implements HebbianLearning
+import program.map.runnners.Parameters;
+
+public class DataDriven extends HebbianLearning
 {
 	@Override
-	public void calculateWeights(double[] A, double[] weights)
+	public void calculateWeights(double[] A, double[] A_before, double[] weights, Parameters parameters)
 	{
 		for (int y = 0; y < A.length; y++)
 		{
@@ -15,7 +17,7 @@ public class DataDriven implements HebbianLearning
 	}
 
 	@Override
-	public void update_parameters()
+	public void update_parameters(int iteration, Parameters parameters)
 	{
 		
 	}

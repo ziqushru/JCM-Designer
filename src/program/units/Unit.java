@@ -6,13 +6,13 @@ import java.util.List;
 import org.megadix.jfcm.Concept;
 
 import graphics.gui.CustomGridPane;
+import graphics.gui.CustomStage;
 import graphics.gui.CustomTextField;
 import graphics.menu.top.configurations.Configurations;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -26,7 +26,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import program.Program;
 import program.map.Map;
 import program.map.Relation;
@@ -40,7 +39,7 @@ public class Unit extends Entity implements Configurations
 	private int						name_y_offset;
 	public List<Relation>			relations;
 	public boolean					mouse_dragged;
-	private Stage					configurations_stage;
+	private CustomStage				configurations_stage;
 	private CustomTextField[]		text_fields;
 	public static final String		concepts_path			= "/concepts/";
 	private String					color					= "blue";
@@ -109,17 +108,9 @@ public class Unit extends Entity implements Configurations
 			this.configurations_stage.close();
 		});
 		grid_pane.add(delete_button, 1, this.text_fields.length + 1);
-		
 		main_comp.getChildren().add(grid_pane);
 		
-		Scene scene = new Scene(main_comp, 260, 330);
-		scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
-		this.configurations_stage = new Stage();
-		this.configurations_stage.getIcons().add(new Image(Program.logo_path + ".png"));
-		this.configurations_stage.setScene(scene);
-		this.configurations_stage.setTitle("Concept Configurations");
-		this.configurations_stage.setResizable(false);
-		this.configurations_stage.show();
+		this.configurations_stage = new CustomStage("Concept Configurations", 260, 330, main_comp, "/stylesheets/pop_up.css");
 	}
 	
 	@Override

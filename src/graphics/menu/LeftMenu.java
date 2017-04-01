@@ -24,7 +24,7 @@ public class LeftMenu extends ToolBar
 		this.setBackground(Background.EMPTY);
 		this.setOrientation(Orientation.VERTICAL);
 		LeftMenu.button_1.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(Unit.concepts_path + "blue_concept.png"))));
-		LeftMenu.button_1.setTooltip(new Tooltip("Creates a concept. Right click the new concept to open Settings"));
+		LeftMenu.button_1.setTooltip(new Tooltip("Creates a new concept in the middle of the screen"));
 		LeftMenu.button_1.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>()
 		{
 			@Override

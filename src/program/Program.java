@@ -24,7 +24,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import program.map.Map;
-import program.map.runnners.Runner;
 import program.units.Unit;
 import program.utils.Log;
 
@@ -50,13 +49,14 @@ public class Program extends Application
 	{
 		Program.log = new Log();
 		Program.main_border_pane = new BorderPane();
-		Program.main_border_pane.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
 		Program.main_border_pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, null)));
 		Program.host_services = this.getHostServices();
 		new TopMenu();
 		new LeftMenu();
 		Program.window = window;
+		Program.setUserAgentStylesheet(Program.STYLESHEET_CASPIAN);
 		Program.window.setScene(new Scene(Program.main_border_pane, Program.WIDTH, Program.HEIGHT));
+		Program.window.getScene().getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
 		Program.window.getIcons().add(new Image(Program.logo_path + ".png"));
 		Program.window.setTitle(Program.TITLE);
 		Program.main_border_pane.setOnMouseClicked(event ->
@@ -88,15 +88,9 @@ public class Program extends Application
 		if (result.get() == ButtonType.OK)
 		{
 			Program.running = false;
-			if (Runner.runner_thread != null)
-				try
-				{
-					Runner.runner_thread.join();
-				}
-				catch (InterruptedException e) { e.printStackTrace(); }
-			Program.window.close();
 			for (JFrame frame : GraphScreen.frames)
 				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+			Program.window.close();
 			Platform.exit();
 		}
 	}

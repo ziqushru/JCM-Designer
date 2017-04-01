@@ -13,34 +13,29 @@ import program.utils.transferfunctions.TransferFunction;
 
 public class Runner implements Runnable
 {
-	public static int				iteration;
-	private static Number			counter_terminated;
-	private static final int		stability_length	= 4;
-	private static int				stability_counter;
-	public static double[]			A_before;
-	private static double			rounder;
+	private final String 		name;
+	private int					iteration;
+	private static final int	stability_length	= 4;
+	private int					stability_counter;
+	private double				rounder;
+	private Thread				runner_thread;
 
-	public static TransferFunction	transfer_function;
-	public static HebbianLearning	hebbian_learning;
-	public static InferenceRule		inference_rule;
-	public static Parameters		parameters;
-
-	public static Thread			runner_thread;
-
-	public Runner()
+	private TransferFunction	transfer_function;
+	private InferenceRule		inference_rule;
+	public HebbianLearning		hebbian_learning;
+	public Parameters			parameters			= new Parameters();
+	
+	public Runner(String name, HebbianLearning hebbian_learning)
 	{
-		this(null);
-	}
-
-	public Runner(Number counter_terminated)
-	{
-		Runner.counter_terminated = counter_terminated;
+		this.name = name;
+		this.hebbian_learning = hebbian_learning;
 	}
 
 	public void start()
 	{
-		Runner.runner_thread = new Thread(this, "JFCM Runner");
-		Runner.runner_thread.start();
+		this.runner_thread = new Thread(this, "JFCM Runner(" + this.name + ")");
+		this.runner_thread.setPriority(Thread.MAX_PRIORITY);
+		this.runner_thread.start();
 	}
 
 	@Override
@@ -48,48 +43,45 @@ public class Runner implements Runnable
 	{
 		List<double[]> A_overall = new ArrayList<double[]>();
 		double[] A = new double[Map.units.size()];
-		Runner.A_before = new double[A.length];
-		for (int y = 0; y < A.length; y++)
-			A[y] = Map.units.get(y).concept.getInput();
+		double[] A_before = new double[A.length];
+		for (int y = 0; y < A.length; y++)	A[y] = Map.units.get(y).concept.getInput();
 		A_overall.add(A.clone());
 		double[] weights = Runner.W(A.length);
-		Runner.iteration = 1;
-		Runner.stability_counter = 0;
-		if (Runner.hebbian_learning == null) 	rounder = 10000;
-		else									rounder = 1000;
+		this.iteration = 1;
+		this.stability_counter = 0;
+		if (this.hebbian_learning == null) 	rounder = 10000;
+		else								rounder = 1000;
 		
 		do
 		{
 			for (int y = 0; y < A.length; y++)
-				Runner.A_before[y] = A[y];
+				A_before[y] = A[y];
 
-			Runner.inference_rule.calculateA(A, weights);
-			if (Runner.hebbian_learning != null) Runner.hebbian_learning.calculateWeights(A, weights);
+			this.inference_rule.calculateA(A, weights, this.transfer_function);
+			
+			if (this.hebbian_learning != null)
+				this.hebbian_learning.calculateWeights(A, A_before, weights, this.parameters);
 
-			Runner.update(A, weights);
+			this.update(A, weights);
 			A_overall.add(A.clone());
-		} while (!isTerminated(A));
+		} while (!isTerminated(A, A_before));
 
-		new GraphScreen("Outputs", "Outputs", A_overall);
+		new GraphScreen("Outputs", this.name, A_overall);
 	}
 
-	private static synchronized void update(double[] A, double[] weights)
+	private synchronized void update(double[] A, double[] weights)
 	{
+		this.iteration++;
 		for (int i = 0; i < A.length; i++)
-			A[i] = (double) ((int) (A[i] * rounder)) / rounder;
+			A[i] = (double) ((int) (A[i] * this.rounder)) / this.rounder;
 		for (int i = 0; i < weights.length; i++)
 			weights[i] = (double) ((int) (weights[i] * rounder)) / rounder;
-		if (Runner.hebbian_learning != null) Runner.hebbian_learning.update_parameters();
-		Runner.iteration++;
+		if (this.hebbian_learning != null)
+			this.hebbian_learning.update_parameters(this.iteration, this.parameters);
 	}
 
-	private static synchronized boolean isTerminated(double[] A)
+	private synchronized boolean isTerminated(double[] A, double[] A_before)
 	{
-		if (Runner.counter_terminated != null) if (Runner.iteration > Runner.counter_terminated.intValue())
-			return true;
-		else
-			return false;
-		
 		int parameters_counter = 0;
 		int valid_parameters_counter = 0;
 		for (int x = 0; x < A.length; x++)
@@ -108,13 +100,13 @@ public class Runner implements Runnable
 		
 		for (int x = 0; x < A.length; x++)
 		{
-			if (Math.abs(Runner.A_before[x] - A[x]) >= Parameters.e)
+			if (Math.abs(A_before[x] - A[x]) >= this.parameters.getE())
 			{
-				Runner.stability_counter = 0;
+				this.stability_counter = 0;
 				return false;
 			}
 		}
-		if (++Runner.stability_counter == Runner.stability_length) return true;
+		if (++this.stability_counter == Runner.stability_length) return true;
 		return false;
 	}
 
@@ -153,5 +145,15 @@ public class Runner implements Runnable
 		for (int x = 0; x < array.length; x++)
 			Log.addLog(array[x] + "\t");
 		Log.consoleOut();
+	}
+
+	public void setTransferFunction(TransferFunction transfer_function)
+	{
+		this.transfer_function = transfer_function;
+	}
+
+	public void setInferenceRule(InferenceRule inference_rule)
+	{
+		this.inference_rule = inference_rule;
 	}
 }

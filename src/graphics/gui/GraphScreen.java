@@ -46,10 +46,10 @@ public class GraphScreen
 		{
 			Color color = Color.BLACK;
 			if (i % 6 == 0)			color = Color.RED;
-			else if (i % 6 == 1)	color = Color.ORANGE;
-			else if (i % 6 == 2)	color = Color.YELLOW;
-			else if (i % 6 == 3)	color = Color.GREEN;
-			else if (i % 6 == 4)	color = Color.BLUE;
+			else if (i % 6 == 1)	color = Color.GREEN;
+			else if (i % 6 == 2)	color = Color.RED;
+			else if (i % 6 == 3)	color = Color.ORANGE;
+			else if (i % 6 == 4)	color = Color.YELLOW;
 			else if (i % 6 == 5)	color = Color.MAGENTA;
 			renderer.setSeriesPaint(i, color);
 			renderer.setSeriesStroke(i, new BasicStroke(1.0f));
@@ -84,17 +84,13 @@ public class GraphScreen
 	{
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		final XYSeries[] units = new XYSeries[concepts_length];
-
 		for (int i = 0; i < concepts_length; i++)
 			units[i] = new XYSeries(Map.units.get(i).getName());
-		
 		for (int y = 0; y < A_overall.size(); y++)
 			for (int x = 0; x < A_overall.get(y).length; x++)
 				units[x].add(y, A_overall.get(y)[x]);
-		
 		for (int i = 0; i < concepts_length; i++)
 			dataset.addSeries(units[i]);
-		
 		return dataset;
 	}
 }

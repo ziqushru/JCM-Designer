@@ -2,25 +2,22 @@ package graphics.gui;
 
 import graphics.menu.top.configurations.Configurations;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.StrokeLineCap;
-import javafx.stage.Stage;
 import program.Program;
 import program.map.Relation;
 import program.map.runnners.Parameters;
 
 public class BezierCurve extends CubicCurve implements Configurations
 {
-	private Stage			configurations_stage;
+	private CustomStage		configurations_stage;
 	private CustomTextField	weight_value_text_field;
 	private Relation		relation;
 
@@ -126,16 +123,10 @@ public class BezierCurve extends CubicCurve implements Configurations
 		buttons_weight_comp.add(delete_relation_button, 1, 0);
 		main_comp.getChildren().add(buttons_weight_comp);
 
+		int width = 275 + 60 * Parameters.fuzzy_string_values.length;
 		int height = 190;
 		if (Parameters.fuzzy_string_values.length != 0) height += 40;
-		Scene scene = new Scene(main_comp, 275 + 60 * Parameters.fuzzy_string_values.length, height);
-	    scene.getStylesheets().add(Program.class.getResource("/stylesheets/pop_up.css").toExternalForm());
-	    this.configurations_stage = new Stage();
-	    this.configurations_stage.getIcons().add(new Image(Program.logo_path + ".png"));
-	    this.configurations_stage.setScene(scene);
-	    this.configurations_stage.setTitle("Relation Settings");
-	    this.configurations_stage.setResizable(false);
-		this.configurations_stage.show();
+		this.configurations_stage = new CustomStage("Relation Configurations", width, height, main_comp, "/stylesheets/pop_up.css");
 	}
 	
 	@Override

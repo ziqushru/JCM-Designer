@@ -17,10 +17,8 @@ public class CustomGridPane extends GridPane
 		RowConstraints row = new RowConstraints();
 		row.setValignment(VPos.CENTER);
 		row.setPercentHeight(100 / rows);
-
 		for (int i = 0; i < columns; i++)
 			this.getColumnConstraints().add(column);
-
 		for (int i = 0; i < rows; i++)
 			this.getRowConstraints().add(row);
 	}

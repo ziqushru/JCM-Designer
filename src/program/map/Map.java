@@ -17,7 +17,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import program.Program;
 import program.map.runnners.Parameters;
-import program.map.runnners.Runner;
 import program.units.Unit;
 import program.utils.Log;
 
@@ -26,7 +25,6 @@ public final class Map
 	public static CognitiveMap	cognitive_map		= new CognitiveMap();
 	public static List<Unit>	units				= new ArrayList<Unit>();
 	public static Unit			last_selected_unit	= null;
-	public static Runner		runner				= new Runner();
 	
 	public static void clear()
 	{
