@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import program.map.Map;
 import program.map.runnners.Parameters;
 
-public class EstimatedOutputsMenu extends ConfigurationsUI implements Configurations
+public class DesiredOutputsMenu extends ConfigurationsUI implements Configurations
 {
 	@Override
 	public void openConfigurations()
@@ -19,7 +19,7 @@ public class EstimatedOutputsMenu extends ConfigurationsUI implements Configurat
 		main_comp.setId("pane");
 		main_comp.setAlignment(Pos.TOP_CENTER);
 
-		main_comp.getChildren().add(new Label("Estimated Outputs"));
+		main_comp.getChildren().add(new Label("Desired Outputs"));
 
 		final int concepts_length = Map.units.size();
 		if (concepts_length == 0) return;
@@ -38,7 +38,7 @@ public class EstimatedOutputsMenu extends ConfigurationsUI implements Configurat
 			grid_pane.add(new Label(Map.units.get(i).getName()), 1 + i, 0);
 			for (int j = 0; j < text_fields.length; j++)
 			{	
-				this.text_fields[j][i] = new CustomTextField(this, Parameters.A_estimated[j][i]);
+				this.text_fields[j][i] = new CustomTextField(this, Parameters.A_desired[j][i]);
 				grid_pane.add(this.text_fields[j][i], 1 + i, 1 + j);
 			}
 		}
@@ -48,7 +48,7 @@ public class EstimatedOutputsMenu extends ConfigurationsUI implements Configurat
 		update_button.setOnAction(event -> this.buttonOnAction());
 		main_comp.getChildren().add(update_button);
 
-		this.configurations_stage = new CustomStage("Estimated Outputs", width, 320, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Desired Outputs", width, 320, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override
@@ -58,10 +58,14 @@ public class EstimatedOutputsMenu extends ConfigurationsUI implements Configurat
 		for (int i = 0; i < texts.length; i++)
 			for (int j = 0; j < texts[0].length; j++)
 				texts[i][j] = this.text_fields[i][j].getText().toString();
+		Parameters.A_desired_length = 0;
 		for (int i = 0; i < texts.length; i++)
 			for (int j = 0; j < texts[0].length; j++)
 				if (texts[i][j] != null && !texts[i][j].isEmpty())
-					Parameters.A_estimated[i][j] = Double.parseDouble(texts[i][j]);
+				{
+					Parameters.A_desired[i][j] = Double.parseDouble(texts[i][j]);
+					Parameters.A_desired_length += 0.5;
+				}
 		this.configurations_stage.close();
 	}
 }

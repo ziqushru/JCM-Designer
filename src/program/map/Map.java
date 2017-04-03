@@ -73,11 +73,11 @@ public final class Map
 		for (java.util.Map.Entry<String, Concept> concept : concepts_map.entrySet())
 			Map.units.add(new Unit(concept.getValue().getName(), concept.getValue().getInput(), (Program.WIDTH / 2 - concepts_map.size() * 32 + counter++ * 100), Program.HEIGHT / 2 - concepts_map.size() * 32 / 2, Unit.concepts_path + "blue_concept.png"));
 	
-		Parameters.A_estimated = new double[2][counter];
+		Parameters.A_desired = new double[2][counter];
 		for (int i = 0; i < counter; i++)
 		{
-			Parameters.A_estimated[0][i] = Parameters.A_not_estimated;
-			Parameters.A_estimated[1][i] = Parameters.A_not_estimated;
+			Parameters.A_desired[0][i] = Parameters.A_desired_null;
+			Parameters.A_desired[1][i] = Parameters.A_desired_null;
 		}
 			
 		for (Entry<String, FcmConnection> connections : connnections_map.entrySet())

@@ -56,10 +56,10 @@ public abstract class RunConfigurations extends ConfigurationsUI
 	
 	protected void setInferenceRule(RadioButton[] inference_rules)
 	{
-		if (inference_rules[0].isSelected())		this.runner.setInferenceRule(new Kosko());
+		if (inference_rules == null)				this.runner.setInferenceRule(new ModifiedKosko());
+		else if (inference_rules[0].isSelected())		this.runner.setInferenceRule(new Kosko());
 		else if (inference_rules[1].isSelected())	this.runner.setInferenceRule(new ModifiedKosko());
-		else if (inference_rules[2].isSelected())	this.runner.setInferenceRule(new RescaledKosko());
-		else										this.runner.setInferenceRule(new ModifiedKosko());
+		else if (inference_rules[2].isSelected())	this.runner.setInferenceRule(new RescaledKosko());										
 	}
 	
 	protected void setParameters()

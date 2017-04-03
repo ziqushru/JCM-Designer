@@ -14,16 +14,16 @@
 
 .radio-button
 {
-	-fx-font: 14px Alcubierre;
-    -fx-padding: 10px;
+	-fx-font: 16px Alcubierre;
+	-fx-padding: 10px;
     -fx-margin: 10px;
-    -fx-background-insets: 10 0 10 0;
+ 	-fx-focus-color: transparent;
 }
 
 .button
 {
-	-fx-font: 16px Alcubierre;
-	-fx-background-radius: 10px 10px 10px 10px;
+	-fx-font: 18px Alcubierre;
+	-fx-background-radius: 10px;
     -fx-background-color: #FFFFFF;
     -fx-padding: 10px;
     -fx-margin: 10px;
@@ -36,21 +36,70 @@
 
 .text-field
 {
-	-fx-font: 16px Alcubierre;
-	-fx-border-radius: 10px 10px 10px 10px;
+	-fx-font: 18px Alcubierre;
+	-fx-border-radius: 10px;
     -fx-border-style: solid;
     -fx-border-width: 1px;
 	-fx-padding: 10px;
     -fx-margin: 10px;
-    -fx-background-insets: 8 0 8 0;
+    -fx-text-box-border: transparent;
+ 	-fx-focus-color: transparent;
     -fx-max-width: 100px;
+}
+
+.combo-box
+{
+	-fx-font: 16px Alcubierre;
+	-fx-background-color: #FFFFFF;
+	-fx-border-radius: 10px;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+	-fx-padding: 10px;
+    -fx-margin: 10px;
+}
+
+.combo-box .list-cell
+{
+	-fx-alignment: center;
+}
+
+.combo-box .arrow-button
+{
+	-fx-background-color: #FFFFFF;
+}
+
+.combo-box .arrow
+{
+	-fx-background-color: #FFFFFF;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+}
+
+.combo-box:hover .arrow, .combo-box:showing .arrow
+{
+	-fx-background-color: #77ABFF;
+}
+
+.combo-box-popup .list-view
+{
+	-fx-background-radius: 10px;
+	-fx-border-radius: 10px;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+	-fx-padding: 3px;
+}
+
+.combo-box-popup .list-view .list-cell
+{
+	-fx-text-fill: #000000;
+	-fx-alignment: center;
 }
 
 .hyperlink
 {
 	-fx-text-fill: #000000;
-	-fx-font: 16px Alcubierre;
-	-fx-border-width: 0px;
+	-fx-font: 18px Alcubierre;
+ 	-fx-focus-color: transparent;
 }
 
 .hyperlink:hover

@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class ConfigurationsMenu extends Menu
 {
 	private static final MenuItem input_vector_configurations = new MenuItem("Input Vector");
-	private static final MenuItem estimated_output_configurations = new MenuItem("Estimated Output");
+	private static final MenuItem estimated_output_configurations = new MenuItem("Desired Outputs");
 	private static final MenuItem fuzzy_configurations = new MenuItem("Fuzzy");
 	
 	public static Stage settings_stage;
@@ -17,7 +17,7 @@ public class ConfigurationsMenu extends Menu
 	{
 		super(text);
 		ConfigurationsMenu.input_vector_configurations.setOnAction(event -> new InputVectorMenu().openConfigurations());
-		ConfigurationsMenu.estimated_output_configurations.setOnAction(event -> new EstimatedOutputsMenu().openConfigurations());
+		ConfigurationsMenu.estimated_output_configurations.setOnAction(event -> new DesiredOutputsMenu().openConfigurations());
 		ConfigurationsMenu.fuzzy_configurations.setOnAction(event -> new FuzzyMenu().openConfigurations());
 		this.getItems().add(ConfigurationsMenu.input_vector_configurations);
 		this.getItems().add(ConfigurationsMenu.estimated_output_configurations);

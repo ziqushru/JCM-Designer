@@ -16,9 +16,9 @@ public class TopMenu extends MenuBar
 		new ConfigurationsMenu(this, "Configurations");
 		new RunMenu(this, "Run");
 		new HelpMenu(this, "Help");
-		this.setMaxWidth(275);
-		this.setMinWidth(275);
-		this.setPrefWidth(275);
+		this.setMaxWidth(305);
+		this.setMinWidth(305);
+		this.setPrefWidth(305);
 		Program.main_border_pane.setTop(this);
 	}
 }

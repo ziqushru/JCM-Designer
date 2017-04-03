@@ -22,7 +22,7 @@ public class CustomTextField extends TextField
 	public CustomTextField(Configurations configuration, double prompt_text)
 	{
 		this(configuration);
-		if (prompt_text != Parameters.A_not_estimated)
+		if (prompt_text != Parameters.A_desired_null)
 			this.setPromptText(prompt_text + "");
 		
 	}

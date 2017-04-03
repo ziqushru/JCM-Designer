@@ -1,12 +1,17 @@
 package program.map.learning_algorithms;
 
+import java.util.List;
+
 import program.map.runnners.Parameters;
 
 public class Differential extends HebbianLearning
 {
 	@Override
-	public void calculateWeights(double[] A, double[] A_before, double[] weights, Parameters parameters)
+	public void calculateWeights(List<double[]> A_overall, double[] weights, Parameters parameters)
 	{
+		double[] A = A_overall.get(A_overall.size() - 1);
+		double[] A_before = A_overall.get(A_overall.size() - 2);
+		
 		for (int y = 0; y < A.length; y++)
 		{
 			double DAY = A[y] - A_before[y];
@@ -21,8 +26,8 @@ public class Differential extends HebbianLearning
 	}
 
 	@Override
-	public void update_parameters(int iteration, Parameters parameters)
+	public void update_parameters(Parameters parameters)
 	{
-		parameters.setM(0.1 * (1 - iteration / (1.1 * parameters.getN())));
+		parameters.setM(0.1 * (1 - parameters.iteration / (1.1 * parameters.getN())));
 	}	
 }

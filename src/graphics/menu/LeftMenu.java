@@ -51,11 +51,11 @@ public class LeftMenu extends ToolBar
 				Map.units.add(unit);
 				if (Map.last_selected_unit != null) Map.last_selected_unit.setEffect(null);
 				Map.last_selected_unit = null;
-				Parameters.A_estimated = new double[2][Map.units.size()];
+				Parameters.A_desired = new double[2][Map.units.size()];
 				for (int i = 0; i < Map.units.size(); i++)
 				{
-					Parameters.A_estimated[0][i] = Parameters.A_not_estimated;
-					Parameters.A_estimated[1][i] = Parameters.A_not_estimated;
+					Parameters.A_desired[0][i] = Parameters.A_desired_null;
+					Parameters.A_desired[1][i] = Parameters.A_desired_null;
 				}
 			}
 		});

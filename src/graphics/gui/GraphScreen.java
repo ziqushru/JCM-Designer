@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,21 @@ public class GraphScreen
 	private final List<double[]>	A_overall;
 	public static List<JFrame>		frames = new ArrayList<JFrame>();
 	
+	@SuppressWarnings("serial")
+	private class Label extends JLabel
+	{
+		public Label(String text, int size)
+		{
+			super(text);
+			this.setFont(new Font("Alcubierre", Font.PLAIN, size));
+		}
+		
+		public Label(double text, int size)
+		{
+			this(text + "", size);
+		}
+	}
+	
 	public GraphScreen(String application_title, String chart_title, List<double[]> A_overall)
 	{
 		this.A_overall = A_overall;
@@ -39,7 +55,10 @@ public class GraphScreen
 		
 		JPanel main_panel = new JPanel(new BorderLayout());
 		JFreeChart chart = ChartFactory.createXYLineChart(chart_title, "Iterations", "Concept Values", createDataset(), PlotOrientation.VERTICAL, true, true, false);
+		chart.setAntiAlias(true);
+		chart.setTextAntiAlias(true);
 		ChartPanel chart_panel = new ChartPanel(chart);
+		chart_panel.setMinimumSize(new Dimension(1024, 500));
 		final XYPlot plot = chart.getXYPlot();
 		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 		for (int i = 0; i < this.concepts_length; i++)
@@ -59,15 +78,15 @@ public class GraphScreen
 
 		JPanel data_panel = new JPanel(new GridLayout(1 + this.iterations, 1 + this.concepts_length));
 		data_panel.setBackground(Color.WHITE);
-		data_panel.add(new JLabel("  Iterations"));
+		data_panel.add(new Label("  Iterations", 16));
 		for (int x = 0; x < this.concepts_length; x++)
-			data_panel.add(new JLabel(Map.units.get(x).getName()));
+			data_panel.add(new Label(Map.units.get(x).getName(), 16));
 		
 		for (int y = 0; y < iterations; y++)
 		{
-			data_panel.add(new JLabel("       " + y));
+			data_panel.add(new Label("       " + y, 14));
 			for (int x = 0; x < concepts_length; x++)
-				data_panel.add(new JLabel(A_overall.get(y)[x] + ""));
+				data_panel.add(new Label(A_overall.get(y)[x], 14));
 		}
 		main_panel.add(data_panel, BorderLayout.SOUTH);
 
