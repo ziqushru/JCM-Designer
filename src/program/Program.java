@@ -21,7 +21,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import program.map.Map;
 import program.units.Unit;
@@ -38,7 +37,6 @@ public class Program extends Application
 	public static Stage					window;
 	public static BorderPane			main_border_pane;
 	public static final String			logo_path								= "logo";
-	public static final Font			font									= new Font("/fonts/Alcubierre.otf", 18);
 	public static HostServices 			host_services;
 
 	public static boolean				running									= false;

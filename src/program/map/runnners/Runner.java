@@ -38,9 +38,10 @@ public strictfp class Runner implements Runnable
 	@Override
 	public void run()
 	{
-		List<double[]> A_overall = new ArrayList<double[]>();
 		double[] A = new double[Map.units.size()];
-		for (int y = 0; y < A.length; y++)	A[y] = Map.units.get(y).concept.getInput();
+		for (int y = 0; y < A.length; y++)
+			A[y] = Map.units.get(y).concept.getInput();
+		List<double[]> A_overall = new ArrayList<double[]>();
 		A_overall.add(A.clone());
 		double[] weights = Runner.W(A.length);
 		if (this.hebbian_learning == null) 	rounder = 10000;
@@ -75,13 +76,24 @@ public strictfp class Runner implements Runnable
 	private synchronized boolean shouldTerminate(List<double[]> A_overall)
 	{
 		double[] A = A_overall.get(A_overall.size() - 1);
-		int valid_parameters_counter = 0;
-		for (int x = 0; x < A.length; x++)
-			if (Parameters.A_desired[0][x] != Parameters.A_desired_null && A[x] <= Parameters.A_desired[0][x]
-			&& 	Parameters.A_desired[1][x] != Parameters.A_desired_null && A[x] >= Parameters.A_desired[1][x])
-				valid_parameters_counter++;
 		if (Parameters.A_desired_length > 0)
+		{
+			int valid_parameters_counter = 0;
+			for (int x = 0; x < A.length; x++)
+				if (Parameters.A_desired[0][x] != Parameters.A_desired_null && A[x] <= Parameters.A_desired[0][x]
+				&& 	Parameters.A_desired[1][x] != Parameters.A_desired_null && A[x] >= Parameters.A_desired[1][x])
+					valid_parameters_counter++;
 			if (valid_parameters_counter == Parameters.A_desired_length)	return true;
+		}
+
+		if (this.parameters.data_driven != null)
+		{
+			if (this.parameters.iteration - 1 >= this.parameters.data_driven.size()) return true;
+			for (int x = 0; x < A.length; x++)
+				if (this.parameters.data_driven.get(this.parameters.iteration - 1)[x] != A[x])
+					return false;
+			return true;
+		}
 		
 		double[] A_before = A_overall.get(A_overall.size() - 2);
 		for (int x = 0; x < A.length; x++)

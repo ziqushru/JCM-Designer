@@ -1,6 +1,7 @@
 package program.map.runnners;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class Parameters extends ArrayList<Double>
@@ -23,10 +24,12 @@ public class Parameters extends ArrayList<Double>
 	public void setL1(double l1) {	this.remove(4);				this.add(4, l1); }
 	public void setL2(double l2) {	this.remove(5);				this.add(5, l2); }
 	public void setE(double e) { this.remove(this.size() - 1);	this.add(e); }
-
+	
+	public List<double[]>		data_driven;
+	
 	public int					iteration			= 1;
 	public static double		A_desired_length;
-	public static double		A_desired[][];
+	public static double[][]	A_desired;
 	public static final double	A_desired_null 		= 1337;
 	public static final int		stability_length	= 5;
 	public int					stability_counter   = 0;

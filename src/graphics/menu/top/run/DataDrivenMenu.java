@@ -1,18 +1,28 @@
 package graphics.menu.top.run;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import graphics.gui.CustomGridPane;
 import graphics.gui.CustomStage;
 import graphics.gui.CustomTextField;
-import graphics.menu.top.configurations.Configurations;
 import graphics.menu.top.configurations.RunConfigurations;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import program.Program;
 import program.map.learning_algorithms.DataDriven;
 
-public class DataDrivenMenu extends RunConfigurations implements Configurations
+public class DataDrivenMenu extends RunConfigurations
 {
+	List<double[]> data_driven = new ArrayList<double[]>();
+	
 	@Override
 	public void openConfigurations()
 	{
@@ -43,6 +53,32 @@ public class DataDrivenMenu extends RunConfigurations implements Configurations
 			parameters_grid_panes[i].add(this.text_fields[0][i], 1, 0);
 			grid_pane.add(parameters_grid_panes[i], 1, 1 + i);
 		}
+		Button data_driven_button = new Button("Select Data File");
+		data_driven_button.setOnAction(event -> 
+		{
+			FileChooser file_chooser = new FileChooser();
+			file_chooser.setTitle("Select Data File");
+			file_chooser.getExtensionFilters().add(new ExtensionFilter("txt", "*.txt"));
+			File file = file_chooser.showOpenDialog(Program.window);
+			if (file  == null) return;
+			try
+			{
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				String line;
+				while ((line = br.readLine()) != null)
+				{
+					String[] data_string = line.split(" ");
+					double[] data = new double[data_string.length];
+					for (int i = 0; i < data.length; i++)
+						data[i] = Double.parseDouble(data_string[i]);
+					this.data_driven.add(data);
+				}
+				br.close();
+			}
+			catch (Exception e) { e.printStackTrace(); }
+			this.configurations_stage.toFront();
+		});
+		grid_pane.add(data_driven_button, 1, 1 + parameters_length);		
 		main_comp.getChildren().add(grid_pane);
 
 		Button run_button = new Button("Run");
@@ -56,6 +92,7 @@ public class DataDrivenMenu extends RunConfigurations implements Configurations
 	public void buttonOnAction()
 	{
 		this.setRunner(null, new DataDriven());
+		this.runner.parameters.data_driven = this.data_driven; 
 		this.runner.start();
 		this.configurations_stage.close();
 	}

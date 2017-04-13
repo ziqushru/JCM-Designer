@@ -49,7 +49,12 @@ public class LeftMenu extends ToolBar
 				Unit unit = new Unit("Concept " + (Map.units.size() + 1), Program.WIDTH / 2, Program.HEIGHT - 100, Unit.concepts_path + "blue_concept.png");
 				Map.cognitive_map.addConcept(unit.concept);
 				Map.units.add(unit);
-				if (Map.last_selected_unit != null) Map.last_selected_unit.setEffect(null);
+				if (Map.last_selected_unit != null)
+				{
+					for (int i = 0; i < Unit.selected_lines.length; i++)
+						Program.main_border_pane.getChildren().remove(Unit.selected_lines[i]);
+					Map.last_selected_unit.setEffect(null);
+				}
 				Map.last_selected_unit = null;
 				Parameters.A_desired = new double[2][Map.units.size()];
 				for (int i = 0; i < Map.units.size(); i++)

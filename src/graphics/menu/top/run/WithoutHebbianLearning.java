@@ -1,20 +1,18 @@
 package graphics.menu.top.run;
 
 import graphics.gui.CustomGridPane;
+import graphics.gui.CustomRadioButton;
 import graphics.gui.CustomStage;
 import graphics.gui.CustomTextField;
-import graphics.menu.top.configurations.Configurations;
 import graphics.menu.top.configurations.RunConfigurations;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 
-public class WithoutHebbianLearning extends RunConfigurations implements Configurations
+public class WithoutHebbianLearning extends RunConfigurations
 {
-	private RadioButton[] inference_rules;
+	private CustomRadioButton inference_rules;
 	
 	@Override
 	public void openConfigurations()
@@ -32,16 +30,9 @@ public class WithoutHebbianLearning extends RunConfigurations implements Configu
 
 		final int inference_rules_length = 3;
 		grid_pane.add(new Label("Inference Rules"), 1, 0);
-		this.inference_rules = new RadioButton[inference_rules_length];
-		inference_rules[0] = new RadioButton("Kosko's");
-		inference_rules[1] = new RadioButton("Modified Kosko's");
-		inference_rules[2] = new RadioButton("Rescaled Kosko's");
-		final ToggleGroup inference_rules_group = new ToggleGroup();
+		this.inference_rules = new CustomRadioButton(this, "Kosko's", "Modified Kosko's", "Rescaled Kosko's");
 		for (int i = 0; i < inference_rules_length; i++)
-		{
-			inference_rules[i].setToggleGroup(inference_rules_group);
-			grid_pane.add(inference_rules[i], 1, 1 + i);
-		}
+			grid_pane.add(inference_rules.get(i), 1, 1 + i);
 		
 		grid_pane.add(new Label("Parameters"), 2, 0);
 		final CustomGridPane parameters_grid_pane = new CustomGridPane(2, 1);

@@ -5,16 +5,14 @@ import java.util.List;
 
 import org.megadix.jfcm.Concept;
 
+import graphics.gui.CustomComboBox;
 import graphics.gui.CustomGridPane;
 import graphics.gui.CustomStage;
 import graphics.gui.CustomTextField;
 import graphics.menu.top.configurations.Configurations;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -54,7 +52,7 @@ public class Unit extends Entity implements Configurations
 		this.name_x_offset = (int) (this.size / 2 - name.length() * 5 + name.length() * 0.7);
 		this.name_y_offset = -5;
 		this.name_text = new Text(x + name_x_offset, y + name_y_offset, name);
-		this.name_text.setFont(Program.font);
+		this.name_text.setStyle("-fx-font: 18px Alcubierre;");
 		this.name_text.setSmooth(true);
 		this.name_text.setFontSmoothingType(FontSmoothingType.LCD);
 		Program.main_border_pane.getChildren().add(name_text);
@@ -90,9 +88,7 @@ public class Unit extends Entity implements Configurations
 		grid_pane.add(this.text_fields[1], 1, 1);
 		
 		grid_pane.add(new Label("Color"), 0, 2);
-		ObservableList<String> options = FXCollections.observableArrayList("blue", "green", "red", "orange", "yellow");
-		final ComboBox<String> combo_box = new ComboBox<String>(options);
-		combo_box.setPromptText(color);
+		CustomComboBox combo_box = new CustomComboBox(this, this.color, "blue", "green", "red", "orange", "yellow");
 		combo_box.valueProperty().addListener((ChangeListener<String>) (ov, t, choice) -> this.color = choice);
 		grid_pane.add(combo_box, 1, 2);
 		
@@ -119,7 +115,9 @@ public class Unit extends Entity implements Configurations
 		String new_name = this.text_fields[0].getText().toString();
 		if (new_name != null && !new_name.isEmpty())
 		{
+			Map.cognitive_map.removeConcept(this.getName());
 			this.concept.setName(new_name);
+			Map.cognitive_map.addConcept(this.concept);
 			this.name_text.setText(new_name);
 			name_x_offset = (int) (this.size / 2 - new_name.length() * 5 + new_name.length() * 0.7);
 			name_text.setX(this.position.x + this.name_x_offset);
@@ -209,6 +207,7 @@ public class Unit extends Entity implements Configurations
 	public void handle(MouseEvent event)
 	{
 		super.handle(event);
+		this.toFront();
 		if (event.getEventType() == MouseEvent.MOUSE_DRAGGED)
 		{
 			if (event.getButton() == MouseButton.PRIMARY)
@@ -229,11 +228,11 @@ public class Unit extends Entity implements Configurations
 					event.consume();
 					return;
 				}
-				if (Map.last_selected_unit != null && Map.last_selected_unit != Unit.this)
+				if (Map.last_selected_unit != null && Map.last_selected_unit != this)
 				{
-					if (Unit.hasRelation(Map.last_selected_unit, Unit.this) == null)
+					if (Unit.hasRelation(Map.last_selected_unit, this) == null)
 					{
-						Relation relation = new Relation(1, Map.last_selected_unit, Unit.this);
+						Relation relation = new Relation(1, Map.last_selected_unit, this);
 						Map.cognitive_map.addConnection(relation);
 						Map.cognitive_map.connect(relation.getFrom().getName(), relation.getFrom().getName() + " -> " + relation.getTo().getName(), relation.getTo().getName());
 						Map.last_selected_unit.relations.add(relation);

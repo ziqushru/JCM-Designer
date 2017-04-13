@@ -29,7 +29,7 @@ public class BezierCurve extends CubicCurve implements Configurations
 		this.setStrokeLineCap(StrokeLineCap.ROUND);
 		this.setFill(null);
 		Program.main_border_pane.getChildren().add(this);
-		this.toBack();
+		this.setTranslateZ(0);
 	}
 	
 	public BezierCurve(Relation relation, double start_position_x, double start_position_y, double control_X1, double control_Y1, double control_X2, double control_Y2, double end_position_x, double end_position_y, boolean interactive)
@@ -40,6 +40,8 @@ public class BezierCurve extends CubicCurve implements Configurations
 			this.relation = relation;
 			this.setOpacity(0);
 			this.setStrokeWidth(20);
+			this.relation.getStartUnit().toFront();
+			this.relation.getEndUnit().toFront();
 			this.setOnMousePressed(event ->
 			{
 				if (event.getButton() == MouseButton.SECONDARY)

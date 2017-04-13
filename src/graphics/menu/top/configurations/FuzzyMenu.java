@@ -1,14 +1,12 @@
 package graphics.menu.top.configurations;
 
+import graphics.gui.CustomComboBox;
 import graphics.gui.CustomGridPane;
 import graphics.gui.CustomStage;
 import graphics.gui.CustomTextField;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -30,10 +28,7 @@ public class FuzzyMenu extends ConfigurationsUI implements Configurations
 		
 		main_comp.getChildren().add(new Label("Fuzzy Values"));
 		
-		final ObservableList<String> options = FXCollections.observableArrayList("Without Fuzzy Values", "2", "3", "4", "5");
-		final ComboBox<String> combo_box = new ComboBox<String>(options);
-		combo_box.setPromptText("Select Fuzzy Value");
-
+		CustomComboBox combo_box = new CustomComboBox(this, "Select Fuzzy Value", "Without Fuzzy Values", "2", "3", "4", "5");
 		combo_box.valueProperty().addListener((ChangeListener<String>) (ov, t, t1) ->
 		{
 			if (this.grid_pane != null)

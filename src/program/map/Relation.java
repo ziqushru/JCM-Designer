@@ -16,8 +16,8 @@ import program.utils.Position;
 public class Relation extends WeightedConnection
 {
 	public Text					weight_text;
-	private final Unit			start_unit;
-	private final Unit			end_unit;
+	private Unit				start_unit;
+	private Unit				end_unit;
 	public final BezierCurve	curve;
 	public final BezierCurve	interaction_curve;
 	public final List<Arrow>	arrows;
@@ -30,19 +30,23 @@ public class Relation extends WeightedConnection
 		this.start_unit = start_unit;
 		this.end_unit = end_unit;
 		Position middle_position = Relation.getMiddlePoint(start_unit.position, start_unit.size, end_unit.position, end_unit.size);
-		this.curve = new BezierCurve(this, start_unit.position.x + start_unit.size / 2, start_unit.position.y + start_unit.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, end_unit.position.x + start_unit.size / 2, end_unit.position.y + start_unit.size / 2, false);
-		this.interaction_curve = new BezierCurve(this, start_unit.position.x + start_unit.size / 2, start_unit.position.y + start_unit.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, end_unit.position.x + start_unit.size / 2, end_unit.position.y + start_unit.size / 2, true);
-		this.arrows = new ArrayList<Arrow>();
-		this.arrows.add(new Arrow(this.curve, 0.2f, new double[] { 0, 0, 5, 10, -5, 10 }));
-		this.arrows.add(new Arrow(this.curve, 0.8f, new double[] { 0, 0, 5, 10, -5, 10 }));
 		this.weight_text = new Text(weight + "");
+		this.weight_text.setStyle("-fx-font: 16px Alcubierre;");
 		double cos = Relation.getCos(start_unit.position.x, end_unit.position.x, start_unit.position.y, end_unit.position.y);
 		double sin = Relation.getSin(start_unit.position.x, end_unit.position.x, start_unit.position.y, end_unit.position.y);
 		this.weight_text.setX(middle_position.x + cos * 15);
 		this.weight_text.setY(middle_position.y + sin * 15);
 		this.weight_text.setSmooth(true);
 		this.weight_text.setFontSmoothingType(FontSmoothingType.LCD);
+		this.weight_text.setTranslateZ(0);
 		Program.main_border_pane.getChildren().add(weight_text);
+		this.curve = new BezierCurve(this, start_unit.position.x + start_unit.size / 2, start_unit.position.y + start_unit.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, end_unit.position.x + start_unit.size / 2, end_unit.position.y + start_unit.size / 2, false);
+		this.arrows = new ArrayList<Arrow>();
+		this.arrows.add(new Arrow(this.curve, 0.2f, new double[] { 0, 0, 5, 10, -5, 10 }));
+		this.arrows.add(new Arrow(this.curve, 0.8f, new double[] { 0, 0, 5, 10, -5, 10 }));
+		for (Arrow arrow : this.arrows)
+			arrow.setTranslateZ(0);
+		this.interaction_curve = new BezierCurve(this, start_unit.position.x + start_unit.size / 2, start_unit.position.y + start_unit.size / 2, middle_position.x, middle_position.y, middle_position.x, middle_position.y, end_unit.position.x + start_unit.size / 2, end_unit.position.y + start_unit.size / 2, true);
 	}
 
 	public void remove()

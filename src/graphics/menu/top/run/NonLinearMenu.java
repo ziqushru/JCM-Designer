@@ -3,7 +3,6 @@ package graphics.menu.top.run;
 import graphics.gui.CustomGridPane;
 import graphics.gui.CustomStage;
 import graphics.gui.CustomTextField;
-import graphics.menu.top.configurations.Configurations;
 import graphics.menu.top.configurations.RunConfigurations;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import program.map.learning_algorithms.NonLinear;
 
-public class NonLinearMenu extends RunConfigurations implements Configurations
+public class NonLinearMenu extends RunConfigurations
 {
 	@Override
 	public void openConfigurations()
