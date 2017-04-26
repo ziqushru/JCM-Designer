@@ -51,7 +51,7 @@ public class FuzzyMenu extends ConfigurationsUI implements Configurations
 			}
 			else
 			{
-				this.configurations_stage.setHeight(340);
+				this.configurations_stage.setHeight(350);
 				this.fuzzy_values_length = Integer.parseInt(t1);
 				Parameters.fuzzy_string_values = new String[this.fuzzy_values_length];
 				Parameters.fuzzy_double_values = new double[this.fuzzy_values_length];

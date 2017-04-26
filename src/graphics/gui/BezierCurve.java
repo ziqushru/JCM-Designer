@@ -126,7 +126,7 @@ public class BezierCurve extends CubicCurve implements Configurations
 		main_comp.getChildren().add(buttons_weight_comp);
 
 		int width = 275 + 60 * Parameters.fuzzy_string_values.length;
-		int height = 190;
+		int height = 195;
 		if (Parameters.fuzzy_string_values.length != 0) height += 40;
 		this.configurations_stage = new CustomStage("Relation Configurations", width, height, main_comp, "/stylesheets/pop_up.css");
 	}

@@ -106,7 +106,7 @@ public class Unit extends Entity implements Configurations
 		grid_pane.add(delete_button, 1, this.text_fields.length + 1);
 		main_comp.getChildren().add(grid_pane);
 		
-		this.configurations_stage = new CustomStage("Concept Configurations", 260, 330, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Concept Configurations", 265, 335, main_comp, "/stylesheets/pop_up.css");
 	}
 	
 	@Override
