@@ -48,7 +48,7 @@ public class DesiredOutputsMenu extends ConfigurationsUI implements Configuratio
 		update_button.setOnAction(event -> this.buttonOnAction());
 		main_comp.getChildren().add(update_button);
 
-		this.configurations_stage = new CustomStage("Desired Outputs", width, 320, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Desired Outputs", width, 325, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class WithoutHebbianLearning extends RunConfigurations
 		run_button.setOnAction(event -> this.buttonOnAction());
 		main_comp.getChildren().add(run_button);		
 
-		this.configurations_stage = new CustomStage("Run Configurations", 660, 410, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Run Configurations", 670, 425, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override

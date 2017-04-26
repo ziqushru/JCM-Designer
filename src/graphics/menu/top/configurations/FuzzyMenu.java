@@ -44,14 +44,14 @@ public class FuzzyMenu extends ConfigurationsUI implements Configurations
 
 			if (t1.equals("Without Fuzzy Values"))
 			{
-				this.configurations_stage.setHeight(204);
+				this.configurations_stage.setHeight(210);
 				this.fuzzy_values_length = 0;
 				Parameters.fuzzy_string_values = new String[this.fuzzy_values_length];
 				Parameters.fuzzy_double_values = new double[this.fuzzy_values_length];
 			}
 			else
 			{
-				this.configurations_stage.setHeight(315);
+				this.configurations_stage.setHeight(330);
 				this.fuzzy_values_length = Integer.parseInt(t1);
 				Parameters.fuzzy_string_values = new String[this.fuzzy_values_length];
 				Parameters.fuzzy_double_values = new double[this.fuzzy_values_length];
@@ -116,7 +116,7 @@ public class FuzzyMenu extends ConfigurationsUI implements Configurations
 		this.update_button.setOnAction(event -> this.buttonOnAction());
 		main_comp.getChildren().add(update_button);
 
-		this.configurations_stage = new CustomStage("Fuzzy Configurations", 280, 170, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Fuzzy Configurations", 280, 190, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override

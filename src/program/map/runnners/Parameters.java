@@ -3,6 +3,8 @@ package program.map.runnners;
 import java.util.ArrayList;
 import java.util.List;
 
+import program.map.Map;
+
 @SuppressWarnings("serial")
 public class Parameters extends ArrayList<Double>
 {
@@ -36,4 +38,26 @@ public class Parameters extends ArrayList<Double>
 	
 	public static String[]		fuzzy_string_values = new String[0];
 	public static double[]		fuzzy_double_values = new double[0];
+	
+	public static double calculateGE(List<double[]> A_overall)
+	{
+		final int N = Map.units.size();
+		final int M = Map.units.size();
+		
+		final double[] output = A_overall.get(A_overall.size() - 1);
+		double sum = 0;
+//		for (int x = 0; x < N; x++)
+//			sum += (output[x] - ) * (output[x] - );
+		return sum / (N * M);
+	}
+	
+	public static double calculateMSE(List<double[]> A_overall)
+	{
+		final int N = Map.units.size();
+		final double[] output = A_overall.get(A_overall.size() - 1);
+		double sum = 0;
+//		for (int x = 0; x < N; x++)
+//			sum += (output[x] - ) * (output[x] - );
+		return sum / N;
+	}
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -24,24 +25,25 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import program.map.Map;
+import program.map.runnners.Parameters;
 
 public class GraphScreen
 {
+	private static final int		WIDTH = 1024;
 	private final int				concepts_length;
 	private final int				iterations;
-	private final List<double[]>	A_overall;
 	public static List<JFrame>		frames = new ArrayList<JFrame>();
 	
 	@SuppressWarnings("serial")
-	private class Label extends JLabel
+	private class CustomLabel extends JLabel
 	{
-		public Label(String text, int size)
+		public CustomLabel(String text, int size)
 		{
 			super(text);
 			this.setFont(new Font("Alcubierre", Font.PLAIN, size));
 		}
 		
-		public Label(double text, int size)
+		public CustomLabel(double text, int size)
 		{
 			this(text + "", size);
 		}
@@ -49,16 +51,15 @@ public class GraphScreen
 	
 	public GraphScreen(String application_title, String chart_title, List<double[]> A_overall)
 	{
-		this.A_overall = A_overall;
 		this.concepts_length = Map.units.size();
 		this.iterations = A_overall.size();
 		
 		JPanel main_panel = new JPanel(new BorderLayout());
-		JFreeChart chart = ChartFactory.createXYLineChart(chart_title, "Iterations", "Concept Values", createDataset(), PlotOrientation.VERTICAL, true, true, false);
+		JFreeChart chart = ChartFactory.createXYLineChart(chart_title, "Iterations", "Concept Values", createDataset(A_overall), PlotOrientation.VERTICAL, true, true, false);
 		chart.setAntiAlias(true);
 		chart.setTextAntiAlias(true);
 		ChartPanel chart_panel = new ChartPanel(chart);
-		chart_panel.setMinimumSize(new Dimension(1024, 500));
+		chart_panel.setMinimumSize(new Dimension(GraphScreen.WIDTH, 500));
 		final XYPlot plot = chart.getXYPlot();
 		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 		for (int i = 0; i < this.concepts_length; i++)
@@ -78,28 +79,47 @@ public class GraphScreen
 
 		JPanel data_panel = new JPanel(new GridLayout(1 + this.iterations, 1 + this.concepts_length));
 		data_panel.setBackground(Color.WHITE);
-		data_panel.add(new Label("  Iterations", 16));
+		data_panel.add(new CustomLabel("  Iterations", 16));
 		for (int x = 0; x < this.concepts_length; x++)
-			data_panel.add(new Label(Map.units.get(x).getName(), 16));
+			data_panel.add(new CustomLabel(Map.units.get(x).getName(), 16));
 		
 		for (int y = 0; y < iterations; y++)
 		{
-			data_panel.add(new Label("       " + y, 14));
+			data_panel.add(new CustomLabel("       " + y, 14));
 			for (int x = 0; x < concepts_length; x++)
-				data_panel.add(new Label(A_overall.get(y)[x], 14));
+				data_panel.add(new CustomLabel(A_overall.get(y)[x], 14));
 		}
-		main_panel.add(data_panel, BorderLayout.SOUTH);
+		JScrollPane scroll_pane = new JScrollPane(data_panel);
+		scroll_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll_pane.setPreferredSize(new Dimension(GraphScreen.WIDTH, 150));
+		
+		JPanel statistics_panel = new JPanel(new GridLayout(1, 2));
+		statistics_panel.setBackground(Color.WHITE);
+		CustomLabel ge = new CustomLabel("GE = " + Parameters.calculateGE(A_overall), 16);
+		ge.setHorizontalAlignment(JLabel.CENTER);
+		statistics_panel.add(ge);
+		CustomLabel mse = new CustomLabel("MSE = " + Parameters.calculateMSE(A_overall), 16);
+		mse.setHorizontalAlignment(JLabel.CENTER);
+		statistics_panel.add(mse);
+		
+		JPanel bottom_panel = new JPanel(new BorderLayout());
+		bottom_panel.setBackground(Color.WHITE);
+		bottom_panel.add(statistics_panel, BorderLayout.NORTH);
+		bottom_panel.add(scroll_pane, BorderLayout.CENTER);
+		main_panel.add(bottom_panel, BorderLayout.SOUTH);
 
 		JFrame frame = new JFrame(application_title);
-		frame.setSize(new Dimension(1024, 500 + 20 * iterations));
+		frame.setSize(new Dimension(GraphScreen.WIDTH, 500 + 15 + 150));
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setContentPane(main_panel);
+		frame.pack();
 		frame.setVisible(true);
 		frames.add(frame);
 	}
 
-	private XYDataset createDataset()
+	private XYDataset createDataset(List<double[]> A_overall)
 	{
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		final XYSeries[] units = new XYSeries[concepts_length];

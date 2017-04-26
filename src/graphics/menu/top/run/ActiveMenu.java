@@ -52,7 +52,7 @@ public class ActiveMenu extends RunConfigurations
 		run_button.setOnAction(event -> this.buttonOnAction());
 		main_comp.getChildren().add(run_button);
 
-		this.configurations_stage = new CustomStage("Run Configurations", 500, 605, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Run Configurations", 520, 645, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override

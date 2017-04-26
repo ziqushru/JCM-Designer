@@ -40,7 +40,7 @@ public class InputVectorMenu extends ConfigurationsUI implements Configurations
 		update_button.setOnAction(event -> this.buttonOnAction());
 		main_comp.getChildren().add(update_button);
 
-		this.configurations_stage = new CustomStage("Input Vector", width, 255, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Input Vector", width, 260, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override

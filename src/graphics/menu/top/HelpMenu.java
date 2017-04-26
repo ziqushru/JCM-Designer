@@ -52,7 +52,7 @@ public class HelpMenu extends Menu
 			main_comp.getChildren().add(headers[4]);
 			main_comp.getChildren().add(new Label("Jason Koutoulias"));
 			
-			new CustomStage("About", 670, 670, main_comp, "/stylesheets/pop_up.css");
+			new CustomStage("About", 670, 695, main_comp, "/stylesheets/pop_up.css");
 		});
 		this.getItems().add(about);
 		top_menu.getMenus().add(this);
