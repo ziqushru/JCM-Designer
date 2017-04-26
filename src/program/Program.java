@@ -11,6 +11,7 @@ import graphics.menu.TopMenu;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -29,8 +30,8 @@ import program.utils.Log;
 public class Program extends Application
 {
 	public static final String			TITLE									= "JFCM";
-	public static final int				WIDTH									= 1024;
-	public static final int				HEIGHT									= 720;
+	public static int					WIDTH									= 1024;
+	public static int					HEIGHT									= 720;
 
 	public static Log					log;
 
@@ -64,6 +65,10 @@ public class Program extends Application
 					Program.main_border_pane.getChildren().remove(Unit.selected_lines[i]);
 			Map.last_selected_unit = null;
 		});
+		Program.window.widthProperty().addListener((ObservableValue<? extends Number> observable_value, Number old_width, Number new_width) ->
+			Program.WIDTH = new_width.intValue());
+		Program.window.heightProperty().addListener((ObservableValue<? extends Number> observable_value, Number old_height, Number new_height) ->
+			Program.HEIGHT = new_height.intValue());
 		Program.window.setOnCloseRequest(event ->
 		{
 			event.consume();

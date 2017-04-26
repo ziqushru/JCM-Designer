@@ -46,7 +46,7 @@ public class LeftMenu extends ToolBar
 			@Override
 			public void handle(MouseEvent event)
 			{
-				Unit unit = new Unit("Concept " + (Map.units.size() + 1), Program.WIDTH / 2, Program.HEIGHT - 100, Unit.concepts_path + "blue_concept.png");
+				Unit unit = new Unit("Concept " + (Map.units.size() + 1), Program.WIDTH / 2 - 32, Program.HEIGHT / 2 - 32, Unit.concepts_path + "blue_concept.png");
 				Map.cognitive_map.addConcept(unit.concept);
 				Map.units.add(unit);
 				if (Map.last_selected_unit != null)

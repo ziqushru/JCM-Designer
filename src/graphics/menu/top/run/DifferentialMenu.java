@@ -47,7 +47,7 @@ public class DifferentialMenu extends RunConfigurations
 		run_button.setOnAction(event -> this.buttonOnAction());
 		main_comp.getChildren().add(run_button);		
 
-		this.configurations_stage = new CustomStage("Run Configurations", 420, 455, main_comp, "/stylesheets/pop_up.css");
+		this.configurations_stage = new CustomStage("Run Configurations", 430, 455, main_comp, "/stylesheets/pop_up.css");
 	}
 
 	@Override
