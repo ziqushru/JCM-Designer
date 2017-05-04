@@ -65,7 +65,7 @@ public class GraphScreen
 		for (int i = 0; i < this.concepts_length; i++)
 		{
 			Color color = Color.BLACK;
-			if (i % 6 == 0)			color = Color.RED;
+			if (i % 6 == 0)			color = Color.BLUE;
 			else if (i % 6 == 1)	color = Color.GREEN;
 			else if (i % 6 == 2)	color = Color.RED;
 			else if (i % 6 == 3)	color = Color.ORANGE;

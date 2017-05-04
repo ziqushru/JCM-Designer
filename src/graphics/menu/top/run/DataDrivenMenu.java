@@ -21,7 +21,7 @@ import program.map.learning_algorithms.DataDriven;
 
 public class DataDrivenMenu extends RunConfigurations
 {
-	List<double[]> data_driven = new ArrayList<double[]>();
+	private List<double[]> data_driven = new ArrayList<double[]>();
 	
 	@Override
 	public void openConfigurations()

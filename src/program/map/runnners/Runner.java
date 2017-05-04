@@ -8,18 +8,17 @@ import program.map.Map;
 import program.map.Relation;
 import program.map.inference_rules.InferenceRule;
 import program.map.learning_algorithms.HebbianLearning;
-import program.utils.Log;
 import program.utils.transferfunctions.TransferFunction;
 
-public strictfp class Runner implements Runnable
+public class Runner implements Runnable
 {
-	private final String 		name;
-	private double				rounder;
+	protected final String 		name;
+	protected double			rounder;
 	private Thread				runner_thread;
 
-	private TransferFunction	transfer_function;
-	private InferenceRule		inference_rule;
-	public HebbianLearning		hebbian_learning;
+	protected TransferFunction	transfer_function;
+	protected InferenceRule		inference_rule;
+	protected HebbianLearning	hebbian_learning;
 	public Parameters			parameters			= new Parameters();
 	
 	public Runner(String name, HebbianLearning hebbian_learning)
@@ -34,7 +33,7 @@ public strictfp class Runner implements Runnable
 		this.runner_thread.setPriority(Thread.MAX_PRIORITY);
 		this.runner_thread.start();
 	}
-
+	
 	@Override
 	public void run()
 	{
@@ -65,15 +64,23 @@ public strictfp class Runner implements Runnable
 		} while (!shouldTerminate(A_overall));
 
 		new GraphScreen("Outputs", this.name, A_overall);
+		
+//		for (int y = 0; y < A.length; y++)
+//		{
+//			for (int x = 0; x < A.length; x++)
+//				System.out.print(weights[x + y * A.length] + "\t");
+//			System.out.println();
+//		}
+//		System.out.println();
 	}
 	
-	private synchronized void roundArray(double[] array)
+	protected synchronized void roundArray(double[] array)
 	{
 		for (int i = 0; i < array.length; i++)
 			array[i] = (double) ((int) (array[i] * rounder)) / rounder;
 	}
 
-	private synchronized boolean shouldTerminate(List<double[]> A_overall)
+	protected synchronized boolean shouldTerminate(List<double[]> A_overall)
 	{
 		double[] A = A_overall.get(A_overall.size() - 1);
 		if (Parameters.A_desired_length > 0)
@@ -105,10 +112,11 @@ public strictfp class Runner implements Runnable
 			}
 		}
 		if (++this.parameters.stability_counter == Parameters.stability_length) return true;
+		if (this.parameters.iteration >= Parameters.max_iterations) return true;
 		return false;
 	}
 	
-	private static synchronized double[] W(int scansize)
+	protected static synchronized double[] W(int scansize)
 	{
 		double[] W = new double[scansize * scansize];
 		for (int y = 0; y < scansize; y++)
@@ -123,26 +131,6 @@ public strictfp class Runner implements Runnable
 					}
 			}
 		return W;
-	}
-
-	@SuppressWarnings("unused")
-	private static synchronized void displayArray(double[] array, int scansize)
-	{
-		for (int y = 0; y < scansize; y++)
-		{
-			for (int x = 0; x < scansize; x++)
-				Log.addLog(array[x + y * scansize] + "\t");
-			Log.addLog("\n");
-		}
-		Log.consoleOut();
-	}
-
-	@SuppressWarnings("unused")
-	private static synchronized void displayArray(double[] array)
-	{
-		for (int x = 0; x < array.length; x++)
-			Log.addLog(array[x] + "\t");
-		Log.consoleOut();
 	}
 
 	public void setTransferFunction(TransferFunction transfer_function)

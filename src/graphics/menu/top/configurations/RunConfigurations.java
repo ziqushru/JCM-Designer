@@ -3,9 +3,11 @@ package graphics.menu.top.configurations;
 import graphics.gui.CustomRadioButton;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import program.map.inference_rules.ActiveKosko;
 import program.map.inference_rules.Kosko;
 import program.map.inference_rules.ModifiedKosko;
 import program.map.inference_rules.RescaledKosko;
+import program.map.learning_algorithms.Active;
 import program.map.learning_algorithms.HebbianLearning;
 import program.map.runnners.Runner;
 import program.utils.transferfunctions.Bivalent;
@@ -32,8 +34,14 @@ public abstract class RunConfigurations extends ConfigurationsUI implements Conf
 	{
 		this.runner = new Runner(this.name, hebbian_learning);
 		this.setTransferFunctions();
-		this.setInferenceRule(inference_rules);
 		this.setParameters();
+		if (hebbian_learning instanceof Active)
+		{
+			this.runner.setInferenceRule(new ActiveKosko(this.runner.parameters));
+			hebbian_learning.update_parameters(this.runner.parameters);
+		}
+		else
+			this.setInferenceRule(inference_rules);
 	}
 	
 	private void setTransferFunctions()
