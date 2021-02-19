@@ -14,6 +14,6 @@ _Name_ | _Description_
 ------ | -------------
 res | resources
 src | source code
-JCM Design App | runnable jar (Windows compiled)
+jcmdesigner | runnable jar (Windows compiled)
 
 Concepts and Logo designed by Jim Sotirakis
