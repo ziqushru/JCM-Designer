@@ -1,0 +1,146 @@
+#pane
+{
+    background-color: #FFFFFF;
+    -fx-background-color: #FFFFFF;
+    padding: 10px;
+	-fx-padding: 10px;
+	margin: 10px;
+    -fx-margin: 10px;
+}
+
+.label
+{
+	font: 18px Alcubierre;
+	-fx-font: 18px Alcubierre;
+	padding: 20px;
+	-fx-padding: 20px;
+	margin: 10px;
+    -fx-margin: 10px;
+}
+
+.radio-button
+{
+	font: 16px Alcubierre;
+	-fx-font: 16px Alcubierre;
+	padding: 10px;
+	-fx-padding: 10px;
+	margin: 10px;
+    -fx-margin: 10px;
+ 	-fx-focus-color: transparent;
+}
+
+.button
+{
+	font: 18px Alcubierre;
+	-fx-font: 18px Alcubierre;
+	-fx-background-radius: 10px;
+	background-color: #FFFFFF;
+    -fx-background-color: #FFFFFF;
+	padding: 10px;
+    -fx-padding: 10px;
+	margin: 10px;
+    -fx-margin: 10px;
+}
+
+.button:hover
+{
+	-fx-effect: dropshadow(three-pass-box, #403C3C, 10, 0.5, 0, 0);
+}
+
+.text-field
+{
+	font: 18px Alcubierre;
+	-fx-font: 18px Alcubierre;
+	border-radius: 10px;
+	-fx-border-radius: 10px;
+	border-style: solid;
+    -fx-border-style: solid;
+	border-width: 1px;
+    -fx-border-width: 1px;
+	padding: 10px;
+	-fx-padding: 10px;
+	margin: 10px;
+    -fx-margin: 10px;
+    -fx-text-box-border: transparent;
+ 	-fx-focus-color: transparent;
+	 max-width: 100px;
+    -fx-max-width: 100px;
+}
+
+.combo-box
+{
+	font: 16px Alcubierre;
+	-fx-font: 16px Alcubierre;
+	background-color: #FFFFFF;
+	-fx-background-color: #FFFFFF;
+	border-radius: 10px;
+	-fx-border-radius: 10px;
+	border-style: solid;
+    -fx-border-style: solid;
+	border-width: 1px;
+    -fx-border-width: 1px;
+	padding: 10px;
+	-fx-padding: 10px;
+	margin: 10px;
+    -fx-margin: 10px;
+}
+
+.combo-box .list-cell
+{
+	-fx-alignment: center;
+}
+
+.combo-box .arrow-button
+{
+	background-color: #FFFFFF;
+	-fx-background-color: #FFFFFF;
+}
+
+.combo-box .arrow
+{
+	background-color: #FFFFFF;
+	-fx-background-color: #FFFFFF;
+	border-style: solid;
+    -fx-border-style: solid;
+	border-width: 1px;
+    -fx-border-width: 1px;
+}
+
+.combo-box:hover .arrow, .combo-box:showing .arrow
+{
+	background-color: #77ABFF;
+	-fx-background-color: #77ABFF;
+}
+
+.combo-box-popup .list-view
+{
+	-fx-background-radius: 10px;
+	border-radius: 10px;
+	-fx-border-radius: 10px;
+	border-style: solid;
+    -fx-border-style: solid;
+	border-width: 1px;
+    -fx-border-width: 1px;
+	padding: 3px;
+	-fx-padding: 3px;
+}
+
+.combo-box-popup .list-view .list-cell
+{
+	-fx-text-fill: #000000;
+	-fx-alignment: center;
+}
+
+.hyperlink
+{
+	-fx-text-fill: #000000;
+	font: 18px Alcubierre;
+	-fx-font: 18px Alcubierre;
+ 	-fx-focus-color: transparent;
+}
+
+.hyperlink:hover
+{
+    -fx-underline: false;
+	-fx-effect: dropshadow(three-pass-box, #2A78F7, 5, 0.5, 0, 0);
+}

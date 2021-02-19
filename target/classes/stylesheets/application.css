@@ -1,0 +1,73 @@
+.button
+{
+   	-fx-text-fill:  #000000;
+	font: 6px Alcubierre;
+    -fx-font: 16px Alcubierre;
+    -fx-background-radius: 10px;
+	background-color: linear-gradient(#A09C8C, #FFFFFF , #A09C8C);
+	-fx-background-color: linear-gradient(#A09C8C, #FFFFFF , #A09C8C);
+	-fx-effect: dropshadow(three-pass-box, #403C3C, 5, 0.5, -1, 1);
+}
+
+.button:hover
+{
+	-fx-text-fill:  #000000;
+	background-color: linear-gradient(#FFFFFF, #A09C8C , #FFFFFF);
+	-fx-background-color: linear-gradient(#FFFFFF, #A09C8C , #FFFFFF);
+	-fx-effect: dropshadow(three-pass-box, #403C3C, 2, 0.5, -1, 1);
+}
+
+.menu-bar
+{
+	background-color: #FFFFFF;
+	-fx-background-color: #FFFFFF;
+	border-color:  #000000;
+	-fx-border-color:  #000000;
+	border-width: 2px;
+	-fx-border-width: 2px;
+	border-radius: 10px;
+	-fx-border-radius: 10px;
+}
+
+.menu-bar .label
+{
+	-fx-text-fill:  #000000;
+	font: 18px Alcubierre;
+	-fx-font: 18px Alcubierre;
+	-fx-alignment: center;
+}
+
+.context-menu
+{
+	-fx-text-fill:  #000000;
+    font-family: Alcubierre;
+	-fx-font-family: Alcubierre;
+	background-color: #FFFFFF;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+	border-color:  #000000;
+	-fx-border-color:  #000000;
+	border-width: 2px;
+	-fx-border-width: 2px;
+	border-radius: 10px;
+	-fx-border-radius: 10px;
+}
+
+.label
+{
+	-fx-text-fill:  #000000;
+	font: 18px Alcubierre;
+	-fx-font: 18px Alcubierre;
+}
+
+.dialog-pane
+{
+  background-color: #FFFFFF;
+  -fx-background-color: #FFFFFF;
+}
+
+.dialog-pane:header .header-panel
+{
+  background-color: #FFFFFF;
+  -fx-background-color: #FFFFFF;
+}
